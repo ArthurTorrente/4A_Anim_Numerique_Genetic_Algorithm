@@ -26,3 +26,9 @@
 *.exe
 *.out
 *.app
+
+*.sdf
+*.suo
+
+[Dd]ebug
+[Rr]elease
