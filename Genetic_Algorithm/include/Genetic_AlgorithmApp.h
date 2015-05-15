@@ -65,7 +65,7 @@ protected:
     gl::Texture m_cameraTexture;
 
     bool m_hasCaptureCamera;
-    Image m_videoCapture;
+    DrawableImage m_videoCapture;
 
     void setupCamera();
 };

@@ -4,7 +4,10 @@
 #include "cinder/ImageIo.h"
 #include "cinder/gl/Texture.h"
 
-struct Image
+/**
+ *
+ */
+struct DrawableImage
 {
     cinder::Surface m_image;
     cinder::gl::Texture m_texture;
