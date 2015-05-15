@@ -20,7 +20,7 @@ void Genetic_AlgorithmApp::update()
 {
     if (m_cameraMode)
     {
-        if (m_video.isDeviceSetup(m_camNumber))
+        if (m_camNumber >= 0 && m_video.isDeviceSetup(m_camNumber))
         {
             if (m_video.isFrameNew(m_camNumber))
             {

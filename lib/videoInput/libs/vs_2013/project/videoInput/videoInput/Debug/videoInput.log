@@ -1,0 +1,13 @@
+﻿La génération a démarré 09/05/2015 21:58:31.
+     1>Projet "D:\Dev\VideoInput\libs\vs_2013\project\videoInput\videoInput\videoInput.vcxproj" sur le nœud 2 (Build cible(s)).
+     1>ClCompile:
+         C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\bin\CL.exe /c /I"C:\Program Files (x86)\Visual Leak Detector\include" /ZI /nologo /W3 /WX- /sdl /Od /Oy- /D _UNICODE /D UNICODE /Gm /EHsc /RTC1 /MTd /GS /fp:precise /Zc:wchar_t /Zc:forScope /Fo"Debug\\" /Fd"Debug\vc120.pdb" /Gd /TP /analyze- /errorReport:prompt videoInput.cpp
+         videoInput.cpp
+       Lib:
+         C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\bin\Lib.exe /OUT:"lib/videoInputd.lib" /LIBPATH:"C:\Program Files (x86)\Visual Leak Detector\lib\Win32" /NOLOGO Debug\videoInput.obj
+         videoInput.vcxproj -> D:\Dev\VideoInput\libs\vs_2013\project\videoInput\videoInput\lib/videoInputd.lib
+     1>Génération du projet "D:\Dev\VideoInput\libs\vs_2013\project\videoInput\videoInput\videoInput.vcxproj" terminée (Build cible(s)).
+
+La génération a réussi.
+
+Temps écoulé 00:00:01.51
