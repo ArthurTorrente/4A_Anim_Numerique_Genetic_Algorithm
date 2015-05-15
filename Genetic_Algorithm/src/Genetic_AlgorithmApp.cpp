@@ -1,8 +1,19 @@
 #include "Genetic_AlgorithmApp.h"
 
+/**
+ * TODO
+ *
+ * - FullScreen
+ * - Algo Gen
+ * - 2 Modes :
+ *      - Fenétré : Chargement des images, set des différents params
+ *      - FullSceen : Déroulement de l'algo, (Changement de l'image procécé, utilisation de la cam en temps réel, pris d'un snapshoot à l'aide de la cam, load d'une image par une URL, ...)
+ * - Suite
+ */
+
 void Genetic_AlgorithmApp::prepareSettings(Settings* settings)
 {
-    settings->setWindowSize(Vec2i(800, 600));
+    settings->setFullScreen(true);
     settings->setFrameRate(60.0f);
 
     m_cameraMode = false;
@@ -75,7 +86,7 @@ void Genetic_AlgorithmApp::draw()
     {
         if (m_camNumber >= 0)
         {
-            gl::draw(gl::Texture(m_cameraImage));
+            gl::draw(gl::Texture(m_cameraImage), getWindowBounds());
 
             if (m_hasCaptureCamera)
             {
@@ -222,7 +233,7 @@ void Genetic_AlgorithmApp::setupCamera()
             m_cameraImage = Surface(width, height, false, SurfaceChannelOrder::RGB);
             m_videoCapture.m_image = Surface(width, height, false, SurfaceChannelOrder::RGB);
 
-            setWindowSize(Vec2i(width, height));
+            //setWindowSize(Vec2i(width, height));
 
             m_cameraMode = true;
         }
