@@ -5,7 +5,7 @@
 #include "cinder/gl/Texture.h"
 
 /**
- *
+ * Structe contenant une Surface et une Texture pour afficher une image
  */
 struct DrawableImage
 {

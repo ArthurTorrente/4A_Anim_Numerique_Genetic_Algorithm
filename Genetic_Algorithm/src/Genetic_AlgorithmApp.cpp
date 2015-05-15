@@ -93,8 +93,18 @@ void Genetic_AlgorithmApp::draw()
         ci::Rectf curRect = Rectf::zero();
 
         unsigned int imageNumber = m_textures.size();
-        unsigned int xCount = static_cast<unsigned int>(sqrt(imageNumber));
+        unsigned int xCount = 0;
         unsigned int yCount = xCount;
+
+        double dressSize = sqrt(imageNumber);
+
+        if (dressSize - static_cast<int>(dressSize) > 0.0)
+        {
+            dressSize += 1.0;
+        }
+        
+        xCount = static_cast<unsigned int>(dressSize);
+        yCount = xCount;
 
         float deltaX = screen.getWidth() / xCount;
         float deltaY = screen.getHeight() / yCount;

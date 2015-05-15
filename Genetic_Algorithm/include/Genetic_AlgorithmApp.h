@@ -50,10 +50,19 @@ public:
     void fileDrop(FileDropEvent event);
 
 protected:
+    /**
+     * Mode Webcam ou utilisation d'image (FileDrop ou FileExplorer)
+     */
     bool m_cameraMode;
 
+    /**
+     * Liste d'image chargé
+     */
     std::vector<gl::Texture> m_textures;
 
+    /**
+     * Texture utilisé pour le rendu de string
+     */
     Font m_font;
     gl::TextureFontRef m_textureFont;
 
@@ -64,9 +73,15 @@ protected:
     Surface m_cameraImage;
     gl::Texture m_cameraTexture;
 
+    /**
+     * 
+     */
     bool m_hasCaptureCamera;
     DrawableImage m_videoCapture;
 
+    /**
+     * Setup de la camera
+     */
     void setupCamera();
 };
 
