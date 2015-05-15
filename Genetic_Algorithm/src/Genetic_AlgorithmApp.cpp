@@ -13,7 +13,7 @@
 
 void Genetic_AlgorithmApp::prepareSettings(Settings* settings)
 {
-    settings->setFullScreen(true);
+    settings->setWindowSize(cinder::Vec2i(800, 600));
     settings->setFrameRate(60.0f);
 
     m_cameraMode = false;
@@ -32,17 +32,13 @@ void Genetic_AlgorithmApp::update()
 {
     if (m_cameraMode)
     {
-        if (m_camNumber >= 0 && m_video.isDeviceSetup(m_camNumber))
+        if (m_camera && m_camera->checkNewFrame())
         {
-            if (m_video.isFrameNew(m_camNumber))
-            {
-                if (!m_video.getPixels(m_camNumber, m_cameraImage.getData(), true, true))
-                {
-                    console() << "Copy camera image failed" << std::endl;
-                }
-            }
+            m_cameraImage = m_camera->getSurface();
+            m_cameraTexture = gl::Texture(m_cameraImage);
         }
     }
+
 }
 
 void Genetic_AlgorithmApp::IHM()
@@ -52,7 +48,7 @@ void Genetic_AlgorithmApp::IHM()
 
     if (m_cameraMode)
     {
-        if (m_camNumber < 0)
+        if (!m_camera)
         {
             message = "No camera setup";
             position = Vec2f(30.0f, 30.f);
@@ -84,14 +80,9 @@ void Genetic_AlgorithmApp::draw()
 {
     if (m_cameraMode)
     {
-        if (m_camNumber >= 0)
+        if (m_camera && m_cameraTexture)
         {
-            gl::draw(gl::Texture(m_cameraImage), getWindowBounds());
-
-            if (m_hasCaptureCamera)
-            {
-                gl::draw(m_videoCapture.m_texture, cinder::Rectf(0.0f, 0.0f, m_videoCapture.m_image.getWidth() * 0.1f, m_videoCapture.m_image.getHeight() * 0.1f));
-            }
+            gl::draw(m_cameraTexture, getWindowBounds());
         }
     }
     else
@@ -148,6 +139,36 @@ void Genetic_AlgorithmApp::keyDown(KeyEvent event)
             m_videoCapture.m_texture = gl::Texture(m_videoCapture.m_image);
 
             m_hasCaptureCamera = true;
+        }
+    }
+    else if (event.getCode() == KeyEvent::KEY_f)
+    {
+        setFullScreen(!isFullScreen());
+    }
+    else if (event.getCode() == KeyEvent::KEY_l)
+    {
+        fs::path p = getOpenFilePath("", ImageIo::getLoadExtensions());
+
+        if (!p.empty())
+        {
+            m_textures.clear();
+
+            try
+            {
+                gl::Texture texture(loadImage(p));
+                m_textures.push_back(texture);
+            }
+            catch (ci::ImageIoException&)
+            {
+                console() << "Format non supporté pour l'image : " << p.filename() << std::endl;
+            }
+            catch (std::exception&)
+            {
+                console() << "Error occur" << std::endl;
+            }
+        }
+        else
+        {
         }
     }
 }
@@ -211,36 +232,17 @@ void Genetic_AlgorithmApp::fileDrop(FileDropEvent event)
 
 void Genetic_AlgorithmApp::setupCamera()
 {
-    int camCount = videoInput::listDevices();
+    auto deviceList = cinder::Capture::getDevices();
 
-    if (camCount > 0)
+    if (deviceList.size() > 0)
     {
-        m_camNumber = 0;
+        auto device = deviceList.front();
 
-        if (m_video.isDeviceSetup(m_camNumber))
-            m_video.stopDevice(m_camNumber);
+        m_camera = cinder::Capture::create(1920, 1080);
 
-        if (!m_video.setupDevice(m_camNumber))
-        {
-            m_camNumber = -1;
-            console() << "Setup camera failed" << std::endl;
-        }
-        else
-        {
-            int width = m_video.getWidth(m_camNumber);
-            int height = m_video.getHeight(m_camNumber);
-            
-            m_cameraImage = Surface(width, height, false, SurfaceChannelOrder::RGB);
-            m_videoCapture.m_image = Surface(width, height, false, SurfaceChannelOrder::RGB);
+        m_camera->start();
 
-            //setWindowSize(Vec2i(width, height));
-
-            m_cameraMode = true;
-        }
-    }
-    else
-    {
-        console() << "No cam detected" << std::endl;
+        m_cameraMode = true;
     }
 }
 

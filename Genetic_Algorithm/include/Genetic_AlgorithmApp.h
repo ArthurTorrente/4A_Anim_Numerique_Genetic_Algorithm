@@ -6,10 +6,9 @@
 #include "cinder/ImageIo.h"
 #include "cinder/gl/Texture.h"
 #include "cinder/gl/TextureFont.h"
+#include "cinder/Capture.h"
 
 #include <vector>
-
-#include "videoInput.h"
 
 #include "tools.h"
 #include "Image.h"
@@ -61,8 +60,7 @@ protected:
     /**
      * Camera
      */
-    int m_camNumber;
-    videoInput m_video;
+    cinder::CaptureRef m_camera;
     Surface m_cameraImage;
     gl::Texture m_cameraTexture;
 
