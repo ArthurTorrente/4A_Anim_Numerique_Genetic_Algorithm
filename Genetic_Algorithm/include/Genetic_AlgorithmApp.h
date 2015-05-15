@@ -12,6 +12,7 @@
 #include "videoInput.h"
 
 #include "tools.h"
+#include "Image.h"
 
 using namespace ci;
 using namespace ci::app;
@@ -64,6 +65,9 @@ protected:
     videoInput m_video;
     Surface m_cameraImage;
     gl::Texture m_cameraTexture;
+
+    bool m_hasCaptureCamera;
+    Image m_videoCapture;
 
     void setupCamera();
 };

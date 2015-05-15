@@ -13,6 +13,7 @@ void Genetic_AlgorithmApp::setup()
     m_font = Font("Calibri", 20);
     m_textureFont = gl::TextureFont::create(m_font);
 
+    m_hasCaptureCamera = false;
     setupCamera();
 }
 
@@ -75,6 +76,11 @@ void Genetic_AlgorithmApp::draw()
         if (m_camNumber >= 0)
         {
             gl::draw(gl::Texture(m_cameraImage));
+
+            if (m_hasCaptureCamera)
+            {
+                gl::draw(m_videoCapture.m_texture, cinder::Rectf(0.0f, 0.0f, m_videoCapture.m_image.getWidth() * 0.1f, m_videoCapture.m_image.getHeight() * 0.1f));
+            }
         }
     }
     else
@@ -122,6 +128,16 @@ void Genetic_AlgorithmApp::keyDown(KeyEvent event)
     else if (event.getCode() == KeyEvent::KEY_m)
     {
         m_cameraMode = !m_cameraMode;
+    }
+    else if (event.getCode() == KeyEvent::KEY_c)
+    {
+        if (m_cameraMode)
+        {
+            m_videoCapture.m_image.copyFrom(m_cameraImage, m_cameraImage.getBounds());
+            m_videoCapture.m_texture = gl::Texture(m_videoCapture.m_image);
+
+            m_hasCaptureCamera = true;
+        }
     }
 }
 
@@ -204,6 +220,7 @@ void Genetic_AlgorithmApp::setupCamera()
             int height = m_video.getHeight(m_camNumber);
             
             m_cameraImage = Surface(width, height, false, SurfaceChannelOrder::RGB);
+            m_videoCapture.m_image = Surface(width, height, false, SurfaceChannelOrder::RGB);
 
             setWindowSize(Vec2i(width, height));
 
