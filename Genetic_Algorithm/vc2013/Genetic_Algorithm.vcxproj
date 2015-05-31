@@ -58,7 +58,7 @@
       <PrecompiledHeader />
       <WarningLevel>Level3</WarningLevel>
       <DebugInformationFormat>EditAndContinue</DebugInformationFormat>
-      <MultiProcessorCompilation>true</MultiProcessorCompilation>
+      <MultiProcessorCompilation>false</MultiProcessorCompilation>
     </ClCompile>
     <ResourceCompile>
       <AdditionalIncludeDirectories>"..\..\..\..\..\..\..\..\Dev\cinder_0.8.6_vc2013\include";..\include</AdditionalIncludeDirectories>
@@ -107,12 +107,18 @@
     <ResourceCompile Include="Resources.rc" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="..\src\AlgoGen.cpp" />
     <ClCompile Include="..\src\Genetic_AlgorithmApp.cpp" />
+    <ClCompile Include="..\src\Pixel.cpp" />
+    <ClCompile Include="..\src\Sticky.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="..\include\AlgoGen.h" />
     <ClInclude Include="..\include\Genetic_AlgorithmApp.h" />
     <ClInclude Include="..\include\Image.h" />
+    <ClInclude Include="..\include\Pixel.h" />
     <ClInclude Include="..\include\Resources.h" />
+    <ClInclude Include="..\include\Sticky.h" />
     <ClInclude Include="..\include\tools.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
