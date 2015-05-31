@@ -85,7 +85,7 @@ void Genetic_AlgorithmApp::draw()
             gl::draw(m_cameraTexture, getWindowBounds());
 
             if (m_hasCaptureCamera)
-                gl::draw(m_videoCapture.m_texture, Rectf(0.0f, 0.0f, getWindowWidth() / 10.0f, getWindowHeight() / 10.0f));
+                gl::draw(m_videoCapture.m_texture, Rectf(0.0f, 0.0f, getWindowWidth() / 15.0f, getWindowHeight() / 15.0f));
         }
     }
     else
