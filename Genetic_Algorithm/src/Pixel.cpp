@@ -60,3 +60,36 @@ const int& Pixel::getRGBA() const
 {
     return m_rgba.m_32U;
 }
+
+void Pixel::setR(unsigned char r)
+{
+    m_rgba.m_8U[0] = r;
+}
+
+void Pixel::setG(unsigned char g)
+{
+    m_rgba.m_8U[1] = g;
+}
+
+void Pixel::setB(unsigned char b)
+{
+    m_rgba.m_8U[2] = b;
+}
+
+void Pixel::setA(unsigned char a)
+{
+    m_rgba.m_8U[3] = a;
+}
+
+void Pixel::set(unsigned char r, unsigned char g, unsigned char b, unsigned char a)
+{
+    m_rgba.m_8U[0] = r;
+    m_rgba.m_8U[1] = g;
+    m_rgba.m_8U[2] = b;
+    m_rgba.m_8U[3] = a;
+}
+
+void Pixel::set(int rgba)
+{
+    m_rgba.m_32U = rgba;
+}

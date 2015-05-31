@@ -74,7 +74,7 @@ protected:
     gl::Texture m_cameraTexture;
 
     /**
-     * 
+     * Capture d'une image de la camera
      */
     bool m_hasCaptureCamera;
     DrawableImage m_videoCapture;
