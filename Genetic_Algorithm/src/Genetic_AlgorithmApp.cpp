@@ -83,6 +83,9 @@ void Genetic_AlgorithmApp::draw()
         if (m_camera && m_cameraTexture)
         {
             gl::draw(m_cameraTexture, getWindowBounds());
+
+            if (m_hasCaptureCamera)
+                gl::draw(m_videoCapture.m_texture, Rectf(0.0f, 0.0f, getWindowWidth() / 10.0f, getWindowHeight() / 10.0f));
         }
     }
     else
@@ -249,6 +252,8 @@ void Genetic_AlgorithmApp::setupCamera()
         auto device = deviceList.front();
 
         m_camera = cinder::Capture::create(1920, 1080);
+        
+        m_videoCapture.m_image = Surface(m_camera->getSurface());
 
         m_camera->start();
 
