@@ -32,7 +32,6 @@ public:
     void setupIHM();
     void update();
     void draw();
-    void IHM();
 
     /**
     * Keyboard event
@@ -61,35 +60,29 @@ protected:
     bool m_cameraMode;
 
     /**
-     * Liste d'image chargé
+     * Mode temp reel
      */
-    std::vector<gl::Texture> m_textures;
+    bool m_realTime;
 
     /**
-     * Texture utilisé pour le rendu de string
+     * Liste d'image chargé
      */
-    Font m_font;
-    gl::TextureFontRef m_textureFont;
+    unsigned int m_currentImageLoadedIndex;
+    std::vector<cinder::Surface> m_imageLoaded;
 
     /**
      * Camera
      */
     cinder::CaptureRef m_camera;
     Surface m_cameraImage;
-    gl::Texture m_cameraTexture;
 
     /**
      * Capture d'une image de la camera
      */
     bool m_hasCaptureCamera;
-    DrawableImage m_videoCapture;
+    cinder::Surface m_videoCapture;
 
     /**
-     * Setup de la camera
-     */
-    void setupCamera();
-
-	/**
 	* Tableau des sticky
 	*/
 	std::vector<Sticky> m_StickyArmy;
@@ -114,10 +107,22 @@ protected:
 	* Nombre de pixel par groupe
 	*/
 	int m_pixelGroupNumber;
+
 	/**
 	* Nombre de pixel entre deux sticky
 	*/
 	int m_numberGapPixel;
+
+    /**
+     * Algo Gen
+     * Image utilisé par l'algo Gen
+     */
+    cinder::Surface m_currentImage;
+
+    /**
+     * Setup de la caméra
+     */
+    void setupCamera();
 };
 
 #endif //_GENETICALGORITHMAPP_H_
