@@ -113,6 +113,14 @@ void Sticky::CreateMesh()
 	}
 }
 
+void Sticky::ChangeColor(const cinder::ColorA& color)
+{
+    for (auto& currentColor : this->m_StickyMesh.getColorsRGBA())
+    {
+        currentColor = color;
+    }
+}
+
 void Sticky::draw() const
 {
 	cinder::gl::draw(this->m_StickyMesh);
