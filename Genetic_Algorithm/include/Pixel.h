@@ -21,6 +21,13 @@ public:
     const unsigned char& getA() const;
     const int& getRGBA() const;
 
+	void setR(unsigned char);
+    void setG(unsigned char);
+    void setB(unsigned char);
+    void setA(unsigned char);
+    void set(unsigned char, unsigned char, unsigned char, unsigned char);
+    void set(int);
+
 private:    
     rgbaColor m_rgba;
 };
