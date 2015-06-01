@@ -322,9 +322,12 @@ void Genetic_AlgorithmApp::initSticky()
 
     ci::Rectf screen = getWindowBounds();
 	//
+    int width = static_cast<int>(screen.getWidth());
+    int height = static_cast<int>(screen.getHeight());
+    /*
     int width = static_cast<int>(this->m_currentImage.getWidth());
     int height = static_cast<int>(this->m_currentImage.getHeight());
-	//
+	*/
     cinder::Rand myRand(0);
 
     float pixelGroupNumber = static_cast<float>(m_pixelGroupNumber);
@@ -338,11 +341,11 @@ void Genetic_AlgorithmApp::initSticky()
 		{
             Stixel currentStix;
             currentStix.sticky = Sticky(pixelGroupNumber - numberGapPixel, pixelGroupNumber - numberGapPixel,
-                (j) * pixelGroupNumber, (i) * pixelGroupNumber,
-                this->getAveragePixelColor(j * this->m_pixelGroupNumber, i * this->m_pixelGroupNumber, this->m_pixelGroupNumber));
+                (j + 1.f) * pixelGroupNumber, (i + 1.f) * pixelGroupNumber,
+                this->getAveragePixelColor(j  * this->m_pixelGroupNumber, i * this->m_pixelGroupNumber, this->m_pixelGroupNumber));
                 //cinder::ColorA(myRand.nextFloat(0.0f, 1.0f), myRand.nextFloat(0.0f, 1.0f), myRand.nextFloat(0.0f, 1.0f), 0.1f));
             
-            currentStix.pixel = Pixel((j + 1.f) * pixelGroupNumber, (i + 1.0f) * pixelGroupNumber, this->getAveragePixelColor(j * this->m_pixelGroupNumber, i * this->m_pixelGroupNumber, this->m_pixelGroupNumber));
+            currentStix.pixel = Pixel((j + 1.f) * pixelGroupNumber, (i + 1.f) * pixelGroupNumber, this->getAveragePixelColor(j * this->m_pixelGroupNumber, i * this->m_pixelGroupNumber, this->m_pixelGroupNumber));
             this->m_StickyArmy.push_back(currentStix);
 		}
 	}
