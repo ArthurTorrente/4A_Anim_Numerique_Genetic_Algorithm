@@ -96,17 +96,16 @@ void Sticky::CreateMesh()
 			{ v0, v7, v4, v3 }, { v1, v6, v5, v2 } // left right faces
 	};
 
-	for (int i = 0; i < 6; i++)
+    for (int i = 0; i < 6; i++)
 	{
-
 		this->m_StickyMesh.appendVertex(faces[i][0]);
 		this->m_StickyMesh.appendColorRgba(this->m_Color);
 		this->m_StickyMesh.appendVertex(faces[i][1]);
-		this->m_StickyMesh.appendColorRgba(this->m_Color);
+        this->m_StickyMesh.appendColorRgba(this->m_Color);
 		this->m_StickyMesh.appendVertex(faces[i][2]);
-		this->m_StickyMesh.appendColorRgba(this->m_Color);
+        this->m_StickyMesh.appendColorRgba(this->m_Color);
 		this->m_StickyMesh.appendVertex(faces[i][3]);
-		this->m_StickyMesh.appendColorRgba(this->m_Color);
+        this->m_StickyMesh.appendColorRgba(this->m_Color);
 		int numberVertices = this->m_StickyMesh.getNumVertices();
 
 		this->m_StickyMesh.appendTriangle(numberVertices - 4, numberVertices - 3, numberVertices - 2);

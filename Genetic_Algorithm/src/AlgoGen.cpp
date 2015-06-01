@@ -16,11 +16,11 @@ void AlgoGen::setComputeImage(const cinder::Surface& image)
 
 std::vector<Sticky> AlgoGen::operator()(const std::vector<Sticky>& stickies)
 {
-    std::vector<Sticky> nextGen;
+    std::vector<Sticky> nextGen(stickies.size());
 
-    for (auto& sticky : stickies)
+    for (std::vector<Sticky>::size_type i = 0; i < stickies.size(); ++i)
     {
-        
+        const Sticky& sticky = stickies[i];
     }
 
     return nextGen;

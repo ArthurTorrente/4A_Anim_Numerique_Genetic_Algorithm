@@ -109,12 +109,14 @@
   <ItemGroup>
     <ClCompile Include="..\src\AlgoGen.cpp" />
     <ClCompile Include="..\src\Genetic_AlgorithmApp.cpp" />
+    <ClCompile Include="..\src\Pixel.cpp" />
     <ClCompile Include="..\src\Sticky.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\include\AlgoGen.h" />
     <ClInclude Include="..\include\Genetic_AlgorithmApp.h" />
     <ClInclude Include="..\include\Image.h" />
+    <ClInclude Include="..\include\Pixel.h" />
     <ClInclude Include="..\include\Resources.h" />
     <ClInclude Include="..\include\Sticky.h" />
     <ClInclude Include="..\include\tools.h" />

@@ -230,7 +230,6 @@ void Genetic_AlgorithmApp::keyDown(KeyEvent event)
 
 void Genetic_AlgorithmApp::keyUp(KeyEvent event)
 {
-
 }
 
 void Genetic_AlgorithmApp::mouseDown(MouseEvent event)
