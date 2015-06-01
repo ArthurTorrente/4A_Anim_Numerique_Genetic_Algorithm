@@ -1,6 +1,8 @@
 #ifndef _PIXEL_H_
 #define _PIXEL_H_
 
+#include "tools.h"
+
 class Pixel
 {
 public:
@@ -19,13 +21,7 @@ public:
     const unsigned char& getA() const;
     const int& getRGBA() const;
 
-private:
-    union rgbaColor
-    {
-        unsigned char m_8U[4];
-        int m_32U;
-    };
-    
+private:    
     rgbaColor m_rgba;
 };
 

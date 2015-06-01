@@ -8,6 +8,8 @@
 #include "cinder/gl/TextureFont.h"
 #include "cinder/Capture.h"
 
+#include "Sticky.h"
+
 #include <vector>
 
 #include "tools.h"
@@ -83,6 +85,21 @@ protected:
      * Setup de la camera
      */
     void setupCamera();
+
+	/**
+	* Tableau des sticky
+	*/
+	std::vector<Sticky> m_StickyArmy;
+
+	/**
+	* Taille d'une ligne de sticky
+	*/
+	int m_RowStickyLength;
+
+	/**
+	* Initialise les sticky
+	*/
+	void initSticky()
 };
 
 #endif //_GENETICALGORITHMAPP_H_
