@@ -315,13 +315,15 @@ void Genetic_AlgorithmApp::changeMode()
 void Genetic_AlgorithmApp::initSticky()
 {
 	ci::Rectf screen = getWindowBounds();
-	int width = static_cast<int>(screen.getWidth());
+	
+    int width = static_cast<int>(screen.getWidth());
 	int height = static_cast<int>(screen.getHeight());
-	this->m_StickyArmy.clear();
 	cinder::Rand myRand(0);
 
     float pixelGroupNumber = static_cast<float>(m_pixelGroupNumber);
     float numberGapPixel = static_cast<float>(m_numberGapPixel);
+
+    this->m_StickyArmy.clear();
 
 	for (float i = 0; i < height/this->m_pixelGroupNumber; i++)
 	{
