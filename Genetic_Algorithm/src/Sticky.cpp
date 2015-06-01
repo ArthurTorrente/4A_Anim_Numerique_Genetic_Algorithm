@@ -11,13 +11,13 @@ Sticky::Sticky(float x, float y)
 	this->m_y = y;
 	//CreateMesh();
 }
-Sticky::Sticky(const cinder::Color& color)
+Sticky::Sticky(const cinder::ColorA& color)
 {
 	this->m_Color = color;
 	//CreateMesh();
 }
 
-Sticky::Sticky(float x, float y, const cinder::Color& color)
+Sticky::Sticky(float x, float y, const cinder::ColorA& color)
 {
 	this->m_x = x;
 	this->m_y = y;
