@@ -78,6 +78,7 @@ void Genetic_AlgorithmApp::setupIHM()
     m_ihmParam->addSeparator("Algo Gen Options", "Algo Gen Options");
     m_ihmParam->addParam("Pixel par groupe", &m_pixelGroupNumber, "min=1 max=1920 step=1");
     m_ihmParam->addParam("Espacement", &m_numberGapPixel, "min=1 max=10 step=1");
+    m_ihmParam->addButton("Generate sticky", std::bind(&Genetic_AlgorithmApp::initSticky, this));
 }
 
 void Genetic_AlgorithmApp::update()
