@@ -25,7 +25,7 @@ protected:
     float m_x;
     float m_y;
 	cinder::TriMesh m_StickyMesh;
-	cinder::ColorA m_Color;
+    cinder::ColorA m_Color;
 };
 
 #endif //_STICKY_H_
