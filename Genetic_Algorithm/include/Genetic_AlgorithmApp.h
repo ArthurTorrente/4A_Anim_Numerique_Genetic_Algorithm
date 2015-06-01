@@ -8,6 +8,7 @@
 #include "cinder/gl/TextureFont.h"
 #include "cinder/Capture.h"
 
+#include "cinder/Rand.h"
 #include "Sticky.h"
 
 #include <vector>
@@ -100,6 +101,15 @@ protected:
 	* Initialise les sticky
 	*/
     void initSticky();
+
+	/**
+	* Nombre de pixel par groupe
+	*/
+	int m_pixelGroupNumber;
+	/**
+	* Nombre de pixel entre deux sticky
+	*/
+	int m_numberGapPixel;
 };
 
 #endif //_GENETICALGORITHMAPP_H_

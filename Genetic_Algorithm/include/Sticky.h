@@ -11,18 +11,21 @@ class Sticky
 public:
 	Sticky();
 	Sticky(float x, float y);
-	Sticky(const cinder::Color& color);
-	Sticky(float x, float y, const cinder::Color& color);
+	Sticky(const cinder::ColorA& color);
+	Sticky(float width, float height, float x, float y, const cinder::ColorA& color);
     ~Sticky();
 
 	void draw();
 protected:
 	void CreateMesh();
 
+	float m_width;
+	float m_height;
+
     float m_x;
     float m_y;
 	cinder::TriMesh m_StickyMesh;
-	cinder::Color m_Color;
+	cinder::ColorA m_Color;
 };
 
 #endif //_STICKY_H_
