@@ -319,7 +319,7 @@ void Genetic_AlgorithmApp::initSticky()
 	int height = screen.getHeight();
 	this->m_StickyArmy.clear();
 	cinder::Rand myRand(0);
-	
+
 	for (float i = 0; i < height/this->m_pixelGroupNumber; i++)
 	{
 		for (float j = 0; j < width / this->m_pixelGroupNumber; j++)

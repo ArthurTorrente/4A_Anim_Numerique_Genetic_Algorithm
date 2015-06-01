@@ -25,6 +25,7 @@ public:
     float& getX();
     float& getY();
     
+    void ChangeColor(const cinder::ColorA& color);
 	void draw() const;
 protected:
 	void CreateMesh();
