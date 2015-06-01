@@ -15,7 +15,17 @@ public:
 	Sticky(float x, float y, const cinder::ColorA& color);
     ~Sticky();
 
-	void draw();
+    float getX() const;
+    float getY() const;
+    const cinder::ColorA& getColor() const;
+    const cinder::TriMesh getMesh() const;
+    
+    cinder::ColorA& getColor();
+    cinder::TriMesh& getMesh();
+    float& getX();
+    float& getY();
+    
+	void draw() const;
 protected:
 	void CreateMesh();
 

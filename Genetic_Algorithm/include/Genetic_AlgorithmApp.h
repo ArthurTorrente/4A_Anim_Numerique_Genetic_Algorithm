@@ -7,6 +7,7 @@
 #include "cinder/gl/Texture.h"
 #include "cinder/gl/TextureFont.h"
 #include "cinder/Capture.h"
+#include "cinder/params/Params.h"
 
 #include "Sticky.h"
 
@@ -27,9 +28,10 @@ public:
     */
     void prepareSettings(Settings* settings);
     void setup();
+    void setupIHM();
     void update();
-    void IHM();
     void draw();
+    void IHM();
 
     /**
     * Keyboard event
@@ -100,6 +102,12 @@ protected:
 	* Initialise les sticky
 	*/
     void initSticky();
+
+    /**
+     * IHMs
+     */
+    cinder::params::InterfaceGlRef m_ihmParam;
+    void changeMode();
 };
 
 #endif //_GENETICALGORITHMAPP_H_

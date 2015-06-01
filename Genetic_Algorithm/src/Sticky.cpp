@@ -28,6 +28,46 @@ Sticky::Sticky(float x, float y, const cinder::ColorA& color)
 Sticky::~Sticky()
 {}
 
+float Sticky::getX() const
+{
+    return m_x;
+}
+
+float Sticky::getY() const
+{
+    return m_y;
+}
+
+const cinder::ColorA& Sticky::getColor() const
+{
+    return m_Color;
+}
+
+const cinder::TriMesh Sticky::getMesh() const
+{
+    return m_StickyMesh;
+}
+
+cinder::ColorA& Sticky::getColor()
+{
+    return m_Color;
+}
+
+cinder::TriMesh& Sticky::getMesh()
+{
+    return m_StickyMesh;
+}
+
+float& Sticky::getX()
+{
+    return m_x;
+}
+
+float& Sticky::getY()
+{
+    return m_y;
+}
+
 void Sticky::CreateMesh()
 {
 	// Create the points of our cube
@@ -58,7 +98,7 @@ void Sticky::CreateMesh()
 	}
 }
 
-void Sticky::draw()
+void Sticky::draw() const
 {
 	cinder::Vec3f center(m_x, m_y, 1);
 	cinder::Vec3f size(1, 1, 1);

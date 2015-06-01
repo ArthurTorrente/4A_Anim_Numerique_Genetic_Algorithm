@@ -26,6 +26,37 @@ void Genetic_AlgorithmApp::setup()
 
     m_hasCaptureCamera = false;
     setupCamera();
+    setupIHM();
+}
+
+void Genetic_AlgorithmApp::setupIHM()
+{
+    m_ihmParam = cinder::params::InterfaceGl::create("Sticky", Vec2i(200, 210));
+    {
+        m_ihmParam->addButton("Toggle Mode", std::bind(&Genetic_AlgorithmApp::changeMode, this));
+
+        m_ihmParam->addSeparator("Options");
+
+        if (m_cameraMode)
+        {
+            if (!m_camera)
+            {
+                m_ihmParam->addText("No camera found");
+            }
+            else
+            {
+                m_ihmParam->addText("Camera mode");
+            }
+        }
+        else
+        {
+            std::string message = std::to_string(m_textures.size());
+            message += " images load";
+
+            m_ihmParam->addText(message.data());
+        }
+        
+    }
 }
 
 void Genetic_AlgorithmApp::update()
@@ -43,7 +74,7 @@ void Genetic_AlgorithmApp::update()
 
 void Genetic_AlgorithmApp::IHM()
 {
-    std::string message;
+    /*std::string message;
     Vec2f position;
 
     if (m_cameraMode)
@@ -73,7 +104,7 @@ void Genetic_AlgorithmApp::IHM()
         }
     }
 
-    m_textureFont->drawString(message, position);
+    m_textureFont->drawString(message, position);*/
 }
 
 void Genetic_AlgorithmApp::draw()
@@ -132,7 +163,7 @@ void Genetic_AlgorithmApp::draw()
         }
     }
 
-    IHM();
+    m_ihmParam->draw();
 }
 
 void Genetic_AlgorithmApp::keyDown(KeyEvent event)
@@ -181,6 +212,8 @@ void Genetic_AlgorithmApp::keyDown(KeyEvent event)
             }
         }
     }
+
+    setupIHM();
 }
 
 void Genetic_AlgorithmApp::keyUp(KeyEvent event)
@@ -238,6 +271,8 @@ void Genetic_AlgorithmApp::fileDrop(FileDropEvent event)
         }
         
     }
+
+    setupIHM();
 }
 
 void Genetic_AlgorithmApp::setupCamera()
@@ -256,6 +291,13 @@ void Genetic_AlgorithmApp::setupCamera()
 
         m_cameraMode = true;
     }
+}
+
+void Genetic_AlgorithmApp::changeMode()
+{
+    m_cameraMode = !m_cameraMode;
+
+    setupIHM();
 }
 
 /**
