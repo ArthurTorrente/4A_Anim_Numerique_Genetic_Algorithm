@@ -104,12 +104,13 @@ protected:
 	*/
     void initSticky();
 
+<<<<<<< HEAD
     /**
      * IHMs
      */
     cinder::params::InterfaceGlRef m_ihmParam;
     void changeMode();
-
+=======
 	/**
 	* Nombre de pixel par groupe
 	*/
@@ -118,6 +119,7 @@ protected:
 	* Nombre de pixel entre deux sticky
 	*/
 	int m_numberGapPixel;
+>>>>>>> 7b1578e6d6dbe86a89d8fc041447c76c7459a43c
 };
 
 #endif //_GENETICALGORITHMAPP_H_

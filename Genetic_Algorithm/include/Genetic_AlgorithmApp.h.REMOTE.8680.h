@@ -7,7 +7,6 @@
 #include "cinder/gl/Texture.h"
 #include "cinder/gl/TextureFont.h"
 #include "cinder/Capture.h"
-#include "cinder/params/Params.h"
 
 #include "cinder/Rand.h"
 #include "Sticky.h"
@@ -29,10 +28,9 @@ public:
     */
     void prepareSettings(Settings* settings);
     void setup();
-    void setupIHM();
     void update();
-    void draw();
     void IHM();
+    void draw();
 
     /**
     * Keyboard event
@@ -103,12 +101,6 @@ protected:
 	* Initialise les sticky
 	*/
     void initSticky();
-
-    /**
-     * IHMs
-     */
-    cinder::params::InterfaceGlRef m_ihmParam;
-    void changeMode();
 
 	/**
 	* Nombre de pixel par groupe

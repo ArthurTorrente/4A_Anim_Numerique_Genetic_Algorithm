@@ -24,6 +24,9 @@ void Genetic_AlgorithmApp::setup()
     m_font = Font("Calibri", 20);
     m_textureFont = gl::TextureFont::create(m_font);
 
+	this->m_pixelGroupNumber = 32;
+	this->m_numberGapPixel = 10;
+
     m_hasCaptureCamera = false;
     setupCamera();
     setupIHM();
@@ -163,6 +166,11 @@ void Genetic_AlgorithmApp::draw()
         }
     }
 
+	for (std::vector<Sticky>::size_type i = 0; i < this->m_StickyArmy.size(); i++)
+	{
+		this->m_StickyArmy[i].draw();
+	}
+
     m_ihmParam->draw();
 }
 
@@ -170,7 +178,7 @@ void Genetic_AlgorithmApp::keyDown(KeyEvent event)
 {
     if (event.getCode() == KeyEvent::KEY_ESCAPE)
         quit();
-    
+
     else if (event.getCode() == KeyEvent::KEY_m)
     {
         m_cameraMode = !m_cameraMode;
@@ -211,6 +219,10 @@ void Genetic_AlgorithmApp::keyDown(KeyEvent event)
                 console() << "Error occur" << std::endl;
             }
         }
+    }
+    else if (event.getCode() == KeyEvent::KEY_s)
+    {
+        this->initSticky();
     }
 
     setupIHM();
@@ -293,11 +305,35 @@ void Genetic_AlgorithmApp::setupCamera()
     }
 }
 
+
 void Genetic_AlgorithmApp::changeMode()
 {
     m_cameraMode = !m_cameraMode;
 
     setupIHM();
+}
+
+void Genetic_AlgorithmApp::initSticky()
+{
+	ci::Rectf screen = getWindowBounds();
+	int width = screen.getWidth();
+	int height = screen.getHeight();
+	this->m_StickyArmy.clear();
+	cinder::Rand myRand(0);
+	/*if (this->m_videoCapture.m_image)
+	{
+		width = m_videoCapture.m_image.getWidth();
+		height = m_videoCapture.m_image.getHeight();
+	}*/
+	for (float i = 0; i < height/this->m_pixelGroupNumber; i++)
+	{
+		for (float j = 0; j < width / this->m_pixelGroupNumber; j++)
+		{
+			this->m_StickyArmy.push_back(Sticky(this->m_pixelGroupNumber - this->m_numberGapPixel, this->m_pixelGroupNumber - this->m_numberGapPixel
+				, (j+1.f) * this->m_pixelGroupNumber, (i+1.f) * this->m_pixelGroupNumber
+				, cinder::ColorA(myRand.nextFloat(0.0f, 1.0f), myRand.nextFloat(0.0f, 1.0f), myRand.nextFloat(0.0f, 1.0f), 0.1f)));
+		}
+	}
 }
 
 /**
