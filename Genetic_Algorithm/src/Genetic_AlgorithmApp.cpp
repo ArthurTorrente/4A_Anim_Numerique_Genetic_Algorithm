@@ -47,7 +47,7 @@ void Genetic_AlgorithmApp::setupIHM()
 
     m_ihmParam->addButton("Toggle Mode", std::bind(&Genetic_AlgorithmApp::changeMode, this));
 
-    m_ihmParam->addSeparator("Input Options", "Input Options");
+    m_ihmParam->addSeparator("Input Options");
 
     if (m_cameraMode)
     {
@@ -75,7 +75,7 @@ void Genetic_AlgorithmApp::setupIHM()
         m_ihmParam->addText(message.data());
     }
 
-    m_ihmParam->addSeparator("Algo Gen Options", "Algo Gen Options");
+    m_ihmParam->addSeparator("Algo Gen Options");
     m_ihmParam->addParam("Pixel par groupe", &m_pixelGroupNumber, "min=1 max=1920 step=1");
     m_ihmParam->addParam("Espacement", &m_numberGapPixel, "min=1 max=10 step=1");
     m_ihmParam->addButton("Generate sticky", std::bind(&Genetic_AlgorithmApp::initSticky, this));
@@ -314,7 +314,7 @@ void Genetic_AlgorithmApp::initSticky()
     float numberGapPixel = static_cast<float>(m_numberGapPixel);
 
     this->m_StickyArmy.clear();
-
+    
 	for (float i = 0; i < height / this->m_pixelGroupNumber; i++)
 	{
 		for (float j = 0; j < width / this->m_pixelGroupNumber; j++)
