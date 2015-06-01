@@ -22,8 +22,8 @@ void Genetic_AlgorithmApp::prepareSettings(Settings* settings)
 void Genetic_AlgorithmApp::setup()
 {
     /* Algo Gen */
-	this->m_pixelGroupNumber = 32;
-	this->m_numberGapPixel = 10;
+	this->m_pixelGroupNumber = 10;
+	this->m_numberGapPixel = 3;
     /* === */
 
     /* Image Load*/
@@ -169,6 +169,15 @@ void Genetic_AlgorithmApp::keyDown(KeyEvent event)
     else if (event.getCode() == KeyEvent::KEY_s)
     {
         this->initSticky();
+    }
+    else if (event.getCode() == KeyEvent::KEY_d)
+    {
+        static int hash = 0;
+        cinder::Rand myRand(hash++);
+        for (auto& sticky : this->m_StickyArmy)
+        {
+            sticky.ChangeColor(cinder::ColorA(myRand.nextFloat(0.0f, 1.0f), myRand.nextFloat(0.0f, 1.0f), myRand.nextFloat(0.0f, 1.0f), 0.1f));
+        }
     }
 
     setupIHM();
