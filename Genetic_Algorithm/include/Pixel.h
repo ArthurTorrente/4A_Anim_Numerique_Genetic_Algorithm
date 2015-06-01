@@ -6,6 +6,7 @@
 class Pixel
 {
 public:
+    Pixel();
     Pixel(int x, int y, const cinder::ColorA& color = cinder::ColorA::black());
 
     int getX() const;

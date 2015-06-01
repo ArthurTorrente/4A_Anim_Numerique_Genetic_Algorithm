@@ -11,6 +11,7 @@
 
 #include "cinder/Rand.h"
 #include "Sticky.h"
+#include "Stixel.h"
 
 #include <vector>
 
@@ -85,7 +86,7 @@ protected:
     /**
 	* Tableau des sticky
 	*/
-	std::vector<Sticky> m_StickyArmy;
+	std::vector<Stixel> m_StickyArmy;
 
 	/**
 	* Taille d'une ligne de sticky
@@ -123,6 +124,8 @@ protected:
      * Setup de la caméra
      */
     void setupCamera();
+
+    cinder::ColorA getAveragePixelColor(int startXIndex, int startYIndex, int groupRowNumber);
 };
 
 #endif //_GENETICALGORITHMAPP_H_

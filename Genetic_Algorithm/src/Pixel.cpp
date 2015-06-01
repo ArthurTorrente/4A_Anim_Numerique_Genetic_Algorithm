@@ -1,5 +1,8 @@
 #include "Pixel.h"
 
+Pixel::Pixel()
+{}
+
 Pixel::Pixel(int x, int y, const cinder::ColorA& color)
     : m_x(x),
     m_y(y),

@@ -104,7 +104,7 @@ void Genetic_AlgorithmApp::draw()
 
     for (std::vector<Sticky>::size_type i = 0; i < this->m_StickyArmy.size(); i++)
 	{
-		this->m_StickyArmy[i].draw();
+		this->m_StickyArmy[i].sticky.draw();
 	}
 
     m_ihmParam->draw();
@@ -179,9 +179,9 @@ void Genetic_AlgorithmApp::keyDown(KeyEvent event)
     {
         static int hash = 0;
         cinder::Rand myRand(hash++);
-        for (auto& sticky : this->m_StickyArmy)
+        for (auto& stixel : this->m_StickyArmy)
         {
-            sticky.ChangeColor(cinder::ColorA(myRand.nextFloat(0.0f, 1.0f), myRand.nextFloat(0.0f, 1.0f), myRand.nextFloat(0.0f, 1.0f), 0.1f));
+            stixel.sticky.ChangeColor(cinder::ColorA(myRand.nextFloat(0.0f, 1.0f), myRand.nextFloat(0.0f, 1.0f), myRand.nextFloat(0.0f, 1.0f), 0.1f));
         }
     }
 
@@ -305,8 +305,8 @@ void Genetic_AlgorithmApp::initSticky()
 {
 	ci::Rectf screen = getWindowBounds();
 	//
-	int width = static_cast<int>(screen.getWidth());
-	int height = static_cast<int>(screen.getHeight());
+    int width = static_cast<int>(this->m_currentImage.getWidth());
+    int height = static_cast<int>(this->m_currentImage.getHeight());
 	//
     cinder::Rand myRand(0);
 
@@ -319,12 +319,64 @@ void Genetic_AlgorithmApp::initSticky()
 	{
 		for (float j = 0; j < width / this->m_pixelGroupNumber; j++)
 		{
-			this->m_StickyArmy.push_back(Sticky(pixelGroupNumber - numberGapPixel, pixelGroupNumber - numberGapPixel,
-                (j + 1.f) * pixelGroupNumber, (i + 1.f) * pixelGroupNumber,
-                cinder::ColorA(myRand.nextFloat(0.0f, 1.0f), myRand.nextFloat(0.0f, 1.0f), myRand.nextFloat(0.0f, 1.0f), 0.1f)));
+            Stixel currentStix;
+            currentStix.sticky = Sticky(pixelGroupNumber - numberGapPixel, pixelGroupNumber - numberGapPixel,
+                (j) * pixelGroupNumber, (i) * pixelGroupNumber,
+                this->getAveragePixelColor(j * this->m_pixelGroupNumber, i * this->m_pixelGroupNumber, this->m_pixelGroupNumber));
+                //cinder::ColorA(myRand.nextFloat(0.0f, 1.0f), myRand.nextFloat(0.0f, 1.0f), myRand.nextFloat(0.0f, 1.0f), 0.1f));
+            
+            currentStix.pixel = Pixel((j + 1.f) * pixelGroupNumber, (i + 1.0f) * pixelGroupNumber, this->getAveragePixelColor(j * this->m_pixelGroupNumber, i * this->m_pixelGroupNumber, this->m_pixelGroupNumber));
+            this->m_StickyArmy.push_back(currentStix);
 		}
 	}
 }
+#if 0
+cinder::ColorA Genetic_AlgorithmApp::getAveragePixelColor(int startXIndex, int startYIndex, int groupRowNumber)
+{
+    float redColor = 0.f;
+    float greenColor = 0.f;
+    float blueColor = 0.f;
+    for (int i = startYIndex; i < startYIndex + groupRowNumber; i++)
+    {
+        for (int j = startXIndex; j < startXIndex + groupRowNumber; j++)
+        {
+            redColor += this->m_currentImage.getPixel(cinder::Vec2i(j, i)).r;
+            greenColor += this->m_currentImage.getPixel(cinder::Vec2i(j, i)).g;
+            blueColor += this->m_currentImage.getPixel(cinder::Vec2i(j, i)).b;
+        }
+    }
+    float numberElement = cinder::math<float>::pow(groupRowNumber, 2);
+    redColor /= numberElement;
+    greenColor /= numberElement;
+    blueColor /= numberElement;
+    //
+    redColor = cinder::math<float>::clamp(redColor);
+    greenColor = cinder::math<float>::clamp(greenColor);
+    blueColor = cinder::math<float>::clamp(blueColor);
+    //
+    std::ostringstream ss;
+    ss << redColor;
+    OutputDebugStringA(ss.str().c_str());
+
+    return cinder::ColorA(redColor,greenColor,blueColor,1.0f);
+}
+#endif
+
+cinder::ColorA Genetic_AlgorithmApp::getAveragePixelColor(int startXIndex, int startYIndex, int groupRowNumber)
+{
+    cinder::ColorA averageColor;
+    for (int i = startYIndex; i < startYIndex + groupRowNumber; i++)
+    {
+        for (int j = startXIndex; j < startXIndex + groupRowNumber; j++)
+        {
+            averageColor += this->m_currentImage.getPixel(cinder::Vec2i(j, i));
+        }
+    }
+    float numberElement = cinder::math<float>::pow(groupRowNumber, 2);
+    averageColor /= numberElement;
+    return averageColor;
+}
+
 
 /**
  * Retourne toutes les touches clavier appuyé à l'instant T
