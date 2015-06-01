@@ -90,7 +90,7 @@ void Genetic_AlgorithmApp::draw()
     }
     else
     {
-        gl::clear(Color(0.0f, 0.0f, 0.0f), true);
+        gl::clear(cinder::ColorA(0.0f, 0.0f, 0.0f), true);
 
         ci::Rectf screen = getWindowBounds();
         ci::Rectf curRect = Rectf::zero();
@@ -179,9 +179,6 @@ void Genetic_AlgorithmApp::keyDown(KeyEvent event)
             {
                 console() << "Error occur" << std::endl;
             }
-        }
-        else
-        {
         }
     }
 }

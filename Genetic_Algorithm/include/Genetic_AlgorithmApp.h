@@ -99,7 +99,7 @@ protected:
 	/**
 	* Initialise les sticky
 	*/
-	void initSticky()
+    void initSticky();
 };
 
 #endif //_GENETICALGORITHMAPP_H_

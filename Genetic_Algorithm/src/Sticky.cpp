@@ -5,25 +5,28 @@ Sticky::Sticky()
 	//CreateMesh();
 }
 
-Sticky::Sticky(int x, int y)
+Sticky::Sticky(float x, float y)
 {
 	this->m_x = x;
 	this->m_y = y;
 	//CreateMesh();
 }
-Sticky::Sticky(rgbaColor color)
+Sticky::Sticky(const cinder::Color& color)
 {
 	this->m_Color = color;
 	//CreateMesh();
 }
 
-Sticky::Sticky(int x, int y, rgbaColor color)
+Sticky::Sticky(float x, float y, const cinder::Color& color)
 {
 	this->m_x = x;
 	this->m_y = y;
 	this->m_Color = color;
 	//CreateMesh();
 }
+
+Sticky::~Sticky()
+{}
 
 void Sticky::CreateMesh()
 {
@@ -57,8 +60,8 @@ void Sticky::CreateMesh()
 
 void Sticky::draw()
 {
-	cinder::Vec3f center(this->m_x, this->m_y, 1);
+	cinder::Vec3f center(m_x, m_y, 1);
 	cinder::Vec3f size(1, 1, 1);
-	cinder::gl::color(this->m_Color.m_8U[0], this->m_Color.m_8U[1], this->m_Color.m_8U[2], this->m_Color.m_8U[4]);
+    cinder::gl::color(m_Color);
 	cinder::gl::drawColorCube(center, size);
 }

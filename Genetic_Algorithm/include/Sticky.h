@@ -3,23 +3,26 @@
 
 #include "cinder\TriMesh.h"
 #include "cinder/gl/gl.h"
-#include "tools.h"
+
+#include "cinder/Color.h"
 
 class Sticky
 {
 public:
 	Sticky();
-	Sticky(int x, int y);
-	Sticky(rgbaColor color);
-	Sticky(int x, int y, rgbaColor color);
+	Sticky(float x, float y);
+	Sticky(const cinder::Color& color);
+	Sticky(float x, float y, const cinder::Color& color);
+    ~Sticky();
+
 	void draw();
-	~Sticky();
 protected:
 	void CreateMesh();
 
+    float m_x;
+    float m_y;
 	cinder::TriMesh m_StickyMesh;
-	int m_x, m_y;
-	rgbaColor m_Color;
+	cinder::Color m_Color;
 };
 
 #endif //_STICKY_H_
