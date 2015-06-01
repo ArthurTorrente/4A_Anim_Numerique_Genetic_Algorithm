@@ -315,8 +315,10 @@ void Genetic_AlgorithmApp::changeMode()
 void Genetic_AlgorithmApp::initSticky()
 {
 	ci::Rectf screen = getWindowBounds();
+    //
 	int width = screen.getWidth();
 	int height = screen.getHeight();
+    //
 	this->m_StickyArmy.clear();
 	cinder::Rand myRand(0);
 	for (float i = 0; i < height/this->m_pixelGroupNumber; i++)
