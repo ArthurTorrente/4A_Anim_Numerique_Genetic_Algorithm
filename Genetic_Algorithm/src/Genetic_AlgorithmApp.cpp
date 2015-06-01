@@ -120,56 +120,13 @@ void Genetic_AlgorithmApp::keyDown(KeyEvent event)
     {
         changeMode();
     }
-    else if (event.getCode() == KeyEvent::KEY_c)
-    {
-        if (m_cameraMode)
-        {
-            m_videoCapture.copyFrom(m_cameraImage, m_cameraImage.getBounds());
-
-            m_hasCaptureCamera = true;
-
-            m_currentImage = m_videoCapture;
-        }
-    }
-    else if (event.getCode() == KeyEvent::KEY_n)
-    {
-        if (!m_cameraMode && m_imageLoaded.size() > 0)
-        {
-            ++m_currentImageLoadedIndex;
-
-            if (m_currentImageLoadedIndex >= m_imageLoaded.size())
-                m_currentImageLoadedIndex = 0;
-
-            m_currentImage = m_imageLoaded[m_currentImageLoadedIndex];
-        }
-    }
     else if (event.getCode() == KeyEvent::KEY_f)
     {
         setFullScreen(!isFullScreen());
     }
-    else if (event.getCode() == KeyEvent::KEY_l)
+    else if (event.getCode() == KeyEvent::KEY_w)
     {
-        fs::path p = getOpenFilePath("", ImageIo::getLoadExtensions());
-
-        if (!p.empty())
-        {
-            m_imageLoaded.clear();
-
-            try
-            {
-                m_imageLoaded.push_back(loadImage(p));
-                m_currentImage = m_imageLoaded.front();
-                m_currentImageLoadedIndex = 0;
-            }
-            catch (ci::ImageIoException&)
-            {
-                console() << "Format non supporté pour l'image : " << p.filename() << std::endl;
-            }
-            catch (std::exception&)
-            {
-                console() << "Error occur" << std::endl;
-            }
-        }
+        m_currentImage = cinder::Surface();
     }
     else if (event.getCode() == KeyEvent::KEY_s)
     {
@@ -179,9 +136,66 @@ void Genetic_AlgorithmApp::keyDown(KeyEvent event)
     {
         static int hash = 0;
         cinder::Rand myRand(hash++);
+
         for (auto& stixel : this->m_StickyArmy)
         {
             stixel.sticky.ChangeColor(cinder::ColorA(myRand.nextFloat(0.0f, 1.0f), myRand.nextFloat(0.0f, 1.0f), myRand.nextFloat(0.0f, 1.0f), 0.1f));
+        }
+    }
+    else
+    {
+        if (m_cameraMode)
+        {
+            if (event.getCode() == KeyEvent::KEY_c)
+            {
+                if (m_cameraMode)
+                {
+                    m_videoCapture.copyFrom(m_cameraImage, m_cameraImage.getBounds());
+
+                    m_hasCaptureCamera = true;
+
+                    m_currentImage = m_videoCapture;
+                }
+            }
+        }
+        else
+        {
+            if (event.getCode() == KeyEvent::KEY_n)
+            {
+                if (!m_cameraMode && m_imageLoaded.size() > 0)
+                {
+                    ++m_currentImageLoadedIndex;
+
+                    if (m_currentImageLoadedIndex >= m_imageLoaded.size())
+                        m_currentImageLoadedIndex = 0;
+
+                    m_currentImage = m_imageLoaded[m_currentImageLoadedIndex];
+                }
+            }
+            else if (event.getCode() == KeyEvent::KEY_l)
+            {
+                fs::path p = getOpenFilePath("", ImageIo::getLoadExtensions());
+
+                if (!p.empty())
+                {
+                    m_imageLoaded.clear();
+
+                    try
+                    {
+                        m_imageLoaded.push_back(loadImage(p));
+                        m_currentImage = m_imageLoaded.front();
+                        m_currentImageLoadedIndex = 0;
+                    }
+                    catch (ci::ImageIoException&)
+                    {
+                        console() << "Format non supporté pour l'image : " << p.filename() << std::endl;
+                    }
+                    catch (std::exception&)
+                    {
+                        console() << "Error occur" << std::endl;
+                    }
+                }
+            }
         }
     }
 
@@ -303,7 +317,10 @@ void Genetic_AlgorithmApp::changeMode()
 
 void Genetic_AlgorithmApp::initSticky()
 {
-	ci::Rectf screen = getWindowBounds();
+    if (!m_currentImage)
+        return;
+
+    ci::Rectf screen = getWindowBounds();
 	//
     int width = static_cast<int>(this->m_currentImage.getWidth());
     int height = static_cast<int>(this->m_currentImage.getHeight());
@@ -372,7 +389,7 @@ cinder::ColorA Genetic_AlgorithmApp::getAveragePixelColor(int startXIndex, int s
             averageColor += this->m_currentImage.getPixel(cinder::Vec2i(j, i));
         }
     }
-    float numberElement = cinder::math<float>::pow(groupRowNumber, 2);
+    float numberElement = cinder::math<float>::pow(static_cast<float>(groupRowNumber), 2);
     averageColor /= numberElement;
     return averageColor;
 }
