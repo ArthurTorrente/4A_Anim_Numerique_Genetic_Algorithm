@@ -110,6 +110,14 @@ void Genetic_AlgorithmApp::draw()
     m_ihmParam->draw();
 }
 
+void Genetic_AlgorithmApp::resize(ResizeEvent event)
+{
+    for (std::vector<Sticky>::size_type i = 0; i < this->m_StickyArmy.size(); i++)
+    {
+        this->m_StickyArmy[i].sticky.updateSize(1,1);
+    }
+}
+
 void Genetic_AlgorithmApp::keyDown(KeyEvent event)
 {
     if (event.getCode() == KeyEvent::KEY_ESCAPE)
@@ -317,6 +325,9 @@ void Genetic_AlgorithmApp::changeMode()
 
 void Genetic_AlgorithmApp::initSticky()
 {
+    if (this->m_pixelGroupNumber <= this->m_numberGapPixel)
+        return;
+    
     if (!m_currentImage)
         return;
 

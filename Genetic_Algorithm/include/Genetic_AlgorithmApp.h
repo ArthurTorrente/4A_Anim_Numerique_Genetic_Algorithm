@@ -33,6 +33,7 @@ public:
     void setupIHM();
     void update();
     void draw();
+    void resize(ResizeEvent event);
 
     /**
     * Keyboard event
