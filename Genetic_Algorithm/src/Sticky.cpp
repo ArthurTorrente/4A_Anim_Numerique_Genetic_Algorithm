@@ -133,18 +133,22 @@ void Sticky::updateSize(float wRatio, float hRatio)
 {
     cinder::Vec3f newVertexPoint;
     int i = 0;
+    this->m_height *= hRatio;
+    this->m_width *= wRatio;
+    this->m_x *= wRatio;
+    this->m_y *= hRatio;
     for (auto& vertex : this->m_StickyMesh.getVertices())
     {
         //x
         if (i == 1 || i == 2 || i == 5 || i == 6)
-            vertex.x = this->m_x * wRatio + (this->m_width * wRatio) / 2;
+            vertex.x = this->m_x + (this->m_width) / 2;
         else
-            vertex.x = this->m_x * wRatio - (this->m_width * wRatio) / 2;
+            vertex.x = this->m_x  - (this->m_width ) / 2;
         //y
         if (i < 2 || i > 5)
-            vertex.y = this->m_y * hRatio - (this->m_height * hRatio) / 2;
+            vertex.y = this->m_y  - this->m_height /2;
         else
-            vertex.y = this->m_y * hRatio - (this->m_height * hRatio) / 2;
+            vertex.y = this->m_y  + this->m_height / 2;
         //
         if (i < 4)
             vertex.z = 1;
