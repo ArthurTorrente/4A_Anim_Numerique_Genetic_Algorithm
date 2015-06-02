@@ -33,7 +33,7 @@ public:
     void setupIHM();
     void update();
     void draw();
-
+    
     /**
     * Keyboard event
     */
