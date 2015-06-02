@@ -77,14 +77,14 @@ float& Sticky::getY()
 void Sticky::CreateMesh()
 {
 	// Create the points of our cube
-	cinder::Vec3f v0(this->m_x - this->m_width / 2, this->m_y - this->m_width / 2, 1 + this->m_width / 2);
-	cinder::Vec3f v1(this->m_x + this->m_width / 2, this->m_y - this->m_width / 2, 1 + this->m_width / 2);
-	cinder::Vec3f v2(this->m_x + this->m_width / 2, this->m_y + this->m_width / 2, 1 + this->m_width / 2);
-	cinder::Vec3f v3(this->m_x - this->m_width / 2, this->m_y + this->m_width / 2, 1 + this->m_width / 2);
-	cinder::Vec3f v4(this->m_x - this->m_width / 2, this->m_y + this->m_width / 2, 1 - this->m_width / 2);
-	cinder::Vec3f v5(this->m_x + this->m_width / 2, this->m_y + this->m_width / 2, 1 - this->m_width / 2);
-	cinder::Vec3f v6(this->m_x + this->m_width / 2, this->m_y - this->m_width / 2, 1 - this->m_width / 2);
-	cinder::Vec3f v7(this->m_x - this->m_width / 2, this->m_y - this->m_width / 2, 1 - this->m_width / 2);
+	cinder::Vec3f v0(this->m_x - this->m_width / 2, this->m_y - this->m_height / 2, 1 + this->m_width / 2);
+    cinder::Vec3f v1(this->m_x + this->m_width / 2, this->m_y - this->m_height / 2, 1 + this->m_width / 2);
+    cinder::Vec3f v2(this->m_x + this->m_width / 2, this->m_y + this->m_height / 2, 1 + this->m_width / 2);
+    cinder::Vec3f v3(this->m_x - this->m_width / 2, this->m_y + this->m_height / 2, 1 + this->m_width / 2);
+    cinder::Vec3f v4(this->m_x - this->m_width / 2, this->m_y + this->m_height / 2, 1 - this->m_width / 2);
+    cinder::Vec3f v5(this->m_x + this->m_width / 2, this->m_y + this->m_height / 2, 1 - this->m_width / 2);
+    cinder::Vec3f v6(this->m_x + this->m_width / 2, this->m_y - this->m_height / 2, 1 - this->m_width / 2);
+    cinder::Vec3f v7(this->m_x - this->m_width / 2, this->m_y - this->m_height / 2, 1 - this->m_width / 2);
 
 	/*cinder::Vec3f faces[6][4] = { /* Vertices for the 6 faces of a cube. 
 		{ v0, v1, v2, v3 }, { v3, v2, v6, v7 }, { v7, v6, v5, v4 },
