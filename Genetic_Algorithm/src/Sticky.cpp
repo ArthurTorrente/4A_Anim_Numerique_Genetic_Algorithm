@@ -76,6 +76,8 @@ float& Sticky::getY()
 
 void Sticky::CreateMesh()
 {
+    this->m_StickyMesh.clear();
+
 	// Create the points of our cube
 	cinder::Vec3f v0(this->m_x - this->m_width / 2, this->m_y - this->m_height / 2, 1);
     cinder::Vec3f v1(this->m_x + this->m_width / 2, this->m_y - this->m_height / 2, 1);
@@ -126,11 +128,12 @@ void Sticky::draw() const
 	cinder::gl::draw(this->m_StickyMesh);
 }
 
-void Sticky::updateSize(float wRatio, float hRatio) const
+#if 0
+void Sticky::updateSize(float wRatio, float hRatio)
 {
     cinder::Vec3f newVertexPoint;
-    std::vector<cinder::Vec3f> vertexList = this->m_StickyMesh.getVertices();
-    for (std::vector<cinder::Vec3f>::size_type i = 0; i < vertexList.size(); i++)
+    int i = 0;
+    for (auto& vertex : this->m_StickyMesh.getVertices())
     {
         //x
         if (i == 1 || i == 2 || i == 5 || i == 6)
@@ -148,6 +151,17 @@ void Sticky::updateSize(float wRatio, float hRatio) const
         else
             newVertexPoint.z = -1;
         //
-        vertexList.at(i) = newVertexPoint;
+        vertex.set(newVertexPoint);
+        i++;
     }
+}
+#endif
+
+void Sticky::updateSize(float wRatio, float hRatio)
+{
+    this->m_height *= hRatio;
+    this->m_width *= wRatio;
+    this->m_x *= wRatio;
+    this->m_y *= hRatio;
+    this->CreateMesh();
 }

@@ -33,7 +33,7 @@ public:
     void setupIHM();
     void update();
     void draw();
-    void resize(ResizeEvent event);
+    void resize();
 
     /**
     * Keyboard event
@@ -125,6 +125,9 @@ protected:
      * Setup de la caméra
      */
     void setupCamera();
+
+    float beforeResizeWidth;
+    float beforeResizeHeight;
 
     cinder::ColorA getAveragePixelColor(int startXIndex, int startYIndex, int groupRowNumber);
 };

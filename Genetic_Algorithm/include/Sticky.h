@@ -27,7 +27,7 @@ public:
     
     void ChangeColor(const cinder::ColorA& color);
 	void draw() const;
-    void updateSize(float wRatio, float hRatio) const;
+    void updateSize(float wRatio, float hRatio);
 protected:
 	void CreateMesh();
 

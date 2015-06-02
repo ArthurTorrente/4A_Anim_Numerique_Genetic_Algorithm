@@ -13,6 +13,8 @@
 
 void Genetic_AlgorithmApp::prepareSettings(Settings* settings)
 {
+    this->beforeResizeWidth = 800;
+    this->beforeResizeHeight = 600;
     settings->setWindowSize(cinder::Vec2i(800, 600));
     settings->setFrameRate(60.0f);
 
@@ -110,12 +112,17 @@ void Genetic_AlgorithmApp::draw()
     m_ihmParam->draw();
 }
 
-void Genetic_AlgorithmApp::resize(ResizeEvent event)
+void Genetic_AlgorithmApp::resize()
 {
+    ci::Rectf screen = getWindowBounds();
+    float wRatio = screen.getWidth() / this->beforeResizeWidth;
+    float hRatio = screen.getHeight() / this->beforeResizeHeight;
     for (std::vector<Sticky>::size_type i = 0; i < this->m_StickyArmy.size(); i++)
     {
-        this->m_StickyArmy[i].sticky.updateSize(1,1);
+        this->m_StickyArmy[i].sticky.updateSize(wRatio, hRatio);
     }
+    this->beforeResizeWidth = screen.getWidth();
+    this->beforeResizeHeight = screen.getHeight();
 }
 
 void Genetic_AlgorithmApp::keyDown(KeyEvent event)
