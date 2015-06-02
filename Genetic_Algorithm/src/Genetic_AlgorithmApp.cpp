@@ -24,8 +24,8 @@ void Genetic_AlgorithmApp::prepareSettings(Settings* settings)
 void Genetic_AlgorithmApp::setup()
 {
     /* Algo Gen */
-	this->m_pixelGroupNumber = 10;
-	this->m_numberGapPixel = 3;
+	this->m_pixelGroupNumber = 5;
+	this->m_numberGapPixel = 0;
     /* === */
 
     /* Image Load*/
@@ -81,6 +81,7 @@ void Genetic_AlgorithmApp::setupIHM()
     m_ihmParam->addParam("Pixel par groupe", &m_pixelGroupNumber, "min=1 max=1920 step=1");
     m_ihmParam->addParam("Espacement", &m_numberGapPixel, "min=0 max=10 step=1");
     m_ihmParam->addButton("Generate sticky", std::bind(&Genetic_AlgorithmApp::initSticky, this));
+    m_ihmParam->addButton("Reset sticky", std::bind(&Genetic_AlgorithmApp::clearSticky, this));
 }
 
 void Genetic_AlgorithmApp::update()
@@ -355,54 +356,27 @@ void Genetic_AlgorithmApp::initSticky()
     float numberGapPixel = static_cast<float>(m_numberGapPixel);
 
     this->m_StickyArmy.clear();
-    this->m_StickyArmy.reserve((height / this->m_pixelGroupNumber) * (width / this->m_pixelGroupNumber));
-    
+    this->m_StickyArmy.resize((height / this->m_pixelGroupNumber) * (width / this->m_pixelGroupNumber));
+    Stixel currentStix;
 	for (float i = 0; i < height / this->m_pixelGroupNumber; i++)
 	{
-		for (float j = 0; j < width / this->m_pixelGroupNumber; j++)
-		{
-            Stixel currentStix;
+        for (float j = 0; j < width / this->m_pixelGroupNumber; j++)
+        {
             currentStix.sticky = Sticky(pixelGroupNumber * widthRatio - numberGapPixel* widthRatio, pixelGroupNumber* heigthRatio - numberGapPixel* heigthRatio,
                 (j + 1.f) * (pixelGroupNumber * widthRatio), (i + 1.f) * (pixelGroupNumber * heigthRatio),
                 this->getAveragePixelColor(j  * this->m_pixelGroupNumber, i * this->m_pixelGroupNumber, this->m_pixelGroupNumber));
-                //cinder::ColorA(myRand.nextFloat(0.0f, 1.0f), myRand.nextFloat(0.0f, 1.0f), myRand.nextFloat(0.0f, 1.0f), 0.1f));
-            
+            //cinder::ColorA(myRand.nextFloat(0.0f, 1.0f), myRand.nextFloat(0.0f, 1.0f), myRand.nextFloat(0.0f, 1.0f), 0.1f));
+
             currentStix.pixel = Pixel((j + 1.f) * pixelGroupNumber, (i + 1.f) * pixelGroupNumber, this->getAveragePixelColor(j * this->m_pixelGroupNumber, i * this->m_pixelGroupNumber, this->m_pixelGroupNumber));
-            this->m_StickyArmy.push_back(currentStix);
+            this->m_StickyArmy[j + i * (width / this->m_pixelGroupNumber)] = currentStix;
 		}
 	}
 }
-#if 0
-cinder::ColorA Genetic_AlgorithmApp::getAveragePixelColor(int startXIndex, int startYIndex, int groupRowNumber)
-{
-    float redColor = 0.f;
-    float greenColor = 0.f;
-    float blueColor = 0.f;
-    for (int i = startYIndex; i < startYIndex + groupRowNumber; i++)
-    {
-        for (int j = startXIndex; j < startXIndex + groupRowNumber; j++)
-        {
-            redColor += this->m_currentImage.getPixel(cinder::Vec2i(j, i)).r;
-            greenColor += this->m_currentImage.getPixel(cinder::Vec2i(j, i)).g;
-            blueColor += this->m_currentImage.getPixel(cinder::Vec2i(j, i)).b;
-        }
-    }
-    float numberElement = cinder::math<float>::pow(groupRowNumber, 2);
-    redColor /= numberElement;
-    greenColor /= numberElement;
-    blueColor /= numberElement;
-    //
-    redColor = cinder::math<float>::clamp(redColor);
-    greenColor = cinder::math<float>::clamp(greenColor);
-    blueColor = cinder::math<float>::clamp(blueColor);
-    //
-    std::ostringstream ss;
-    ss << redColor;
-    OutputDebugStringA(ss.str().c_str());
 
-    return cinder::ColorA(redColor,greenColor,blueColor,1.0f);
+void Genetic_AlgorithmApp::clearSticky()
+{
+    this->m_StickyArmy.clear();
 }
-#endif
 
 cinder::ColorA Genetic_AlgorithmApp::getAveragePixelColor(int startXIndex, int startYIndex, int groupRowNumber)
 {

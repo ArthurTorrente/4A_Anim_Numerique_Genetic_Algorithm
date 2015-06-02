@@ -100,6 +100,11 @@ protected:
     void initSticky();
 
     /**
+    * Détruit les sticky
+    */
+    void clearSticky();
+
+    /**
      * IHMs
      */
     cinder::params::InterfaceGlRef m_ihmParam;
