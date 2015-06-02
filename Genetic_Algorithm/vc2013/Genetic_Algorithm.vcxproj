@@ -114,6 +114,9 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\include\AlgoGen.h" />
+    <ClInclude Include="..\include\Algorithms\FitnessStickyContainer.h" />
+    <ClInclude Include="..\include\Algorithms\IWinnerChoice.h" />
+    <ClInclude Include="..\include\Algorithms\WheelBiased.h" />
     <ClInclude Include="..\include\Genetic_AlgorithmApp.h" />
     <ClInclude Include="..\include\Image.h" />
     <ClInclude Include="..\include\Pixel.h" />
