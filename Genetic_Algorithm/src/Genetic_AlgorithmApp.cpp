@@ -77,7 +77,7 @@ void Genetic_AlgorithmApp::setupIHM()
 
     m_ihmParam->addSeparator("Algo Gen Options");
     m_ihmParam->addParam("Pixel par groupe", &m_pixelGroupNumber, "min=1 max=1920 step=1");
-    m_ihmParam->addParam("Espacement", &m_numberGapPixel, "min=1 max=10 step=1");
+    m_ihmParam->addParam("Espacement", &m_numberGapPixel, "min=0 max=10 step=1");
     m_ihmParam->addButton("Generate sticky", std::bind(&Genetic_AlgorithmApp::initSticky, this));
 }
 
@@ -321,27 +321,32 @@ void Genetic_AlgorithmApp::initSticky()
         return;
 
     ci::Rectf screen = getWindowBounds();
-	//
+    /*
     int width = static_cast<int>(screen.getWidth());
     int height = static_cast<int>(screen.getHeight());
-    /*
+    */
+    float widthRatio = screen.getWidth() / this->m_currentImage.getWidth();
+    float heigthRatio = screen.getHeight() / this->m_currentImage.getHeight();
+
     int width = static_cast<int>(this->m_currentImage.getWidth());
     int height = static_cast<int>(this->m_currentImage.getHeight());
-	*/
+	
     cinder::Rand myRand(0);
 
     float pixelGroupNumber = static_cast<float>(m_pixelGroupNumber);
     float numberGapPixel = static_cast<float>(m_numberGapPixel);
 
     this->m_StickyArmy.clear();
+
+    this->m_StickyArmy.reserve(height * width);
     
 	for (float i = 0; i < height / this->m_pixelGroupNumber; i++)
 	{
 		for (float j = 0; j < width / this->m_pixelGroupNumber; j++)
 		{
             Stixel currentStix;
-            currentStix.sticky = Sticky(pixelGroupNumber - numberGapPixel, pixelGroupNumber - numberGapPixel,
-                (j + 1.f) * pixelGroupNumber, (i + 1.f) * pixelGroupNumber,
+            currentStix.sticky = Sticky(pixelGroupNumber * widthRatio - numberGapPixel* widthRatio, pixelGroupNumber* heigthRatio - numberGapPixel* heigthRatio,
+                (j + 1.f) * (pixelGroupNumber * widthRatio), (i + 1.f) * (pixelGroupNumber * heigthRatio),
                 this->getAveragePixelColor(j  * this->m_pixelGroupNumber, i * this->m_pixelGroupNumber, this->m_pixelGroupNumber));
                 //cinder::ColorA(myRand.nextFloat(0.0f, 1.0f), myRand.nextFloat(0.0f, 1.0f), myRand.nextFloat(0.0f, 1.0f), 0.1f));
             
