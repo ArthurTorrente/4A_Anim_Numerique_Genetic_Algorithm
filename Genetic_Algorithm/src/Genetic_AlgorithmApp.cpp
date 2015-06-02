@@ -355,8 +355,7 @@ void Genetic_AlgorithmApp::initSticky()
     float numberGapPixel = static_cast<float>(m_numberGapPixel);
 
     this->m_StickyArmy.clear();
-
-    this->m_StickyArmy.reserve(height * width);
+    this->m_StickyArmy.reserve((height / this->m_pixelGroupNumber) * (width / this->m_pixelGroupNumber));
     
 	for (float i = 0; i < height / this->m_pixelGroupNumber; i++)
 	{

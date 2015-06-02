@@ -128,7 +128,7 @@ void Sticky::draw() const
 	cinder::gl::draw(this->m_StickyMesh);
 }
 
-#if 0
+
 void Sticky::updateSize(float wRatio, float hRatio)
 {
     cinder::Vec3f newVertexPoint;
@@ -137,26 +137,24 @@ void Sticky::updateSize(float wRatio, float hRatio)
     {
         //x
         if (i == 1 || i == 2 || i == 5 || i == 6)
-            newVertexPoint.x = this->m_x * wRatio + (this->m_width * wRatio) / 2;
+            vertex.x = this->m_x * wRatio + (this->m_width * wRatio) / 2;
         else
-            newVertexPoint.x = this->m_x * wRatio - (this->m_width * wRatio) / 2;
+            vertex.x = this->m_x * wRatio - (this->m_width * wRatio) / 2;
         //y
         if (i < 2 || i > 5)
-            newVertexPoint.y = this->m_y * hRatio - (this->m_height * hRatio) / 2;
+            vertex.y = this->m_y * hRatio - (this->m_height * hRatio) / 2;
         else
-            newVertexPoint.y = this->m_y * hRatio - (this->m_height * hRatio) / 2;
+            vertex.y = this->m_y * hRatio - (this->m_height * hRatio) / 2;
         //
         if (i < 4)
-            newVertexPoint.z = 1;
+            vertex.z = 1;
         else
-            newVertexPoint.z = -1;
-        //
-        vertex.set(newVertexPoint);
+            vertex.z = -1;
         i++;
     }
 }
-#endif
 
+#if 0
 void Sticky::updateSize(float wRatio, float hRatio)
 {
     this->m_height *= hRatio;
@@ -165,3 +163,4 @@ void Sticky::updateSize(float wRatio, float hRatio)
     this->m_y *= hRatio;
     this->CreateMesh();
 }
+#endif
