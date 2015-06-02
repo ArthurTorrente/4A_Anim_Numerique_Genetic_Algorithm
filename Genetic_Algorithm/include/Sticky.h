@@ -10,6 +10,7 @@ class Sticky
 {
 public:
 	Sticky();
+    Sticky(const Sticky&);
 	Sticky(float x, float y);
 	Sticky(const cinder::ColorA& color);
 	Sticky(float width, float height, float x, float y, const cinder::ColorA& color);
@@ -28,6 +29,13 @@ public:
     void ChangeColor(const cinder::ColorA& color);
 	void draw() const;
     void updateSize(float wRatio, float hRatio);
+
+    /**
+     * AlgoGenOperator
+     */
+    Sticky operator*(const Sticky&) const;
+    Sticky mutate() const;
+    Sticky random();
 protected:
 	void CreateMesh();
 

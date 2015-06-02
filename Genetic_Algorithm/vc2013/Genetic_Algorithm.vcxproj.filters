@@ -19,6 +19,12 @@
     <Filter Include="Source Files\Algorithms">
       <UniqueIdentifier>{8ff93572-ba3f-4877-8150-19bdc42e0720}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Header Files\AlgoGen">
+      <UniqueIdentifier>{565d1d2b-bcb9-4b7e-b059-775149d67ead}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\AlgoGen">
+      <UniqueIdentifier>{4285d98c-a4cf-4135-9fb0-c6da7a19fc14}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\src\Genetic_AlgorithmApp.cpp">
@@ -30,9 +36,6 @@
     <ClInclude Include="..\include\Resources.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClCompile Include="..\src\AlgoGen.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="..\src\Sticky.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -44,6 +47,12 @@
     </ClCompile>
     <ClCompile Include="..\src\WinnerIsBest.cpp">
       <Filter>Source Files\Algorithms</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\IAlgoGen.cpp">
+      <Filter>Source Files\AlgoGen</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\ColorAlgoGen.cpp">
+      <Filter>Source Files\AlgoGen</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -57,9 +66,6 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\include\Image.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\include\AlgoGen.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\include\Sticky.h">
@@ -82,6 +88,12 @@
     </ClInclude>
     <ClInclude Include="..\include\Algorithms\WinnerIsBest.h">
       <Filter>Header Files\Algorithms</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\IAlgoGen.h">
+      <Filter>Header Files\AlgoGen</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\ColorAlgoGen.h">
+      <Filter>Header Files\AlgoGen</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

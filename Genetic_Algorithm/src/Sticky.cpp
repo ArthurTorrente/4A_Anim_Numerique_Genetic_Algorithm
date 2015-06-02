@@ -1,5 +1,11 @@
 #include "Sticky.h"
 
+#include "cinder/Rand.h"
+
+#include <bitset>
+
+#define BITCOUNTFLOAT 32
+
 Sticky::Sticky()
 {
 	this->m_x = 0.f;
@@ -7,6 +13,15 @@ Sticky::Sticky()
 	this->m_Color = cinder::ColorA::black();
 	CreateMesh();
 }
+
+Sticky::Sticky(const Sticky& s)
+    : m_width(s.m_width),
+    m_height(s.m_height),
+    m_x(s.m_x),
+    m_y(s.m_y),
+    m_StickyMesh(s.m_StickyMesh),
+    m_Color(s.m_Color)
+{}
 
 Sticky::Sticky(float x, float y)
 {
@@ -157,6 +172,63 @@ void Sticky::updateSize(float wRatio, float hRatio)
         i++;
     }
 }
+
+static float genRadomFloat(float a, float b)
+{
+    static unsigned int cpt = 0;
+
+    cinder::Rand randomizer(cpt++);
+    size_t bitCount = BITCOUNTFLOAT;
+
+    unsigned int result = static_cast<unsigned int>(a);
+    unsigned int bitIterator = 1;
+
+    for (unsigned int i = 0; i < bitCount; ++i)
+    {
+        //Inverse le bit bitIterator de result
+        if (randomizer.nextBool())
+        {
+            result = (result & bitIterator) ? result - bitIterator : result + bitIterator;
+        }
+
+        bitIterator = bitIterator << 1;
+    }
+
+    return static_cast<float>(result);
+}
+
+
+Sticky Sticky::operator*(const Sticky& s) const
+{
+    Sticky newSticky(*this);
+    
+    float rgb[3] {
+        genRadomFloat(m_Color.r, s.m_Color.r),
+        genRadomFloat(m_Color.g, s.m_Color.g),
+        genRadomFloat(m_Color.b, s.m_Color.b)
+    };
+
+    newSticky.ChangeColor(cinder::ColorA(rgb[0], rgb[1], rgb[2], m_Color.a));
+
+    return newSticky;
+}
+
+Sticky Sticky::mutate() const
+{
+    Sticky newSticky(*this);
+
+
+
+    return newSticky;
+}
+
+Sticky Sticky::random()
+{
+    Sticky newSticky(*this);
+
+    return newSticky;
+}
+
 
 #if 0
 void Sticky::updateSize(float wRatio, float hRatio)

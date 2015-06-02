@@ -7,15 +7,15 @@
 
 #include "Sticky.h"
 
-class AlgoGen
+class IAlgoGen
 {
 public:
-    AlgoGen(const cinder::Surface&);
+    IAlgoGen(const cinder::Surface&);
 
     cinder::Surface getComputeImage() const;
     void setComputeImage(const cinder::Surface&);
 
-    std::vector<Sticky> operator()(const std::vector<Sticky>&);
+    virtual std::vector<Sticky> operator()(const std::vector<Sticky>&) const = 0;
 
 protected:
     cinder::Surface m_computeImage;

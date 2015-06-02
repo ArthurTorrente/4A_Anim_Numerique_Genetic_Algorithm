@@ -9,35 +9,29 @@
 class WheelBiased : public IWinnerChoice
 {
 public:
-    struct FitnessChancePair
+    struct ChanceInterval
     {
-        FitnessChancePair(int _fitness = 0, int _percentChange = 0)
-            : fitness(_fitness),
-            percentChance(_percentChange)
-        {}
-
-        /** Fitness cible*/
-        unsigned int fitness;
-        /** Pourcentage de change de tirer au sort */
-        unsigned int percentChance;
+        unsigned int min;
+        unsigned int max;
+        unsigned int percent;
     };
 
     virtual int operator()(const std::vector<FitnessStickyContainer>& stickyList) const;
 
-    const std::vector<FitnessChancePair>& getChanceList() const;
-    std::vector<FitnessChancePair>& getChanceList();
+    const std::vector<ChanceInterval>& getChanceList() const;
+    std::vector<ChanceInterval>& getChanceList();
 
-    const FitnessChancePair& getChanceByFitness(unsigned int fitness) const;
-    FitnessChancePair& getChanceByFitness(unsigned int fitness);
+    const ChanceInterval& getChanceByFitness(unsigned int fitness) const;
+    ChanceInterval& getChanceByFitness(unsigned int fitness);
 
     /**
     * Insère un nouveau fitness
     * Si le même fitness est déjà présent il écrase la valeur
     */
-    void pushChance(const FitnessChancePair&);
+    void pushInterval(const ChanceInterval&);
 
 private:
-    std::vector<FitnessChancePair> m_chanceList;
+    std::vector<ChanceInterval> m_chanceList;
 
     /**
      * Retourne la valuer de chance du fitness le plus proche du fitness passé en paramètre

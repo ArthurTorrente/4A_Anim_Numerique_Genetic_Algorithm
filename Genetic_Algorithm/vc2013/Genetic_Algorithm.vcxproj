@@ -107,7 +107,8 @@
     <ResourceCompile Include="Resources.rc" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="..\src\AlgoGen.cpp" />
+    <ClCompile Include="..\src\ColorAlgoGen.cpp" />
+    <ClCompile Include="..\src\IAlgoGen.cpp" />
     <ClCompile Include="..\src\Genetic_AlgorithmApp.cpp" />
     <ClCompile Include="..\src\Pixel.cpp" />
     <ClCompile Include="..\src\Sticky.cpp" />
@@ -115,7 +116,8 @@
     <ClCompile Include="..\src\WinnerIsBest.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="..\include\AlgoGen.h" />
+    <ClInclude Include="..\include\ColorAlgoGen.h" />
+    <ClInclude Include="..\include\IAlgoGen.h" />
     <ClInclude Include="..\include\Algorithms\FitnessStickyContainer.h" />
     <ClInclude Include="..\include\Algorithms\IWinnerChoice.h" />
     <ClInclude Include="..\include\Algorithms\WheelBiased.h" />
