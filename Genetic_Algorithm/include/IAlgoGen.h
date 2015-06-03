@@ -5,7 +5,7 @@
 
 #include "cinder/gl/Texture.h"
 
-#include "Sticky.h"
+#include "Stixel.h"
 
 class IAlgoGen
 {
@@ -15,7 +15,7 @@ public:
     cinder::Surface getComputeImage() const;
     void setComputeImage(const cinder::Surface&);
 
-    virtual std::vector<Sticky> operator()(const std::vector<Sticky>&) const = 0;
+    virtual std::vector<Stixel> operator()(const std::vector<Stixel>&) const = 0;
 
 protected:
     cinder::Surface m_computeImage;

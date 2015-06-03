@@ -8,9 +8,15 @@ class ColorAlgoGen : public IAlgoGen
 public:
     ColorAlgoGen(const cinder::Surface& = cinder::Surface());
 
-    virtual std::vector<Sticky> operator()(const std::vector<Sticky>&) const;
+    virtual std::vector<Stixel> operator()(const std::vector<Stixel>&) const;
+
+    unsigned int& getNumberOfGenerateChild();
+    unsigned int getNumberOfGenerateChild() const;
+
+    void setNumberOfGenerateChild(unsigned int);
 
 protected:
+    unsigned int m_numberOfChild;
     unsigned int getFitness(const Sticky&, const cinder::ColorA&);
 };
 
