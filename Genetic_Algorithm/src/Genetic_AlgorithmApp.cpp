@@ -26,11 +26,14 @@ void Genetic_AlgorithmApp::setup()
     /* Algo Gen */
 	this->m_pixelGroupNumber = 5;
 	this->m_numberGapPixel = 0;
+    m_isStarted = false;
+    m_isPaused = false;
     /* === */
 
     /* Image Load*/
     m_currentImageLoadedIndex = 0;
     /* === */
+    
     /* Camera */
     setupCamera();
     m_hasCaptureCamera = false;
@@ -38,8 +41,10 @@ void Genetic_AlgorithmApp::setup()
     /* === */
 
     /* IHM */
-    m_ihmParam = cinder::params::InterfaceGl::create("Sticky", cinder::Vec2i(200, 200));
+    m_ihmParam = cinder::params::InterfaceGl::create("Sticky", cinder::Vec2i(250, 230));
     setupIHM();
+
+    m_renderString = cinder::gl::TextureFont::create(cinder::Font("Calibri", 25));
     /* === */
 }
 
@@ -65,6 +70,7 @@ void Genetic_AlgorithmApp::setupIHM()
     }
     else
     {
+        m_ihmParam->addButton("Load image", std::bind(&Genetic_AlgorithmApp::loadImage, this));
         m_ihmParam->addText("Diaporama mode");
         std::string message = std::to_string(m_imageLoaded.size());
         message += " images load";
@@ -80,8 +86,10 @@ void Genetic_AlgorithmApp::setupIHM()
     m_ihmParam->addSeparator("Algo Gen Options");
     m_ihmParam->addParam("Pixel par groupe", &m_pixelGroupNumber, "min=1 max=1920 step=1");
     m_ihmParam->addParam("Espacement", &m_numberGapPixel, "min=0 max=10 step=1");
-    m_ihmParam->addButton("Generate sticky", std::bind(&Genetic_AlgorithmApp::initSticky, this));
-    m_ihmParam->addButton("Reset sticky", std::bind(&Genetic_AlgorithmApp::clearSticky, this));
+    m_ihmParam->addParam("Number of sticky child", &m_algoGen.getNumberOfGenerateChild());
+    m_ihmParam->addButton("Start", std::bind(&Genetic_AlgorithmApp::start, this));
+    m_ihmParam->addButton("Pause", std::bind(&Genetic_AlgorithmApp::pause, this));
+    m_ihmParam->addButton("Stop", std::bind(&Genetic_AlgorithmApp::stop, this));
 }
 
 void Genetic_AlgorithmApp::update()
@@ -95,6 +103,11 @@ void Genetic_AlgorithmApp::update()
             if (m_realTime)
                 m_currentImage = m_cameraImage;
         }
+    }
+
+    if (m_isStarted && !m_isPaused)
+    {
+        m_StickyArmy = m_algoGen(m_StickyArmy);
     }
 }
 
@@ -110,7 +123,25 @@ void Genetic_AlgorithmApp::draw()
 		this->m_StickyArmy[i].sticky.draw();
 	}
 
+    updateIHM();
     m_ihmParam->draw();
+}
+
+void Genetic_AlgorithmApp::updateIHM()
+{
+    std::string message;
+
+    if (m_isStarted && !m_isPaused)
+    {
+        message = "Start";
+    }
+    else if (m_isPaused)
+    {
+        message = "Pause";
+    }
+
+    if (m_isStarted)
+        m_renderString->drawString(message, cinder::Vec2f(getWindowWidth() - 100, 40));
 }
 
 void Genetic_AlgorithmApp::resize()
@@ -146,7 +177,7 @@ void Genetic_AlgorithmApp::keyDown(KeyEvent event)
     }
     else if (event.getCode() == KeyEvent::KEY_s)
     {
-        this->initSticky();
+        this->start();
     }
     else if (event.getCode() == KeyEvent::KEY_d)
     {
@@ -190,27 +221,7 @@ void Genetic_AlgorithmApp::keyDown(KeyEvent event)
             }
             else if (event.getCode() == KeyEvent::KEY_l)
             {
-                fs::path p = getOpenFilePath("", ImageIo::getLoadExtensions());
-
-                if (!p.empty())
-                {
-                    m_imageLoaded.clear();
-
-                    try
-                    {
-                        m_imageLoaded.push_back(loadImage(p));
-                        m_currentImage = m_imageLoaded.front();
-                        m_currentImageLoadedIndex = 0;
-                    }
-                    catch (ci::ImageIoException&)
-                    {
-                        console() << "Format non supporté pour l'image : " << p.filename() << std::endl;
-                    }
-                    catch (std::exception&)
-                    {
-                        console() << "Error occur" << std::endl;
-                    }
-                }
+                loadImage();
             }
         }
     }
@@ -248,6 +259,9 @@ void Genetic_AlgorithmApp::mouseDrag(MouseEvent event)
 
 void Genetic_AlgorithmApp::fileDrop(FileDropEvent event)
 {
+    if (m_cameraMode)
+        return;
+
     m_imageLoaded.clear();
 
     unsigned int fileCount = event.getNumFiles();
@@ -261,7 +275,7 @@ void Genetic_AlgorithmApp::fileDrop(FileDropEvent event)
             try
             {
                 path = event.getFile(i);
-                m_imageLoaded.push_back(loadImage(path));
+                m_imageLoaded.push_back(cinder::loadImage(path));
             }
             catch (ci::ImageIoException&)
             {
@@ -331,12 +345,34 @@ void Genetic_AlgorithmApp::changeMode()
     setupIHM();
 }
 
-void Genetic_AlgorithmApp::initSticky()
+void Genetic_AlgorithmApp::loadImage()
 {
-    if (this->m_pixelGroupNumber <= this->m_numberGapPixel)
-        return;
-    
-    if (!m_currentImage)
+    fs::path p = getOpenFilePath("", ImageIo::getLoadExtensions());
+
+    if (!p.empty())
+    {
+        m_imageLoaded.clear();
+
+        try
+        {
+            m_imageLoaded.push_back(cinder::loadImage(p));
+            m_currentImage = m_imageLoaded.front();
+            m_currentImageLoadedIndex = 0;
+        }
+        catch (ci::ImageIoException&)
+        {
+            console() << "Format non supporté pour l'image : " << p.filename() << std::endl;
+        }
+        catch (std::exception&)
+        {
+            console() << "Error occur" << std::endl;
+        }
+    }
+}
+
+void Genetic_AlgorithmApp::start()
+{
+    if (m_isStarted || m_pixelGroupNumber <= m_numberGapPixel || !m_currentImage)
         return;
 
     ci::Rectf screen = getWindowBounds();
@@ -357,7 +393,9 @@ void Genetic_AlgorithmApp::initSticky()
 
     this->m_StickyArmy.clear();
     this->m_StickyArmy.resize((height / this->m_pixelGroupNumber) * (width / this->m_pixelGroupNumber));
+    
     Stixel currentStix;
+
 	for (float i = 0; i < height / this->m_pixelGroupNumber; i++)
 	{
         for (float j = 0; j < width / this->m_pixelGroupNumber; j++)
@@ -371,11 +409,33 @@ void Genetic_AlgorithmApp::initSticky()
             this->m_StickyArmy[j + i * (width / this->m_pixelGroupNumber)] = currentStix;
 		}
 	}
+
+    m_isStarted = true;
+    m_isPaused = false;
+
+    setupIHM();
 }
 
-void Genetic_AlgorithmApp::clearSticky()
+void Genetic_AlgorithmApp::pause()
 {
+    if (!m_isStarted)
+        return;
+
+    m_isPaused = !m_isPaused;
+
+    setupIHM();
+}
+
+void Genetic_AlgorithmApp::stop()
+{
+    if (!m_isStarted)
+        return;
+
     this->m_StickyArmy.clear();
+    m_isStarted = false;
+    m_isPaused = false;
+
+    setupIHM();
 }
 
 cinder::ColorA Genetic_AlgorithmApp::getAveragePixelColor(int startXIndex, int startYIndex, int groupRowNumber)

@@ -1,22 +1,38 @@
 #include "ColorAlgoGen.h"
 
 ColorAlgoGen::ColorAlgoGen(const cinder::Surface& computeImage)
-    : IAlgoGen(computeImage)
+    : IAlgoGen(computeImage),
+    m_numberOfChild(3)
 {}
 
-std::vector<Sticky> ColorAlgoGen::operator()(const std::vector<Sticky>& oldGenSticky) const
+std::vector<Stixel> ColorAlgoGen::operator()(const std::vector<Stixel>& oldGenSticky) const
 {
-    std::vector<Sticky> nextGenStickies;
+    std::vector<Stixel> nextGenStickies;
 
     if (!m_computeImage)
         return nextGenStickies;
 
     for (auto& currentSticky : oldGenSticky)
     {
-
+        
     }
 
     return nextGenStickies;
+}
+
+unsigned int& ColorAlgoGen::getNumberOfGenerateChild()
+{
+    return m_numberOfChild;
+}
+
+unsigned int ColorAlgoGen::getNumberOfGenerateChild() const
+{
+    return m_numberOfChild;
+}
+
+void ColorAlgoGen::setNumberOfGenerateChild(unsigned int n)
+{
+    m_numberOfChild = n;
 }
 
 static unsigned int getNumberOfSameBit(float a, float b)
@@ -33,8 +49,8 @@ static unsigned int getNumberOfSameBit(float a, float b)
     {
         unsigned int bitIte = 1 << i;
 
-        aBit = uA & bitIte;
-        bBit = uB & bitIte;
+        aBit = (uA & bitIte) == bitIte;
+        bBit = (uB & bitIte) == bitIte;
 
         if (aBit == bBit)
             ++sameCount;

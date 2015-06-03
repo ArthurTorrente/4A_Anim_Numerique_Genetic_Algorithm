@@ -33,6 +33,7 @@ public:
     void setup();
     void setupIHM();
     void update();
+    void updateIHM();
     void draw();
     void resize();
 
@@ -80,6 +81,11 @@ protected:
     Surface m_cameraImage;
 
     /**
+     * Render de string à l'écran
+     */
+    cinder::gl::TextureFontRef m_renderString;
+
+    /**
      * Capture d'une image de la camera
      */
     bool m_hasCaptureCamera;
@@ -95,21 +101,30 @@ protected:
 	*/
 	int m_RowStickyLength;
 
+    bool m_isStarted;
+    bool m_isPaused;
+
 	/**
 	* Initialise les sticky
 	*/
-    void initSticky();
+    void start();
+
+    /**
+    * Initialise les sticky
+    */
+    void pause();
 
     /**
     * Détruit les sticky
     */
-    void clearSticky();
+    void stop();
 
     /**
      * IHMs
      */
     cinder::params::InterfaceGlRef m_ihmParam;
     void changeMode();
+    void loadImage();
 
 	/**
 	* Nombre de pixel par groupe
@@ -140,7 +155,7 @@ protected:
     /**
      * Algo gen
      */
-    ColorAlgoGen algoGen;
+    ColorAlgoGen m_algoGen;
 };
 
 #endif //_GENETICALGORITHMAPP_H_
