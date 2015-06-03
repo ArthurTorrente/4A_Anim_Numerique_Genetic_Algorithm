@@ -1,10 +1,9 @@
 #include "Sticky.h"
 
+#include <bitset>
 #include "cinder/Rand.h"
 
-#include <bitset>
-
-#define BITCOUNTFLOAT 32
+#include "tools.h"
 
 Sticky::Sticky()
 {
@@ -175,10 +174,8 @@ void Sticky::updateSize(float wRatio, float hRatio)
 
 static float genRadomFloat(float a, float b)
 {
-    static unsigned int cpt = 0;
-
-    cinder::Rand randomizer(cpt++);
-    size_t bitCount = BITCOUNTFLOAT;
+    cinder::Rand randomizer(static_cast<unsigned long>(time(NULL)));
+    size_t bitCount = sizeof(float) * 8;
 
     unsigned int result = static_cast<unsigned int>(a);
     unsigned int bitIterator = 1;
@@ -203,9 +200,9 @@ Sticky Sticky::operator*(const Sticky& s) const
     Sticky newSticky(*this);
     
     float rgb[3] {
-        genRadomFloat(m_Color.r, s.m_Color.r),
-        genRadomFloat(m_Color.g, s.m_Color.g),
-        genRadomFloat(m_Color.b, s.m_Color.b)
+        tools::clamp(genRadomFloat(m_Color.r, s.m_Color.r), 0.0f, 1.0f),
+        tools::clamp(genRadomFloat(m_Color.g, s.m_Color.g), 0.0f, 1.0f),
+        tools::clamp(genRadomFloat(m_Color.b, s.m_Color.b), 0.0f, 1.0f)
     };
 
     newSticky.ChangeColor(cinder::ColorA(rgb[0], rgb[1], rgb[2], m_Color.a));
@@ -213,11 +210,36 @@ Sticky Sticky::operator*(const Sticky& s) const
     return newSticky;
 }
 
+static float mutateColorComponent(float component)
+{
+    unsigned int bitCount = sizeof(float) * 8;
+    cinder::Rand randomizer(static_cast<unsigned long>(time(nullptr)));
+
+    unsigned int bitIterator = 1 << randomizer.nextUint(bitCount);
+    unsigned int result = static_cast<unsigned int>(component);
+
+    result = (result & bitIterator) ? result - bitIterator : result + bitIterator;
+
+    return static_cast<float>(result);
+}
+
+static cinder::ColorA mutateColor(const cinder::ColorA& color)
+{
+    cinder::Rand randomizer(static_cast<unsigned long>(time(nullptr)));
+    cinder::ColorA resultColor(color);
+
+    int colorChange = randomizer.nextInt(0, 3);
+
+    resultColor[colorChange] = mutateColorComponent(resultColor[colorChange]);
+
+    return resultColor;
+}
+
 Sticky Sticky::mutate() const
 {
     Sticky newSticky(*this);
 
-
+    newSticky.ChangeColor(mutateColor(newSticky.getColor()));
 
     return newSticky;
 }
@@ -225,6 +247,9 @@ Sticky Sticky::mutate() const
 Sticky Sticky::random()
 {
     Sticky newSticky(*this);
+    cinder::Rand randomizer(static_cast<unsigned long>(time(nullptr)));
+
+    newSticky.ChangeColor(cinder::ColorA(randomizer.nextFloat(0.0f, 1.0f), randomizer.nextFloat(0.0f, 1.0f), randomizer.nextFloat(0.0f, 1.0f), 1.0f));
 
     return newSticky;
 }

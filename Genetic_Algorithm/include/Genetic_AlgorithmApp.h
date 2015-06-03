@@ -1,6 +1,8 @@
 #ifndef _GENETICALGORITHMAPP_H_
 #define _GENETICALGORITHMAPP_H_
 
+#include <vector>
+
 #include "cinder/app/AppNative.h"
 #include "cinder/gl/gl.h"
 #include "cinder/ImageIo.h"
@@ -8,12 +10,11 @@
 #include "cinder/gl/TextureFont.h"
 #include "cinder/Capture.h"
 #include "cinder/params/Params.h"
-
 #include "cinder/Rand.h"
+
 #include "Sticky.h"
 #include "Stixel.h"
-
-#include <vector>
+#include "ColorAlgoGen.h"
 
 #include "tools.h"
 #include "Image.h"
@@ -135,6 +136,11 @@ protected:
     float beforeResizeHeight;
 
     cinder::ColorA getAveragePixelColor(int startXIndex, int startYIndex, int groupRowNumber);
+
+    /**
+     * Algo gen
+     */
+    ColorAlgoGen algoGen;
 };
 
 #endif //_GENETICALGORITHMAPP_H_
