@@ -22,8 +22,14 @@ std::vector<Stixel> ColorAlgoGen::operator()(const std::vector<Stixel>& oldGenSt
     for (auto it = oldGenSticky.begin(); it != oldGenSticky.end(); ++it)
     {
         newSticky[0].sticky = (*it).sticky.mutate();
+        newSticky[0].fitness = getFitness(newSticky[0].sticky, (*it).pixel.getColor());
+
         newSticky[1].sticky = (*it).sticky.mutate();
+        newSticky[1].fitness = getFitness(newSticky[1].sticky, (*it).pixel.getColor());
+        
         newSticky[2].sticky = (*it).sticky.mutate();
+        newSticky[2].fitness = getFitness(newSticky[2].sticky, (*it).pixel.getColor());
+
 
         winner.sticky = newSticky[winnerAlgo(newSticky)].sticky;
         winner.pixel = (*it).pixel;
@@ -73,7 +79,7 @@ static unsigned int getNumberOfSameBit(float a, float b)
     return sameCount;
 }
 
-unsigned int ColorAlgoGen::getFitness(const Sticky& s, const cinder::ColorA& c)
+unsigned int ColorAlgoGen::getFitness(const Sticky& s, const cinder::ColorA& c) const
 {
     unsigned int fitness = 0;
     const cinder::ColorA& sColor(s.getColor());

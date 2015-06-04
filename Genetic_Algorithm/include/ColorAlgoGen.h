@@ -17,7 +17,7 @@ public:
 
 protected:
     unsigned int m_numberOfChild;
-    unsigned int getFitness(const Sticky&, const cinder::ColorA&);
+    unsigned int getFitness(const Sticky&, const cinder::ColorA&) const;
 };
 
 #endif //_COLORALGOGEN_H_

@@ -12,11 +12,6 @@ class IWinnerChoice
 {
 public:
     /**
-     * Construteur par défaut
-     */
-    IWinnerChoice();
-    
-    /**
      * Méthode de tirage au sort du vainqueur d'une liste de sticky
      */
     virtual int operator()(const std::vector<FitnessStickyContainer>& stickyList) const = 0;
