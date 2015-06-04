@@ -13,10 +13,19 @@ public:
     unsigned int& getNumberOfGenerateChild();
     unsigned int getNumberOfGenerateChild() const;
 
+    unsigned char& getMutationRatio();
+    unsigned char& getCombinaisonRatio();
+    unsigned char& getRandomRatio();
+
     void setNumberOfGenerateChild(unsigned int);
 
 protected:
     unsigned int m_numberOfChild;
+    
+    unsigned char m_mutationRatio;
+    unsigned char m_combinaisonRatio;
+    unsigned char m_randomRatio;
+
     unsigned int getFitness(const Sticky&, const cinder::ColorA&) const;
 };
 

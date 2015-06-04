@@ -98,6 +98,9 @@ void Genetic_AlgorithmApp::setupIHM()
     m_ihmParam->addParam("Pixel par groupe", &m_pixelGroupNumber, "min=1 max=1920 step=1");
     m_ihmParam->addParam("Espacement", &m_numberGapPixel, "min=0 max=10 step=1");
     m_ihmParam->addParam("Number of sticky child", &m_algoGen.getNumberOfGenerateChild());
+    m_ihmParam->addParam("Mutation Ratio", &m_algoGen.getMutationRatio());
+    m_ihmParam->addParam("Combinaison Ratio", &m_algoGen.getCombinaisonRatio());
+    m_ihmParam->addParam("Random Ratio", &m_algoGen.getRandomRatio());
     m_ihmParam->addButton("Start", std::bind(&Genetic_AlgorithmApp::start, this));
     m_ihmParam->addButton("Pause", std::bind(&Genetic_AlgorithmApp::pause, this));
     m_ihmParam->addButton("Stop", std::bind(&Genetic_AlgorithmApp::stop, this));

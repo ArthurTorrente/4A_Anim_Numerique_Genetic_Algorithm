@@ -6,7 +6,10 @@
 #include "Algorithms\WinnerIsBest.h"
 
 ColorAlgoGen::ColorAlgoGen()
-    : m_numberOfChild(3)
+    : m_numberOfChild(3),
+    m_mutationRatio(90),
+    m_combinaisonRatio(40),
+    m_randomRatio(10)
 {}
 
 std::vector<Stixel> ColorAlgoGen::operator()(const std::vector<Stixel>& oldGenSticky) const
@@ -22,22 +25,19 @@ std::vector<Stixel> ColorAlgoGen::operator()(const std::vector<Stixel>& oldGenSt
     {
         for (unsigned int i = 0; i < 3; ++i)
         {
-            unsigned int randomChoice = randomizer.nextUint(2);
+            unsigned int randomChoice = randomizer.nextUint(100);
 
-            switch (randomChoice)
-            {
-            case 0:
+            if (randomChoice > m_mutationRatio)
                 newSticky[i].sticky = (*it).sticky.mutate();
-                break;
 
-            case 1:
+            else if (randomChoice > m_combinaisonRatio)
                 newSticky[i].sticky = (*it).sticky * oldGenSticky[randomizer.nextUint(oldGenSticky.size() - 1)].sticky;
-                break;
 
-            case 2:
+            else if (m_randomRatio > m_randomRatio)
                 newSticky[i].sticky = (*it).sticky.random();
-                break;
-            }
+
+            else
+                newSticky[i].sticky = (*it).sticky;
 
             newSticky[i].fitness = getFitness(newSticky[i].sticky, (*it).pixel.getColor());
         }
@@ -59,6 +59,21 @@ unsigned int& ColorAlgoGen::getNumberOfGenerateChild()
 unsigned int ColorAlgoGen::getNumberOfGenerateChild() const
 {
     return m_numberOfChild;
+}
+
+unsigned char& ColorAlgoGen::getMutationRatio()
+{
+    return m_mutationRatio;
+}
+
+unsigned char& ColorAlgoGen::getCombinaisonRatio()
+{
+    return m_combinaisonRatio;
+}
+
+unsigned char& ColorAlgoGen::getRandomRatio()
+{
+    return m_randomRatio;
 }
 
 void ColorAlgoGen::setNumberOfGenerateChild(unsigned int n)
