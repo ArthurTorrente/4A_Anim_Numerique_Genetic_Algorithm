@@ -120,6 +120,11 @@ protected:
     void stop();
 
     /**
+     * Next step de l'algo Gen
+     */
+    void nextStep();
+
+    /**
      * IHMs
      */
     cinder::params::InterfaceGlRef m_ihmParam;

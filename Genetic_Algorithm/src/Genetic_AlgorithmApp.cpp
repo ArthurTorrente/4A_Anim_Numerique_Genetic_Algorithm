@@ -41,7 +41,7 @@ void Genetic_AlgorithmApp::setup()
     /* === */
 
     /* IHM */
-    m_ihmParam = cinder::params::InterfaceGl::create("Sticky", cinder::Vec2i(250, 230));
+    m_ihmParam = cinder::params::InterfaceGl::create("Sticky", cinder::Vec2i(245, 240));
     setupIHM();
 
     m_renderString = cinder::gl::TextureFont::create(cinder::Font("Calibri", 25));
@@ -71,16 +71,27 @@ void Genetic_AlgorithmApp::setupIHM()
     else
     {
         m_ihmParam->addButton("Load image", std::bind(&Genetic_AlgorithmApp::loadImage, this));
-        m_ihmParam->addText("Diaporama mode");
-        std::string message = std::to_string(m_imageLoaded.size());
-        message += " images load";
 
-        m_ihmParam->addText(message.data());
+        std::string message;
 
-        message = "Current image : ";
-        message += std::to_string(m_currentImageLoadedIndex);
+        if (m_imageLoaded.size() > 0)
+        {
+            message += std::to_string(m_imageLoaded.size());
+            message += " images load";
+            m_ihmParam->addText(message.data());
 
-        m_ihmParam->addText(message.data());
+            //m_ihmParam->addText("Diaporama mode");
+
+            message = "Current image : ";
+            message += std::to_string(m_currentImageLoadedIndex);
+
+            m_ihmParam->addText(message.data());
+        }
+        else
+        {
+            message = "No image load";
+            m_ihmParam->addText(message.data());
+        }
     }
 
     m_ihmParam->addSeparator("Algo Gen Options");
@@ -90,6 +101,9 @@ void Genetic_AlgorithmApp::setupIHM()
     m_ihmParam->addButton("Start", std::bind(&Genetic_AlgorithmApp::start, this));
     m_ihmParam->addButton("Pause", std::bind(&Genetic_AlgorithmApp::pause, this));
     m_ihmParam->addButton("Stop", std::bind(&Genetic_AlgorithmApp::stop, this));
+    
+    if (m_isPaused)
+        m_ihmParam->addButton("NextStep", std::bind(&Genetic_AlgorithmApp::nextStep, this));
 }
 
 void Genetic_AlgorithmApp::update()
@@ -107,7 +121,7 @@ void Genetic_AlgorithmApp::update()
 
     if (m_isStarted && !m_isPaused)
     {
-        m_StickyArmy = m_algoGen(m_StickyArmy);
+        nextStep();
     }
 }
 
@@ -368,6 +382,8 @@ void Genetic_AlgorithmApp::loadImage()
             console() << "Error occur" << std::endl;
         }
     }
+
+    setupIHM();
 }
 
 void Genetic_AlgorithmApp::start()
@@ -436,6 +452,11 @@ void Genetic_AlgorithmApp::stop()
     m_isPaused = false;
 
     setupIHM();
+}
+
+void Genetic_AlgorithmApp::nextStep()
+{
+    m_StickyArmy = m_algoGen(m_StickyArmy);
 }
 
 cinder::ColorA Genetic_AlgorithmApp::getAveragePixelColor(int startXIndex, int startYIndex, int groupRowNumber)

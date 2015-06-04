@@ -7,7 +7,7 @@
 struct FitnessStickyContainer
 {
     unsigned int fitness;
-    Sticky* sticky;
+    Sticky sticky;
 };
 
 #endif //_FITNESSSTICKYCONTAINER_H_

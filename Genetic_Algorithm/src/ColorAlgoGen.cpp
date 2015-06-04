@@ -1,5 +1,8 @@
 #include "ColorAlgoGen.h"
 
+#include <array>
+#include "Algorithms\WinnerIsBest.h"
+
 ColorAlgoGen::ColorAlgoGen(const cinder::Surface& computeImage)
     : IAlgoGen(computeImage),
     m_numberOfChild(3)
@@ -12,9 +15,20 @@ std::vector<Stixel> ColorAlgoGen::operator()(const std::vector<Stixel>& oldGenSt
     if (!m_computeImage)
         return nextGenStickies;
 
-    for (auto& currentSticky : oldGenSticky)
+    std::vector<FitnessStickyContainer> newSticky(3);
+    WinnerIsBest winnerAlgo;
+    Stixel winner;
+
+    for (auto it = oldGenSticky.begin(); it != oldGenSticky.end(); ++it)
     {
+        newSticky[0].sticky = (*it).sticky.mutate();
+        newSticky[1].sticky = (*it).sticky.mutate();
+        newSticky[2].sticky = (*it).sticky.mutate();
+
+        winner.sticky = newSticky[winnerAlgo(newSticky)].sticky;
+        winner.pixel = (*it).pixel;
         
+        nextGenStickies.push_back(winner);
     }
 
     return nextGenStickies;
