@@ -13,6 +13,11 @@ struct Stixel
         pixel(p)
     {}
 
+    Stixel(const Stixel& s)
+        : sticky(s.sticky),
+        pixel(s.pixel)
+    {}
+
     Sticky sticky;
     Pixel pixel;
 };

@@ -3,10 +3,10 @@
 #include <array>
 #include "cinder\Rand.h"
 
+#include "tools.h"
 #include "Algorithms\WinnerIsBest.h"
 
 ColorAlgoGen::ColorAlgoGen()
-    : m_numberOfChild(3)
 {
     m_interval.push_back(Interval(COPY, 30));
     m_interval.push_back(Interval(COMBINAISON, 30));
@@ -16,79 +16,133 @@ ColorAlgoGen::ColorAlgoGen()
 
 std::vector<Stixel> ColorAlgoGen::operator()(const std::vector<Stixel>& oldGenSticky) const
 {
-    std::vector<Stixel> nextGenStickies;
+    if (oldGenSticky.size() == 0)
+        return oldGenSticky;
 
-    std::vector<FitnessStickyContainer> newSticky(3);
-    WinnerIsBest winnerAlgo;
-    Stixel winner;
     cinder::Rand randomizer(static_cast<unsigned int>(time(nullptr)));
 
-    auto intervalList(m_interval);
+    /* Associe un sticky à un fitness */
+    std::vector<FitnessStickyContainer> fitnessSticky;
+    /* Tableau qui sera utilisé pour stocker la nouvelle generation de stickies */
+    std::vector<Stixel> newGen;
 
-    std::sort(intervalList.begin(), intervalList.end(), [](const Interval& i1, const Interval& i2)
+    fitnessSticky.reserve(oldGenSticky.size());
+    newGen.reserve(oldGenSticky.size());
+
+    /* Calcul du fitness pour tous les stixel */
+    std::for_each(oldGenSticky.begin(), oldGenSticky.end(), [&fitnessSticky, this](const Stixel& s)
     {
-        return i2.percent < i1.percent;
+        fitnessSticky.push_back(FitnessStickyContainer(&s));
+        FitnessStickyContainer& last(fitnessSticky.back());
+
+        last.fitness = getFitness(last.stixel->sticky, last.stixel->pixel.getColor());
     });
+    /* ============================= */
 
-    for (auto it = oldGenSticky.begin(); it != oldGenSticky.end(); ++it)
+    /* Generation de la population suivante */
+    std::sort(fitnessSticky.begin(), fitnessSticky.end());
+    float fitnessPopSize = static_cast<float>(fitnessSticky.size());
+
+    /* Keep best */
+    int keepBest = static_cast<int>(getPercent(COPY) * fitnessPopSize);
+    
+    if (keepBest > 0)
     {
-        for (unsigned int i = 0; i < 3; ++i)
+        std::transform(fitnessSticky.begin(), fitnessSticky.begin() + keepBest, std::back_inserter(newGen), [](const FitnessStickyContainer& f)
         {
-            unsigned int randomChoice = randomizer.nextUint(100);
+            return Stixel(*(f.stixel));
+        });
+    }
+    /* ==================== */
 
-            IntervalType action = COPY;
+    /* Mutation */
+    int mutateRatio = static_cast<int>(getPercent(MUTATE) * fitnessPopSize);
+    mutateRatio = tools::clamp<int>(mutateRatio, 0, fitnessSticky.size() - keepBest);
 
-            for (auto& interval : intervalList)
+    if (mutateRatio > 0)
+    {
+        std::transform(fitnessSticky.begin(), fitnessSticky.begin() + mutateRatio, std::back_inserter(newGen), [](const FitnessStickyContainer& f)
+        {
+            return Stixel(f.stixel->sticky.mutate(), f.stixel->pixel);
+        });
+    }
+    /* ============================= */
+
+    /* Combinaison */
+    int combineRatio = static_cast<int>(getPercent(COMBINAISON) * fitnessPopSize);
+    combineRatio = tools::clamp<int>(combineRatio, 0, fitnessSticky.size() - keepBest - mutateRatio);
+
+    if (combineRatio > 0)
+    {
+        std::transform(fitnessSticky.begin(), fitnessSticky.begin() + combineRatio, std::back_inserter(newGen), [&newGen, &randomizer, &keepBest](const FitnessStickyContainer& f)
+        {
+            return Stixel(
+                f.stixel->sticky * newGen[randomizer.nextUint(keepBest - 1)].sticky,
+                f.stixel->pixel);
+        });
+    }
+    /* ============================= */
+
+    /* Combinaison */
+    int randomRatio = static_cast<int>(getPercent(RANDOM) * fitnessPopSize);
+    randomRatio = tools::clamp<int>(randomRatio, 0, fitnessSticky.size() - keepBest - mutateRatio - combineRatio);
+
+    if (randomRatio > 0)
+    {
+        std::transform(fitnessSticky.begin(), fitnessSticky.begin() + randomRatio, std::back_inserter(newGen), [](const FitnessStickyContainer& f)
+        {
+            return Stixel(
+                f.stixel->sticky.random(),
+                f.stixel->pixel);
+        });
+    }
+    /* ============================= */
+
+    /* Fill with */
+    int fillRatio = tools::clamp<int>(fitnessSticky.size() - keepBest - mutateRatio - combineRatio - randomRatio, 0, fitnessSticky.size());
+
+    if (fillRatio > 0)
+    {
+        std::transform(fitnessSticky.begin() + keepBest, fitnessSticky.begin() + (keepBest + fillRatio), std::back_inserter(newGen), [&randomizer](const FitnessStickyContainer& f)
+        {
+            IntervalType randChoice = static_cast<IntervalType>(randomizer.nextUint(4));
+
+            switch (randChoice)
             {
-                if (interval.percent >= randomChoice)
-                {
-                    action = interval.type;
-                    break;
-                }
-            }
+            case COPY:
+                return Stixel(
+                    f.stixel->sticky,
+                    f.stixel->pixel);
+                break;
 
-            switch (action)
-            {
             case MUTATE:
-                newSticky[i].sticky = it->sticky.mutate();
+                return Stixel(
+                    f.stixel->sticky.mutate(),
+                    f.stixel->pixel);
                 break;
 
             case COMBINAISON:
-            {
-                //Remplacer par voisin
-                newSticky[i].sticky = it->sticky * oldGenSticky[randomizer.nextUint(oldGenSticky.size() - 1)].sticky;
-            }
+                return Stixel(
+                    f.stixel->sticky * f.stixel->sticky.random(),
+                    f.stixel->pixel);
                 break;
 
             case RANDOM:
-                newSticky[i].sticky = it->sticky.random();
+                return Stixel(
+                    f.stixel->sticky.random(),
+                    f.stixel->pixel);
                 break;
 
-            case COPY:
-                newSticky[i].sticky = it->sticky;
-                break;
+            default:
+                return Stixel(
+                    f.stixel->sticky.random(),
+                    f.stixel->pixel);
             }
-
-            newSticky[i].fitness = getFitness(newSticky[i].sticky, (*it).pixel.getColor());
-        }
-
-        winner.sticky = newSticky[winnerAlgo(newSticky)].sticky;
-        winner.pixel = it->pixel;
-        
-        nextGenStickies.push_back(winner);
+        });
     }
+    /* ============================= */
 
-    return nextGenStickies;
-}
-
-unsigned int& ColorAlgoGen::getNumberOfGenerateChild()
-{
-    return m_numberOfChild;
-}
-
-unsigned int ColorAlgoGen::getNumberOfGenerateChild() const
-{
-    return m_numberOfChild;
+    return newGen;
 }
 
 unsigned char& ColorAlgoGen::getInterval(ColorAlgoGen::IntervalType type)
@@ -123,27 +177,31 @@ unsigned char ColorAlgoGen::getInterval(ColorAlgoGen::IntervalType type) const
     return found->percent;
 }
 
-void ColorAlgoGen::setNumberOfGenerateChild(unsigned int n)
+float ColorAlgoGen::getPercent(IntervalType type) const
 {
-    m_numberOfChild = n;
+    try
+    {
+        return static_cast<float>(getInterval(type)) / 100.0f;
+    }
+    catch (std::exception&)
+    {
+        return 0.0f;
+    }
 }
 
-static unsigned int getNumberOfSameBit(float a, float b)
+static unsigned int getNumberOfSameBit(unsigned char a, unsigned char b)
 {
     bool aBit(false), bBit(false);
 
     unsigned int sameCount = 0;
-    unsigned int bitCount = sizeof(float) * 8;
-    
-    unsigned int uA = static_cast<unsigned int>(a);
-    unsigned int uB = static_cast<unsigned int>(b);
+    unsigned int bitCount = sizeof(unsigned char) * 8;
     
     for (unsigned int i = 0; i < bitCount; ++i)
     {
         unsigned int bitIte = 1 << i;
 
-        aBit = (uA & bitIte) == bitIte;
-        bBit = (uB & bitIte) == bitIte;
+        aBit = (a & bitIte) == bitIte;
+        bBit = (b & bitIte) == bitIte;
 
         if (aBit == bBit)
             ++sameCount;
@@ -152,61 +210,16 @@ static unsigned int getNumberOfSameBit(float a, float b)
     return sameCount;
 }
 
-void ColorAlgoGen::mutatePopulation(std::vector<Stixel>::const_iterator start, std::vector<Stixel>::const_iterator end, std::vector<Stixel>& nextPopulation) const
-{
-    for (; start != end; ++start)
-    {
-        nextPopulation.push_back(
-            Stixel(start->sticky.mutate(),
-            start->pixel)
-        );
-    }
-}
-
-void ColorAlgoGen::combinePopulation(std::vector<Stixel>::const_iterator start, std::vector<Stixel>::const_iterator end, const std::vector<Stixel>& combinePopulation, std::vector<Stixel>& nextPopulation) const
-{
-    cinder::Rand randomizer(static_cast<unsigned int>(time(nullptr)));
-
-    for (; start != end; ++start)
-    {
-        nextPopulation.push_back(
-            Stixel(start->sticky * combinePopulation[randomizer.nextUint(combinePopulation.size() - 1)].sticky,
-            start->pixel)
-            );
-    }
-}
-
-void ColorAlgoGen::radomPopulation(std::vector<Stixel>::const_iterator start, std::vector<Stixel>::const_iterator end, std::vector<Stixel>&nextPopulation) const
-{
-    for (; start != end; ++start)
-    {
-        nextPopulation.push_back(
-            Stixel(start->sticky.random(),
-            start->pixel)
-            );
-    }
-}
-
-void ColorAlgoGen::copyPopulation(std::vector<Stixel>::const_iterator start, std::vector<Stixel>::const_iterator end, std::vector<Stixel>& nextPopulation) const
-{
-    for (; start != end; ++start)
-    {
-        nextPopulation.push_back(
-            Stixel(start->sticky,
-            start->pixel)
-            );
-    }
-}
-
 unsigned int ColorAlgoGen::getFitness(const Sticky& s, const cinder::ColorA& c) const
 {
     unsigned int fitness = 0;
-    const cinder::ColorA& sColor(s.getColor());
+    const cinder::ColorA8u sColor(s.getColor());
+    const cinder::ColorA8u cColor(c);
 
-    fitness += getNumberOfSameBit(sColor.r, c.r);
-    fitness += getNumberOfSameBit(sColor.g, c.g);
-    fitness += getNumberOfSameBit(sColor.b, c.b);
-    fitness += getNumberOfSameBit(sColor.a, c.a);
+    fitness += getNumberOfSameBit(sColor.r, cColor.r);
+    fitness += getNumberOfSameBit(sColor.g, cColor.g);
+    fitness += getNumberOfSameBit(sColor.b, cColor.b);
+    fitness += getNumberOfSameBit(sColor.a, cColor.a);
 
     return fitness;
 }

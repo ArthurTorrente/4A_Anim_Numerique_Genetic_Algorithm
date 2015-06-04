@@ -23,6 +23,9 @@ void Genetic_AlgorithmApp::prepareSettings(Settings* settings)
 
 void Genetic_AlgorithmApp::setup()
 {
+    /* App */
+    m_renderCurrentImage = true;
+    /* === */
     /* Algo Gen */
 	this->m_pixelGroupNumber = 5;
 	this->m_numberGapPixel = 0;
@@ -41,7 +44,7 @@ void Genetic_AlgorithmApp::setup()
     /* === */
 
     /* IHM */
-    m_ihmParam = cinder::params::InterfaceGl::create("Sticky", cinder::Vec2i(245, 240));
+    m_ihmParam = cinder::params::InterfaceGl::create("Sticky", cinder::Vec2i(245, 280));
     setupIHM();
 
     m_renderString = cinder::gl::TextureFont::create(cinder::Font("Calibri", 25));
@@ -97,12 +100,11 @@ void Genetic_AlgorithmApp::setupIHM()
     m_ihmParam->addSeparator("Algo Gen Options");
     m_ihmParam->addParam("Pixel par groupe", &m_pixelGroupNumber, "min=1 max=1920 step=1");
     m_ihmParam->addParam("Espacement", &m_numberGapPixel, "min=0 max=10 step=1");
-    m_ihmParam->addParam("Number of sticky child", &m_algoGen.getNumberOfGenerateChild());
 
-    m_ihmParam->addParam("Save Best", &m_algoGen.getInterval(ColorAlgoGen::COPY));
-    m_ihmParam->addParam("Mutation Ratio", &m_algoGen.getInterval(ColorAlgoGen::MUTATE));
-    m_ihmParam->addParam("Combinaison Ratio", &m_algoGen.getInterval(ColorAlgoGen::COMBINAISON));
-    m_ihmParam->addParam("Random Ratio", &m_algoGen.getInterval(ColorAlgoGen::RANDOM));
+    m_ihmParam->addParam("Save Best", &(m_algoGen.getInterval(ColorAlgoGen::COPY))).max(100.0f).min(0.0f).step(1.0f);
+    m_ihmParam->addParam("Mutation Ratio", &(m_algoGen.getInterval(ColorAlgoGen::MUTATE))).max(100.0f).min(0.0f).step(1.0f);
+    m_ihmParam->addParam("Combinaison Ratio", &(m_algoGen.getInterval(ColorAlgoGen::COMBINAISON))).max(100.0f).min(0.0f).step(1.0f);
+    m_ihmParam->addParam("Random Ratio", &(m_algoGen.getInterval(ColorAlgoGen::RANDOM))).max(100.0f).min(0.0f).step(1.0f);
 
     m_ihmParam->addButton("Start", std::bind(&Genetic_AlgorithmApp::start, this));
     m_ihmParam->addButton("Pause", std::bind(&Genetic_AlgorithmApp::pause, this));
@@ -135,7 +137,7 @@ void Genetic_AlgorithmApp::draw()
 {
     gl::clear(cinder::Color::black());
 
-    if (m_currentImage)
+    if (m_renderCurrentImage && m_currentImage)
         gl::draw(gl::Texture(m_currentImage), getWindowBounds());
 
     for (std::vector<Sticky>::size_type i = 0; i < this->m_StickyArmy.size(); i++)
@@ -162,6 +164,9 @@ void Genetic_AlgorithmApp::updateIHM()
 
     if (m_isStarted)
         m_renderString->drawString(message, cinder::Vec2f(getWindowWidth() - 100, 40));
+
+    m_renderString->drawString(std::string("FPS :") + std::to_string(getAverageFps()), cinder::Vec2f(getWindowWidth() - 150, 60));
+    m_renderString->drawString(std::string("Sticky number :") + std::to_string(m_StickyArmy.size()), cinder::Vec2f(getWindowWidth() - 190, 80));
 }
 
 void Genetic_AlgorithmApp::resize()
@@ -193,7 +198,7 @@ void Genetic_AlgorithmApp::keyDown(KeyEvent event)
     }
     else if (event.getCode() == KeyEvent::KEY_w)
     {
-        m_currentImage = cinder::Surface();
+        m_renderCurrentImage = !m_renderCurrentImage;
     }
     else if (event.getCode() == KeyEvent::KEY_s)
     {

@@ -104,6 +104,8 @@ protected:
     bool m_isStarted;
     bool m_isPaused;
 
+    bool m_renderCurrentImage;
+
 	/**
 	* Initialise les sticky
 	*/

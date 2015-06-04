@@ -2,12 +2,23 @@
 #define _FITNESSSTICKYCONTAINER_H_
 
 #include <memory>
-#include "Sticky.h"
+
+#include "Stixel.h"
 
 struct FitnessStickyContainer
 {
+    FitnessStickyContainer(const Stixel* s, unsigned int _fitness = 0)
+        : stixel(s),
+        fitness(_fitness)
+    {}
+    
+    const Stixel* stixel;
     unsigned int fitness;
-    Sticky sticky;
+
+    bool operator<(const FitnessStickyContainer& f)
+    {
+        return fitness > f.fitness;
+    }
 };
 
 #endif //_FITNESSSTICKYCONTAINER_H_
