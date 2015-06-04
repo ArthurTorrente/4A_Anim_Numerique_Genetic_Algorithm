@@ -35,7 +35,7 @@ public:
      */
     Sticky operator*(const Sticky&) const;
     Sticky mutate() const;
-    Sticky random();
+    Sticky random() const;
 
 protected:
 	void CreateMesh();

@@ -244,7 +244,7 @@ Sticky Sticky::mutate() const
     return newSticky;
 }
 
-Sticky Sticky::random()
+Sticky Sticky::random() const
 {
     Sticky newSticky(*this);
     cinder::Rand randomizer(static_cast<unsigned long>(time(nullptr)));

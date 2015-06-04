@@ -1,6 +1,8 @@
 #include "ColorAlgoGen.h"
 
 #include <array>
+#include "cinder\Rand.h"
+
 #include "Algorithms\WinnerIsBest.h"
 
 ColorAlgoGen::ColorAlgoGen(const cinder::Surface& computeImage)
@@ -18,18 +20,31 @@ std::vector<Stixel> ColorAlgoGen::operator()(const std::vector<Stixel>& oldGenSt
     std::vector<FitnessStickyContainer> newSticky(3);
     WinnerIsBest winnerAlgo;
     Stixel winner;
+    cinder::Rand randomizer(static_cast<unsigned int>(time(nullptr)));
 
     for (auto it = oldGenSticky.begin(); it != oldGenSticky.end(); ++it)
     {
-        newSticky[0].sticky = (*it).sticky.mutate();
-        newSticky[0].fitness = getFitness(newSticky[0].sticky, (*it).pixel.getColor());
+        for (unsigned int i = 0; i < 3; ++i)
+        {
+            unsigned int randomChoice = randomizer.nextUint(2);
 
-        newSticky[1].sticky = (*it).sticky.mutate();
-        newSticky[1].fitness = getFitness(newSticky[1].sticky, (*it).pixel.getColor());
-        
-        newSticky[2].sticky = (*it).sticky.mutate();
-        newSticky[2].fitness = getFitness(newSticky[2].sticky, (*it).pixel.getColor());
+            switch (randomChoice)
+            {
+            case 0:
+                newSticky[i].sticky = (*it).sticky.mutate();
+                break;
 
+            case 1:
+                newSticky[i].sticky = (*it).sticky * oldGenSticky[randomizer.nextUint(oldGenSticky.size() - 1)].sticky;
+                break;
+
+            case 2:
+                newSticky[i].sticky = (*it).sticky.random();
+                break;
+            }
+
+            newSticky[i].fitness = getFitness(newSticky[i].sticky, (*it).pixel.getColor());
+        }
 
         winner.sticky = newSticky[winnerAlgo(newSticky)].sticky;
         winner.pixel = (*it).pixel;
