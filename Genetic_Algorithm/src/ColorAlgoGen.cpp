@@ -6,11 +6,13 @@
 #include "Algorithms\WinnerIsBest.h"
 
 ColorAlgoGen::ColorAlgoGen()
-    : m_numberOfChild(3),
-    m_mutationRatio(90),
-    m_combinaisonRatio(40),
-    m_randomRatio(10)
-{}
+    : m_numberOfChild(3)
+{
+    m_interval.push_back(Interval(COPY, 30));
+    m_interval.push_back(Interval(COMBINAISON, 30));
+    m_interval.push_back(Interval(MUTATE, 20));
+    m_interval.push_back(Interval(RANDOM, 10));
+}
 
 std::vector<Stixel> ColorAlgoGen::operator()(const std::vector<Stixel>& oldGenSticky) const
 {
@@ -21,29 +23,57 @@ std::vector<Stixel> ColorAlgoGen::operator()(const std::vector<Stixel>& oldGenSt
     Stixel winner;
     cinder::Rand randomizer(static_cast<unsigned int>(time(nullptr)));
 
+    auto intervalList(m_interval);
+
+    std::sort(intervalList.begin(), intervalList.end(), [](const Interval& i1, const Interval& i2)
+    {
+        return i2.percent < i1.percent;
+    });
+
     for (auto it = oldGenSticky.begin(); it != oldGenSticky.end(); ++it)
     {
         for (unsigned int i = 0; i < 3; ++i)
         {
             unsigned int randomChoice = randomizer.nextUint(100);
 
-            if (randomChoice > m_mutationRatio)
-                newSticky[i].sticky = (*it).sticky.mutate();
+            IntervalType action = COPY;
 
-            else if (randomChoice > m_combinaisonRatio)
-                newSticky[i].sticky = (*it).sticky * oldGenSticky[randomizer.nextUint(oldGenSticky.size() - 1)].sticky;
+            for (auto& interval : intervalList)
+            {
+                if (interval.percent >= randomChoice)
+                {
+                    action = interval.type;
+                    break;
+                }
+            }
 
-            else if (m_randomRatio > m_randomRatio)
-                newSticky[i].sticky = (*it).sticky.random();
+            switch (action)
+            {
+            case MUTATE:
+                newSticky[i].sticky = it->sticky.mutate();
+                break;
 
-            else
-                newSticky[i].sticky = (*it).sticky;
+            case COMBINAISON:
+            {
+                //Remplacer par voisin
+                newSticky[i].sticky = it->sticky * oldGenSticky[randomizer.nextUint(oldGenSticky.size() - 1)].sticky;
+            }
+                break;
+
+            case RANDOM:
+                newSticky[i].sticky = it->sticky.random();
+                break;
+
+            case COPY:
+                newSticky[i].sticky = it->sticky;
+                break;
+            }
 
             newSticky[i].fitness = getFitness(newSticky[i].sticky, (*it).pixel.getColor());
         }
 
         winner.sticky = newSticky[winnerAlgo(newSticky)].sticky;
-        winner.pixel = (*it).pixel;
+        winner.pixel = it->pixel;
         
         nextGenStickies.push_back(winner);
     }
@@ -61,19 +91,36 @@ unsigned int ColorAlgoGen::getNumberOfGenerateChild() const
     return m_numberOfChild;
 }
 
-unsigned char& ColorAlgoGen::getMutationRatio()
+unsigned char& ColorAlgoGen::getInterval(ColorAlgoGen::IntervalType type)
 {
-    return m_mutationRatio;
+    auto found = std::find_if(m_interval.begin(), m_interval.end(), [type](const Interval& interval)
+    {
+        if (interval.type == type)
+            return true;
+
+        return false;
+    });
+
+    if (found == m_interval.end())
+        throw std::invalid_argument("Type not found");
+
+    return found->percent;
 }
 
-unsigned char& ColorAlgoGen::getCombinaisonRatio()
+unsigned char ColorAlgoGen::getInterval(ColorAlgoGen::IntervalType type) const
 {
-    return m_combinaisonRatio;
-}
+    auto found = std::find_if(m_interval.begin(), m_interval.end(), [type](const Interval& interval)
+    {
+        if (interval.type == type)
+            return true;
 
-unsigned char& ColorAlgoGen::getRandomRatio()
-{
-    return m_randomRatio;
+        return false;
+    });
+
+    if (found == m_interval.end())
+        throw std::invalid_argument("Type not found");
+
+    return found->percent;
 }
 
 void ColorAlgoGen::setNumberOfGenerateChild(unsigned int n)
@@ -103,6 +150,52 @@ static unsigned int getNumberOfSameBit(float a, float b)
     }
 
     return sameCount;
+}
+
+void ColorAlgoGen::mutatePopulation(std::vector<Stixel>::const_iterator start, std::vector<Stixel>::const_iterator end, std::vector<Stixel>& nextPopulation) const
+{
+    for (; start != end; ++start)
+    {
+        nextPopulation.push_back(
+            Stixel(start->sticky.mutate(),
+            start->pixel)
+        );
+    }
+}
+
+void ColorAlgoGen::combinePopulation(std::vector<Stixel>::const_iterator start, std::vector<Stixel>::const_iterator end, const std::vector<Stixel>& combinePopulation, std::vector<Stixel>& nextPopulation) const
+{
+    cinder::Rand randomizer(static_cast<unsigned int>(time(nullptr)));
+
+    for (; start != end; ++start)
+    {
+        nextPopulation.push_back(
+            Stixel(start->sticky * combinePopulation[randomizer.nextUint(combinePopulation.size() - 1)].sticky,
+            start->pixel)
+            );
+    }
+}
+
+void ColorAlgoGen::radomPopulation(std::vector<Stixel>::const_iterator start, std::vector<Stixel>::const_iterator end, std::vector<Stixel>&nextPopulation) const
+{
+    for (; start != end; ++start)
+    {
+        nextPopulation.push_back(
+            Stixel(start->sticky.random(),
+            start->pixel)
+            );
+    }
+}
+
+void ColorAlgoGen::copyPopulation(std::vector<Stixel>::const_iterator start, std::vector<Stixel>::const_iterator end, std::vector<Stixel>& nextPopulation) const
+{
+    for (; start != end; ++start)
+    {
+        nextPopulation.push_back(
+            Stixel(start->sticky,
+            start->pixel)
+            );
+    }
 }
 
 unsigned int ColorAlgoGen::getFitness(const Sticky& s, const cinder::ColorA& c) const

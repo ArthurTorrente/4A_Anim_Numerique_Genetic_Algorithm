@@ -5,6 +5,14 @@
 #include "Pixel.h"
 struct Stixel
 {
+    Stixel()
+    {}
+
+    Stixel(const Sticky& s, const Pixel& p)
+        : sticky(s),
+        pixel(p)
+    {}
+
     Sticky sticky;
     Pixel pixel;
 };
