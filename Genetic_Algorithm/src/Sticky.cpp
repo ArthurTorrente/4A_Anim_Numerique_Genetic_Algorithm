@@ -210,29 +210,28 @@ Sticky Sticky::operator*(const Sticky& s) const
     return newSticky;
 }
 
-static float mutateColorComponent(float component)
+static unsigned char mutateColorComponent(unsigned char component)
 {
-    unsigned int bitCount = sizeof(float) * 8;
+    unsigned int bitCount = sizeof(unsigned char) * 8;
     cinder::Rand randomizer(static_cast<unsigned long>(time(nullptr)));
 
     unsigned int bitIterator = 1 << randomizer.nextUint(bitCount);
-    unsigned int result = static_cast<unsigned int>(component);
+    
+    component = (component & bitIterator) ? component - bitIterator : component + bitIterator;
 
-    result = (result & bitIterator) ? result - bitIterator : result + bitIterator;
-
-    return static_cast<float>(result);
+    return component;
 }
 
 static cinder::ColorA mutateColor(const cinder::ColorA& color)
 {
     cinder::Rand randomizer(static_cast<unsigned long>(time(nullptr)));
-    cinder::ColorA resultColor(color);
+    cinder::ColorA8u resultColor(color);
 
     int colorChange = randomizer.nextInt(0, 3);
 
     resultColor[colorChange] = mutateColorComponent(resultColor[colorChange]);
 
-    return resultColor;
+    return cinder::ColorA(resultColor);
 }
 
 Sticky Sticky::mutate() const

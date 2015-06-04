@@ -108,7 +108,6 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\src\ColorAlgoGen.cpp" />
-    <ClCompile Include="..\src\IAlgoGen.cpp" />
     <ClCompile Include="..\src\Genetic_AlgorithmApp.cpp" />
     <ClCompile Include="..\src\Pixel.cpp" />
     <ClCompile Include="..\src\Sticky.cpp" />

@@ -48,9 +48,6 @@
     <ClCompile Include="..\src\WinnerIsBest.cpp">
       <Filter>Source Files\Algorithms</Filter>
     </ClCompile>
-    <ClCompile Include="..\src\IAlgoGen.cpp">
-      <Filter>Source Files\AlgoGen</Filter>
-    </ClCompile>
     <ClCompile Include="..\src\ColorAlgoGen.cpp">
       <Filter>Source Files\AlgoGen</Filter>
     </ClCompile>

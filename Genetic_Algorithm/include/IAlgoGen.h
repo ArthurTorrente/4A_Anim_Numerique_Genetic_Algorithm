@@ -10,15 +10,7 @@
 class IAlgoGen
 {
 public:
-    IAlgoGen(const cinder::Surface&);
-
-    cinder::Surface getComputeImage() const;
-    void setComputeImage(const cinder::Surface&);
-
-    virtual std::vector<Stixel> operator()(const std::vector<Stixel>&) const = 0;
-
-protected:
-    cinder::Surface m_computeImage;
+   virtual std::vector<Stixel> operator()(const std::vector<Stixel>&) const = 0;
 };
 
 #endif //_ALGOGEN_H_

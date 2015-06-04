@@ -426,8 +426,6 @@ void Genetic_AlgorithmApp::start()
 		}
 	}
 
-    m_algoGen.setComputeImage(m_currentImage);
-
     m_isStarted = true;
     m_isPaused = false;
 

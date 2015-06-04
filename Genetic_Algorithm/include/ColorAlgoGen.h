@@ -6,7 +6,7 @@
 class ColorAlgoGen : public IAlgoGen
 {
 public:
-    ColorAlgoGen(const cinder::Surface& = cinder::Surface());
+    ColorAlgoGen();
 
     virtual std::vector<Stixel> operator()(const std::vector<Stixel>&) const;
 
