@@ -7,10 +7,10 @@
 
 ColorAlgoGen::ColorAlgoGen()
 {
-    m_interval.push_back(Interval(COPY, 20));
-    m_interval.push_back(Interval(COMBINAISON, 65));
-    m_interval.push_back(Interval(MUTATE, 5));
-    m_interval.push_back(Interval(RANDOM, 10));
+    m_interval.push_back(Interval(COPY, 30));
+    m_interval.push_back(Interval(COMBINAISON, 60));
+    m_interval.push_back(Interval(MUTATE, 3));
+    m_interval.push_back(Interval(RANDOM, 8));
 }
 
 static bool haveSimilarPixel(const std::vector<Stixel>& s)
@@ -159,7 +159,8 @@ IAlgoGen::StixelsWrapper ColorAlgoGen::operator()(const std::vector<Stixel>& old
     {
         std::transform(itSticky, itSticky + fillRatio, std::back_inserter(newGen.stixel), [&beginBest](const FitnessStickyContainer& f)
         {
-            IntervalType randChoice = static_cast<IntervalType>(RANDOMIZER.nextUint(4));
+            //IntervalType randChoice = static_cast<IntervalType>(RANDOMIZER.nextUint(4));
+            IntervalType randChoice = RANDOM;
 
             switch (randChoice)
             {

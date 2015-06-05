@@ -15,7 +15,8 @@ Genetic_AlgorithmApp::~Genetic_AlgorithmApp()
 {
     m_threadRunning = false;
 
-    m_thread.join();
+    if (m_thread.joinable())
+        m_thread.join();
 }
 
 void Genetic_AlgorithmApp::prepareSettings(Settings* settings)
@@ -51,7 +52,7 @@ void Genetic_AlgorithmApp::setup()
     /* === */
 
     /* IHM */
-    m_ihmParam = cinder::params::InterfaceGl::create("Sticky", cinder::Vec2i(245, 310));
+    m_ihmParam = cinder::params::InterfaceGl::create("Sticky", cinder::Vec2i(245, 340));
     m_ihmStats = cinder::params::InterfaceGl::create("Stats", cinder::Vec2i(150, 100));
     m_ihmStats->setPosition(cinder::Vec2i(getWindowWidth() - 150, 20));
     m_ihmStats->hide();
@@ -102,8 +103,6 @@ void Genetic_AlgorithmApp::setupIHM()
             message += " images load";
             m_ihmParam->addText(message.data());
 
-            //m_ihmParam->addText("Diaporama mode");
-
             message = "Current image : ";
             message += std::to_string(m_currentImageLoadedIndex);
 
@@ -116,16 +115,18 @@ void Genetic_AlgorithmApp::setupIHM()
         }
     }
 
-    m_ihmParam->addSeparator("Algo Gen Options");
+    m_ihmParam->addSeparator("Apps options");
     m_ihmParam->addParam("Number of new Population", &m_numbreOfNewPop, "min=0 step=1", m_isStarted && !m_isPaused ? true : false);
     m_ihmParam->addParam("Pixel par groupe", &m_pixelGroupNumber, "min=1 max=1920 step=1", m_isStarted && !m_isPaused ? true : false);
     m_ihmParam->addParam("Espacement", &m_numberGapPixel, "min=0 max=10 step=1", m_isStarted && !m_isPaused ? true : false);
 
+    m_ihmParam->addSeparator("Algo Gen Options");
     m_ihmParam->addParam("Save Best", &(m_algoGen.getInterval(ColorAlgoGen::COPY)), m_isStarted && !m_isPaused ? true : false).max(100.0f).min(0.0f).step(1.0f);
     m_ihmParam->addParam("Mutation Ratio", &(m_algoGen.getInterval(ColorAlgoGen::MUTATE)), m_isStarted && !m_isPaused ? true : false).max(100.0f).min(0.0f).step(1.0f);
     m_ihmParam->addParam("Combinaison Ratio", &(m_algoGen.getInterval(ColorAlgoGen::COMBINAISON)), m_isStarted && !m_isPaused ? true : false).max(100.0f).min(0.0f).step(1.0f);
     m_ihmParam->addParam("Random Ratio", &(m_algoGen.getInterval(ColorAlgoGen::RANDOM)), m_isStarted && !m_isPaused ? true : false).max(100.0f).min(0.0f).step(1.0f);
 
+    m_ihmParam->addSeparator("Algo controle");
     m_ihmParam->addButton("Start", std::bind(&Genetic_AlgorithmApp::start, this));
     m_ihmParam->addButton("Pause", std::bind(&Genetic_AlgorithmApp::pause, this));
     m_ihmParam->addButton("Stop", std::bind(&Genetic_AlgorithmApp::stop, this));
@@ -158,7 +159,7 @@ void Genetic_AlgorithmApp::draw()
     gl::clear(cinder::Color::black());
 
     if (m_renderCurrentImage && m_currentImage)
-        gl::draw(gl::Texture(m_currentImage), getWindowBounds());
+        gl::draw(gl::Texture(m_currentImage), cinder::Rectf(0.0f, 0.0f, 0.1f * getWindowWidth(), 0.1f * getWindowHeight()));
 
     m_mutex.lock();
 
@@ -185,6 +186,8 @@ void Genetic_AlgorithmApp::updateIHM()
             m_ihmStats->addText("Start");
             m_ihmStats->addText("Algo FPS : " + std::to_string(m_computeFPS));
             m_ihmStats->addText("Pop size : " + std::to_string(m_StickyArmy.size()));
+            m_ihmStats->addText(std::string("Current image width" + m_currentImage.getWidth()));
+            m_ihmStats->addText(std::string("Current image height" + m_currentImage.getHeight()));
 
         }
         else if (m_isPaused)
@@ -463,8 +466,6 @@ void Genetic_AlgorithmApp::start()
 
     int width = static_cast<int>(this->m_currentImage.getWidth());
     int height = static_cast<int>(this->m_currentImage.getHeight());
-	
-    cinder::Rand myRand(0);
 
     float pixelGroupNumber = static_cast<float>(m_pixelGroupNumber);
     float numberGapPixel = static_cast<float>(m_numberGapPixel);
@@ -474,6 +475,7 @@ void Genetic_AlgorithmApp::start()
     
     Stixel currentStix;
 
+    m_mutex.lock();
 	for (float i = 0; i < height / this->m_pixelGroupNumber; i++)
 	{
         for (float j = 0; j < width / this->m_pixelGroupNumber; j++)
@@ -481,17 +483,22 @@ void Genetic_AlgorithmApp::start()
             currentStix.sticky = Sticky(pixelGroupNumber * widthRatio - numberGapPixel* widthRatio, pixelGroupNumber* heigthRatio - numberGapPixel* heigthRatio,
                 (j + 1.f) * (pixelGroupNumber * widthRatio), (i + 1.f) * (pixelGroupNumber * heigthRatio),
                 //this->getAveragePixelColor(j  * this->m_pixelGroupNumber, i * this->m_pixelGroupNumber, this->m_pixelGroupNumber));
-            cinder::ColorA(myRand.nextFloat(0.0f, 1.0f), myRand.nextFloat(0.0f, 1.0f), myRand.nextFloat(0.0f, 1.0f), 1.0f));
+                cinder::ColorA(RANDOMIZER.nextFloat(0.0f, 1.0f), RANDOMIZER.nextFloat(0.0f, 1.0f), RANDOMIZER.nextFloat(0.0f, 1.0f), 1.0f));
 
             currentStix.pixel = Pixel((j + 1.f) * pixelGroupNumber, (i + 1.f) * pixelGroupNumber, this->getAveragePixelColor(j * this->m_pixelGroupNumber, i * this->m_pixelGroupNumber, this->m_pixelGroupNumber));
             this->m_StickyArmy[j + i * (width / this->m_pixelGroupNumber)] = currentStix;
 		}
 	}
+    m_mutex.unlock();
 
     m_isStarted = true;
     m_isPaused = false;
 
+    if (m_thread.joinable())
+        m_thread.join();
+
     m_threadRunning = true;
+
     m_thread = std::thread(std::bind(&Genetic_AlgorithmApp::threadingCompute, this));
 
     setupIHM();
@@ -516,6 +523,8 @@ void Genetic_AlgorithmApp::stop()
     this->m_StickyArmy.clear();
     m_mutex.unlock();
 
+    m_threadRunning = false;
+
     m_isStarted = false;
     m_isPaused = false;
 
@@ -527,8 +536,12 @@ void Genetic_AlgorithmApp::nextStep()
     std::vector<IAlgoGen::StixelsWrapper> newPop;
     newPop.reserve(m_numbreOfNewPop);
 
+    m_mutex.lock();
+    auto sitckyArmyCopie(m_StickyArmy);
+    m_mutex.unlock();
+
     for (unsigned int i = 0; i < m_numbreOfNewPop; ++i)
-        newPop.push_back(m_algoGen(m_StickyArmy));
+        newPop.push_back(m_algoGen(sitckyArmyCopie));
 
     if (newPop.size() > 0)
     {
