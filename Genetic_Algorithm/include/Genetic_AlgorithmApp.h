@@ -10,7 +10,6 @@
 #include "cinder/gl/TextureFont.h"
 #include "cinder/Capture.h"
 #include "cinder/params/Params.h"
-#include "cinder/Rand.h"
 
 #include "Sticky.h"
 #include "Stixel.h"

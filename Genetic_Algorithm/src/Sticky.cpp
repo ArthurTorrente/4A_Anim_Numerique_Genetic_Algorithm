@@ -1,9 +1,9 @@
 #include "Sticky.h"
 
 #include <bitset>
-#include "cinder/Rand.h"
 
 #include "tools.h"
+#include "Constants.h"
 
 Sticky::Sticky()
 {
@@ -174,7 +174,6 @@ void Sticky::updateSize(float wRatio, float hRatio)
 
 static float genRadomFloat(float a, float b)
 {
-    cinder::Rand randomizer(static_cast<unsigned long>(time(NULL)));
     size_t bitCount = sizeof(float) * 8;
 
     unsigned int result = static_cast<unsigned int>(a);
@@ -183,7 +182,7 @@ static float genRadomFloat(float a, float b)
     for (unsigned int i = 0; i < bitCount; ++i)
     {
         //Inverse le bit bitIterator de result
-        if (randomizer.nextBool())
+        if (RANDOMIZER.nextBool())
         {
             result = (result & bitIterator) ? result - bitIterator : result + bitIterator;
         }
@@ -213,9 +212,8 @@ Sticky Sticky::operator*(const Sticky& s) const
 static unsigned char mutateColorComponent(unsigned char component)
 {
     unsigned int bitCount = sizeof(unsigned char) * 8;
-    cinder::Rand randomizer(static_cast<unsigned long>(time(nullptr)));
 
-    unsigned int bitIterator = 1 << randomizer.nextUint(bitCount);
+    unsigned int bitIterator = 1 << RANDOMIZER.nextUint(bitCount);
     
     component = (component & bitIterator) ? component - bitIterator : component + bitIterator;
 
@@ -224,10 +222,9 @@ static unsigned char mutateColorComponent(unsigned char component)
 
 static cinder::ColorA mutateColor(const cinder::ColorA& color)
 {
-    cinder::Rand randomizer(static_cast<unsigned long>(time(nullptr)));
     cinder::ColorA8u resultColor(color);
 
-    int colorChange = randomizer.nextInt(0, 3);
+    int colorChange = RANDOMIZER.nextInt(0, 2);
 
     resultColor[colorChange] = mutateColorComponent(resultColor[colorChange]);
 
@@ -246,9 +243,8 @@ Sticky Sticky::mutate() const
 Sticky Sticky::random() const
 {
     Sticky newSticky(*this);
-    cinder::Rand randomizer(static_cast<unsigned long>(time(nullptr)));
 
-    newSticky.ChangeColor(cinder::ColorA(randomizer.nextFloat(0.0f, 1.0f), randomizer.nextFloat(0.0f, 1.0f), randomizer.nextFloat(0.0f, 1.0f), 1.0f));
+    newSticky.ChangeColor(cinder::ColorA(RANDOMIZER.nextFloat(0.0f, 1.0f), RANDOMIZER.nextFloat(0.0f, 1.0f), RANDOMIZER.nextFloat(0.0f, 1.0f), 1.0f));
 
     return newSticky;
 }

@@ -51,6 +51,9 @@
     <ClCompile Include="..\src\ColorAlgoGen.cpp">
       <Filter>Source Files\AlgoGen</Filter>
     </ClCompile>
+    <ClCompile Include="..\src\Constants.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\include\Resources.h">
@@ -91,6 +94,9 @@
     </ClInclude>
     <ClInclude Include="..\include\ColorAlgoGen.h">
       <Filter>Header Files\AlgoGen</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\Constants.h">
+      <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

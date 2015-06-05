@@ -2,8 +2,7 @@
 #define _COLORALGOGEN_H_
 
 #include "IAlgoGen.h"
-
-#include <map>
+#include "Constants.h"
 
 class ColorAlgoGen : public IAlgoGen
 {
@@ -29,7 +28,7 @@ public:
 
     ColorAlgoGen();
 
-    virtual std::vector<Stixel> operator()(const std::vector<Stixel>&) const;
+    virtual StixelsWrapper operator()(const std::vector<Stixel>&) const;
 
     unsigned char& getInterval(IntervalType);
     unsigned char getInterval(IntervalType) const;
@@ -39,7 +38,6 @@ public:
     unsigned int getFitness(const Sticky&, const cinder::ColorA&) const;
 
 protected:
-    
     std::vector<Interval> m_interval;
 };
 

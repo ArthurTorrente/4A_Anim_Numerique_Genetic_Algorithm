@@ -38,3 +38,11 @@ void Pixel::setColor(const cinder::ColorA& color)
 {
     m_color = color;
 }
+
+bool Pixel::operator==(const Pixel& p) const
+{
+    if (m_x == p.m_x && m_y == p.m_y)
+        return true;
+
+    else return false;
+}

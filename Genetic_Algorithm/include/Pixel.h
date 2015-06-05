@@ -16,6 +16,8 @@ public:
     void setX(int x);
     void setY(int y);
     void setColor(const cinder::ColorA& color);
+
+    bool operator==(const Pixel& p) const;
 protected:
     int m_x;
     int m_y;

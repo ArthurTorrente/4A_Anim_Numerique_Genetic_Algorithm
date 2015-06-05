@@ -16,7 +16,7 @@ void Genetic_AlgorithmApp::prepareSettings(Settings* settings)
     this->beforeResizeWidth = 800;
     this->beforeResizeHeight = 600;
     settings->setWindowSize(cinder::Vec2i(800, 600));
-    settings->setFrameRate(60.0f);
+    settings->setFrameRate(200.0f);
 
     m_cameraMode = false;
 }
@@ -135,7 +135,7 @@ void Genetic_AlgorithmApp::update()
 
 void Genetic_AlgorithmApp::draw()
 {
-    gl::clear(cinder::Color::black());
+    gl::clear(cinder::Color(255, 0, 0));
 
     if (m_renderCurrentImage && m_currentImage)
         gl::draw(gl::Texture(m_currentImage), getWindowBounds());
@@ -163,10 +163,10 @@ void Genetic_AlgorithmApp::updateIHM()
     }
 
     if (m_isStarted)
-        m_renderString->drawString(message, cinder::Vec2f(getWindowWidth() - 100, 40));
+        m_renderString->drawString(message, cinder::Vec2f(static_cast<float>(getWindowWidth()) - 100.0f, 40.0f));
 
-    m_renderString->drawString(std::string("FPS :") + std::to_string(getAverageFps()), cinder::Vec2f(getWindowWidth() - 150, 60));
-    m_renderString->drawString(std::string("Sticky number :") + std::to_string(m_StickyArmy.size()), cinder::Vec2f(getWindowWidth() - 190, 80));
+    m_renderString->drawString(std::string("FPS :") + std::to_string(getAverageFps()), cinder::Vec2f(static_cast<float>(getWindowWidth()) - 150.0f, 60.0f));
+    //m_renderString->drawString(std::string("Sticky number :") + std::to_string(m_StickyArmy.size()), cinder::Vec2f(static_cast<float>(getWindowWidth()) - 190.0f, 80.0f));
 }
 
 void Genetic_AlgorithmApp::resize()
@@ -430,7 +430,7 @@ void Genetic_AlgorithmApp::start()
             currentStix.sticky = Sticky(pixelGroupNumber * widthRatio - numberGapPixel* widthRatio, pixelGroupNumber* heigthRatio - numberGapPixel* heigthRatio,
                 (j + 1.f) * (pixelGroupNumber * widthRatio), (i + 1.f) * (pixelGroupNumber * heigthRatio),
                 //this->getAveragePixelColor(j  * this->m_pixelGroupNumber, i * this->m_pixelGroupNumber, this->m_pixelGroupNumber));
-            cinder::ColorA(myRand.nextFloat(0.0f, 1.0f), myRand.nextFloat(0.0f, 1.0f), myRand.nextFloat(0.0f, 1.0f), 0.1f));
+            cinder::ColorA(myRand.nextFloat(0.0f, 1.0f), myRand.nextFloat(0.0f, 1.0f), myRand.nextFloat(0.0f, 1.0f), 1.0f));
 
             currentStix.pixel = Pixel((j + 1.f) * pixelGroupNumber, (i + 1.f) * pixelGroupNumber, this->getAveragePixelColor(j * this->m_pixelGroupNumber, i * this->m_pixelGroupNumber, this->m_pixelGroupNumber));
             this->m_StickyArmy[j + i * (width / this->m_pixelGroupNumber)] = currentStix;
@@ -467,7 +467,15 @@ void Genetic_AlgorithmApp::stop()
 
 void Genetic_AlgorithmApp::nextStep()
 {
-    m_StickyArmy = m_algoGen(m_StickyArmy);
+    std::vector<IAlgoGen::StixelsWrapper> newPop;
+    newPop.reserve(4);
+
+    for (unsigned int i = 0; i < 4; ++i)
+        newPop.push_back(m_algoGen(m_StickyArmy));
+
+    std::sort(newPop.begin(), newPop.end());
+    
+    m_StickyArmy = newPop.front().stixel;
 }
 
 cinder::ColorA Genetic_AlgorithmApp::getAveragePixelColor(int startXIndex, int startYIndex, int groupRowNumber)
