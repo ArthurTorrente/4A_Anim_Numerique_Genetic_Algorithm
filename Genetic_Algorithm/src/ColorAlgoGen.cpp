@@ -8,8 +8,8 @@
 ColorAlgoGen::ColorAlgoGen()
 {
     m_interval.push_back(Interval(COPY, 20));
-    m_interval.push_back(Interval(COMBINAISON, 2));
-    m_interval.push_back(Interval(MUTATE, 65));
+    m_interval.push_back(Interval(COMBINAISON, 65));
+    m_interval.push_back(Interval(MUTATE, 5));
     m_interval.push_back(Interval(RANDOM, 10));
 }
 
@@ -60,6 +60,7 @@ IAlgoGen::StixelsWrapper ColorAlgoGen::operator()(const std::vector<Stixel>& old
     float fitnessPopSize = static_cast<float>(fitnessSticky.size());
 
     auto itSticky = fitnessSticky.begin();
+    auto ENDSTICKY = fitnessSticky.end() - 1;
     auto beginBest = fitnessSticky.begin();
 
     /* Keep best */
@@ -69,10 +70,14 @@ IAlgoGen::StixelsWrapper ColorAlgoGen::operator()(const std::vector<Stixel>& old
     {
         std::transform(itSticky, itSticky + keepBest, std::back_inserter(newGen.stixel), [&beginBest](const FitnessStickyContainer& f)
         {
-            Stixel newStick(beginBest->stixel->sticky, f.stixel->pixel);
+            Sticky newStick(f.stixel->sticky);
+            newStick.ChangeColor(beginBest->stixel->sticky.getColor());
+
+            Stixel newStixel(newStick, f.stixel->pixel);
+
             ++beginBest;
 
-            return newStick;
+            return newStixel;
         });
 
         itSticky += keepBest;
@@ -89,10 +94,13 @@ IAlgoGen::StixelsWrapper ColorAlgoGen::operator()(const std::vector<Stixel>& old
     {
         std::transform(itSticky, itSticky + mutateRatio, std::back_inserter(newGen.stixel), [&beginBest](const FitnessStickyContainer& f)
         {
-            Stixel newStick(beginBest->stixel->sticky.mutate(), f.stixel->pixel);
+            Sticky newStick(f.stixel->sticky);
+            newStick.ChangeColor(beginBest->stixel->sticky.mutate().getColor());
+
+            Stixel newStixel(newStick, f.stixel->pixel);
             ++beginBest;
 
-            return newStick;
+            return newStixel;
         });
 
         itSticky += mutateRatio;
@@ -108,10 +116,13 @@ IAlgoGen::StixelsWrapper ColorAlgoGen::operator()(const std::vector<Stixel>& old
     {
         std::transform(itSticky, itSticky + combineRatio, std::back_inserter(newGen.stixel), [&newGen, &keepBest, &beginBest](const FitnessStickyContainer& f)
         {
-            Stixel newStick(beginBest->stixel->sticky * newGen.stixel[RANDOMIZER.nextUint(keepBest - 1)].sticky, f.stixel->pixel);
+            Sticky newStick(f.stixel->sticky);
+            newStick.ChangeColor((beginBest->stixel->sticky * newGen.stixel[RANDOMIZER.nextUint(keepBest - 1)].sticky).getColor());
+
+            Stixel newStixel(newStick, f.stixel->pixel);
             ++beginBest;
 
-            return newStick;
+            return newStixel;
         });
 
         itSticky += combineRatio;
@@ -127,10 +138,13 @@ IAlgoGen::StixelsWrapper ColorAlgoGen::operator()(const std::vector<Stixel>& old
     {
         std::transform(itSticky, itSticky + randomRatio, std::back_inserter(newGen.stixel), [&beginBest](const FitnessStickyContainer& f)
         {
-            Stixel newStick(beginBest->stixel->sticky.random(), f.stixel->pixel);
+            Sticky newStick(f.stixel->sticky);
+            newStick.ChangeColor(beginBest->stixel->sticky.random().getColor());
+
+            Stixel newStixel(newStick, f.stixel->pixel);
             ++beginBest;
 
-            return newStick;
+            return newStixel;
         });
 
         itSticky += randomRatio;
@@ -151,50 +165,55 @@ IAlgoGen::StixelsWrapper ColorAlgoGen::operator()(const std::vector<Stixel>& old
             {
             case COPY:
             {
-                Stixel newStick(beginBest->stixel->sticky, f.stixel->pixel);
+                Sticky newStick(f.stixel->sticky);
+                newStick.ChangeColor(beginBest->stixel->sticky.getColor());
+
+                Stixel newStixel(newStick, f.stixel->pixel);
                 ++beginBest;
 
-                return newStick;
+                return newStixel;
             }
             break;
 
             case MUTATE:
             {
-                Stixel newStick(beginBest->stixel->sticky.mutate(), f.stixel->pixel);
+                Sticky newStick(f.stixel->sticky);
+                newStick.ChangeColor(beginBest->stixel->sticky.mutate().getColor());
+
+                Stixel newStixel(newStick, f.stixel->pixel);
                 ++beginBest;
 
-                return newStick;
+                return newStixel;
             }
             break;
 
             case COMBINAISON:
             {
-                Stixel newStick(beginBest->stixel->sticky * beginBest->stixel->sticky.random(), f.stixel->pixel);
+                Sticky newStick(f.stixel->sticky);
+                newStick.ChangeColor((beginBest->stixel->sticky * beginBest->stixel->sticky.random()).getColor());
+
+                Stixel newStixel(newStick, f.stixel->pixel);
                 ++beginBest;
 
-                return newStick;
+                return newStixel;
             }
             break;
 
             case RANDOM:
             default:
             {
-                Stixel newStick(beginBest->stixel->sticky.random(), f.stixel->pixel);
+                Sticky newStick(f.stixel->sticky);
+                newStick.ChangeColor(beginBest->stixel->sticky.random().getColor());
+
+                Stixel newStixel(newStick, f.stixel->pixel);
                 ++beginBest;
 
-                return newStick;
+                return newStixel;
             }
             }
         });
     }
     /* ============================= */
-
-    /* Debug same pixel */
-
-    if (haveSimilarPixel(newGen.stixel))
-    {
-        std::cout << "haveSame pixel" << std::endl;
-    }
 
     /* Calcul du fitness de la nouvelle population */
     std::for_each(newGen.stixel.begin(), newGen.stixel.end(), [&newGen, this](const Stixel& s)

@@ -2,6 +2,7 @@
 #define _GENETICALGORITHMAPP_H_
 
 #include <vector>
+#include <thread>
 
 #include "cinder/app/AppNative.h"
 #include "cinder/gl/gl.h"
@@ -25,6 +26,7 @@ using namespace std;
 class Genetic_AlgorithmApp : public AppNative
 {
 public:
+    ~Genetic_AlgorithmApp();
     /**
     * Main Window event
     */
@@ -129,7 +131,10 @@ protected:
      * IHMs
      */
     cinder::params::InterfaceGlRef m_ihmParam;
+    cinder::params::InterfaceGlRef m_ihmStats;
+    void toggleDisplayStat();
     void changeMode();
+    void toggleDisplayCurrent();
     void loadImage();
 
 	/**
@@ -162,6 +167,16 @@ protected:
      * Algo gen
      */
     ColorAlgoGen m_algoGen;
+
+    /*
+    Threading
+    */
+    int m_numbreOfNewPop;
+    std::mutex m_mutex;
+    double m_computeFPS;
+    bool m_threadRunning;
+    std::thread m_thread;
+    void threadingCompute();
 };
 
 #endif //_GENETICALGORITHMAPP_H_

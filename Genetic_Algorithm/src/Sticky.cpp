@@ -20,7 +20,9 @@ Sticky::Sticky(const Sticky& s)
     m_y(s.m_y),
     m_StickyMesh(s.m_StickyMesh),
     m_Color(s.m_Color)
-{}
+{
+    CreateMesh();
+}
 
 Sticky::Sticky(float x, float y)
 {
@@ -135,6 +137,8 @@ void Sticky::ChangeColor(const cinder::ColorA& color)
     {
         currentColor = color;
     }
+
+    m_Color = color;
 }
 
 void Sticky::draw() const
