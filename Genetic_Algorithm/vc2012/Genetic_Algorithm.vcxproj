@@ -1,3 +1,4 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
 <Project DefaultTargets="Build" ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup Label="ProjectConfigurations">
     <ProjectConfiguration Include="Debug|Win32">
@@ -39,17 +40,17 @@
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup>
     <_ProjectFileVersion>10.0.30319.1</_ProjectFileVersion>
-    <OutDir Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(SolutionDir)$(Configuration)\</OutDir>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(SolutionDir)\..\bin\</OutDir>
     <IntDir Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(Configuration)\</IntDir>
     <LinkIncremental Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</LinkIncremental>
-    <OutDir Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(SolutionDir)$(Configuration)\</OutDir>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(SolutionDir)\..\bin\</OutDir>
     <IntDir Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(Configuration)\</IntDir>
     <LinkIncremental Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">false</LinkIncremental>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
       <Optimization>Disabled</Optimization>
-      <AdditionalIncludeDirectories>..\include;"..\..\..\..\..\..\..\..\Dev\cinder_0.8.6_vc2013\include";"..\..\..\..\..\..\..\..\Dev\cinder_0.8.6_vc2013\boost"</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\include;$(Lib_Cinder)\include;$(Lib_Cinder)\boost;</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>WIN32;_DEBUG;_WINDOWS;NOMINMAX;_WIN32_WINNT=0x0502;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <MinimalRebuild>true</MinimalRebuild>
       <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
@@ -60,11 +61,11 @@
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
     </ClCompile>
     <ResourceCompile>
-      <AdditionalIncludeDirectories>"..\..\..\..\..\..\..\..\Dev\cinder_0.8.6_vc2013\include";..\include</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(Lib_Cinder)\include;..\include</AdditionalIncludeDirectories>
     </ResourceCompile>
     <Link>
       <AdditionalDependencies>cinder-$(PlatformToolset)_d.lib;%(AdditionalDependencies)</AdditionalDependencies>
-      <AdditionalLibraryDirectories>"..\..\..\..\..\..\..\..\Dev\cinder_0.8.6_vc2013\lib\msw\$(PlatformTarget)"</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>$(Lib_Cinder)\lib\msw\$(PlatformTarget);</AdditionalLibraryDirectories>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <SubSystem>Windows</SubSystem>
       <RandomizedBaseAddress>false</RandomizedBaseAddress>
@@ -75,7 +76,7 @@
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <ClCompile>
-      <AdditionalIncludeDirectories>..\include;"..\..\..\..\..\..\..\..\Dev\cinder_0.8.6_vc2013\include";"..\..\..\..\..\..\..\..\Dev\cinder_0.8.6_vc2013\boost"</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\include;$(Lib_Cinder)\include;$(Lib_Cinder)\boost;</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>WIN32;NDEBUG;_WINDOWS;NOMINMAX;_WIN32_WINNT=0x0502;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
       <PrecompiledHeader />
@@ -87,11 +88,11 @@
       <LinkLibraryDependencies>true</LinkLibraryDependencies>
     </ProjectReference>
     <ResourceCompile>
-      <AdditionalIncludeDirectories>"..\..\..\..\..\..\..\..\Dev\cinder_0.8.6_vc2013\include";..\include</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(Lib_Cinder)\include;..\include</AdditionalIncludeDirectories>
     </ResourceCompile>
     <Link>
       <AdditionalDependencies>cinder-$(PlatformToolset).lib;%(AdditionalDependencies)</AdditionalDependencies>
-      <AdditionalLibraryDirectories>"..\..\..\..\..\..\..\..\Dev\cinder_0.8.6_vc2013\lib\msw\$(PlatformTarget)"</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>$(Lib_Cinder)\lib\msw\$(PlatformTarget);</AdditionalLibraryDirectories>
       <GenerateDebugInformation>false</GenerateDebugInformation>
       <GenerateMapFile>true</GenerateMapFile>
       <SubSystem>Windows</SubSystem>
@@ -106,10 +107,29 @@
     <ResourceCompile Include="Resources.rc" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="..\src\ColorAlgoGen.cpp" />
+    <ClCompile Include="..\src\Constants.cpp" />
     <ClCompile Include="..\src\Genetic_AlgorithmApp.cpp" />
+    <ClCompile Include="..\src\Pixel.cpp" />
+    <ClCompile Include="..\src\Sticky.cpp" />
+    <ClCompile Include="..\src\WheelBiased.cpp" />
+    <ClCompile Include="..\src\WinnerIsBest.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="..\include\Algorithms\FitnessStickyContainer.h" />
+    <ClInclude Include="..\include\Algorithms\IWinnerChoice.h" />
+    <ClInclude Include="..\include\Algorithms\WheelBiased.h" />
+    <ClInclude Include="..\include\Algorithms\WinnerIsBest.h" />
+    <ClInclude Include="..\include\ColorAlgoGen.h" />
+    <ClInclude Include="..\include\Constants.h" />
+    <ClInclude Include="..\include\Genetic_AlgorithmApp.h" />
+    <ClInclude Include="..\include\IAlgoGen.h" />
+    <ClInclude Include="..\include\Image.h" />
+    <ClInclude Include="..\include\Pixel.h" />
     <ClInclude Include="..\include\Resources.h" />
+    <ClInclude Include="..\include\Sticky.h" />
+    <ClInclude Include="..\include\Stixel.h" />
+    <ClInclude Include="..\include\tools.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets" />

@@ -197,7 +197,60 @@ static float genRadomFloat(float a, float b)
     return static_cast<float>(result);
 }
 
+static unsigned char genRadomColor(unsigned char a, unsigned char b)
+{
+    size_t bitCount = sizeof(unsigned char) * 8;
 
+    unsigned int result = a;
+    unsigned int bitIterator = 1;
+
+    for (unsigned int i = 0; i < bitCount; ++i)
+    {
+        //Inverse le bit bitIterator de result
+        if (RANDOMIZER.nextBool())
+        {
+            result = (result & bitIterator) ? result - bitIterator : result + bitIterator;
+        }
+
+        bitIterator = bitIterator << 1;
+    }
+
+    return result;
+}
+
+Sticky Sticky::operator*(const cinder::ColorA& c) const
+{
+    Sticky newSticky(*this);
+
+    cinder::ColorA8u tC(m_Color);
+    cinder::ColorA8u oC(c);
+
+    cinder::ColorA8u nC(genRadomColor(tC.r, oC.r),
+        genRadomColor(tC.g, oC.g),
+        genRadomColor(tC.b, oC.b));
+
+    newSticky.ChangeColor(cinder::ColorA(nC));
+
+    return newSticky;
+}
+
+#if 1
+Sticky Sticky::operator*(const Sticky& s) const
+{
+    Sticky newSticky(*this);
+
+    cinder::ColorA8u tC(m_Color);
+    cinder::ColorA8u oC(s.getColor());
+
+    cinder::ColorA8u nC(genRadomColor(tC.r, oC.r),
+        genRadomColor(tC.g, oC.g),
+        genRadomColor(tC.b, oC.b));
+
+    newSticky.ChangeColor(cinder::ColorA(nC));
+
+    return newSticky;
+}
+#else
 Sticky Sticky::operator*(const Sticky& s) const
 {
     Sticky newSticky(*this);
@@ -212,6 +265,7 @@ Sticky Sticky::operator*(const Sticky& s) const
 
     return newSticky;
 }
+#endif
 
 static unsigned char mutateColorComponent(unsigned char component)
 {

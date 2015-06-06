@@ -114,10 +114,12 @@ IAlgoGen::StixelsWrapper ColorAlgoGen::operator()(const std::vector<Stixel>& old
 
     if (combineRatio > 0)
     {
-        std::transform(itSticky, itSticky + combineRatio, std::back_inserter(newGen.stixel), [&newGen, &keepBest, &beginBest](const FitnessStickyContainer& f)
+        std::transform(itSticky, itSticky + combineRatio, std::back_inserter(newGen.stixel), [&newGen, &keepBest, &fitnessPopSize, &beginBest](const FitnessStickyContainer& f)
         {
             Sticky newStick(f.stixel->sticky);
-            newStick.ChangeColor((beginBest->stixel->sticky * newGen.stixel[RANDOMIZER.nextUint(keepBest - 1)].sticky).getColor());
+            //newStick.ChangeColor((beginBest->stixel->sticky * newGen.stixel[RANDOMIZER.nextUint(keepBest - 1)].sticky).getColor());
+            //newStick.ChangeColor((beginBest->stixel->sticky * newGen.stixel[RANDOMIZER.nextUint(fitnessPopSize - 1)].sticky).getColor());
+            newStick.ChangeColor((beginBest->stixel->sticky * f.stixel->pixel.getColor()).getColor());
 
             Stixel newStixel(newStick, f.stixel->pixel);
             ++beginBest;

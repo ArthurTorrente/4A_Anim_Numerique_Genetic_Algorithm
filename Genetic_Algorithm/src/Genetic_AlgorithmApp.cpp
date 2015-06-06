@@ -158,9 +158,6 @@ void Genetic_AlgorithmApp::draw()
 {
     gl::clear(cinder::Color::black());
 
-    if (m_renderCurrentImage && m_currentImage)
-        gl::draw(gl::Texture(m_currentImage), cinder::Rectf(0.0f, 0.0f, 0.1f * getWindowWidth(), 0.1f * getWindowHeight()));
-
     m_mutex.lock();
 
     for (std::vector<Sticky>::size_type i = 0; i < this->m_StickyArmy.size(); i++)
@@ -169,6 +166,9 @@ void Genetic_AlgorithmApp::draw()
 	}
     
     m_mutex.unlock();
+
+    if (m_renderCurrentImage && m_currentImage)
+        gl::draw(gl::Texture(m_currentImage), cinder::Rectf(0.0f, 0.0f, 0.1f * getWindowWidth(), 0.1f * getWindowHeight()));
 
     updateIHM();
 }

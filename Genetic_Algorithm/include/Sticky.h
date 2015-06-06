@@ -33,6 +33,7 @@ public:
     /**
      * AlgoGenOperator
      */
+    Sticky operator*(const cinder::ColorA&) const;
     Sticky operator*(const Sticky&) const;
     Sticky mutate() const;
     Sticky random() const;
