@@ -7,38 +7,13 @@
 class ColorAlgoGen : public IAlgoGen
 {
 public:
-    enum IntervalType
-    {
-        MUTATE,
-        COMBINAISON,
-        RANDOM,
-        COPY
-    };
-
-    struct Interval
-    {
-        IntervalType type;
-        unsigned char percent;
-
-        Interval(IntervalType _type, unsigned char _percent)
-            : type(_type),
-            percent(_percent)
-        {}
-    };
-
     ColorAlgoGen();
 
-    virtual StixelsWrapper operator()(const std::vector<Stixel>&) const;
-
-    unsigned char& getInterval(IntervalType);
-    unsigned char getInterval(IntervalType) const;
-
-    float getPercent(IntervalType) const;
-
-    unsigned int getFitness(const Sticky&, const cinder::ColorA&) const;
+    virtual cinder::Surface operator()(const cinder::Surface&);
 
 protected:
-    std::vector<Interval> m_interval;
+    cinder::Surface mutate(const cinder::Surface&) const;
+    cinder::Surface crossOver(const cinder::Surface& s1, const cinder::Surface& s2) const;
 };
 
 #endif //_COLORALGOGEN_H_

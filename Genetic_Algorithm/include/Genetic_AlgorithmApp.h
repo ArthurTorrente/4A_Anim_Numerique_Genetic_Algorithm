@@ -11,6 +11,7 @@
 #include "cinder/gl/TextureFont.h"
 #include "cinder/Capture.h"
 #include "cinder/params/Params.h"
+#include "cinder/ip/Resize.h"
 
 #include "Sticky.h"
 #include "Stixel.h"
@@ -140,7 +141,7 @@ protected:
 	/**
 	* Nombre de pixel par groupe
 	*/
-	int m_pixelGroupNumber;
+	int m_pixelPerSticky;
 
 	/**
 	* Nombre de pixel entre deux sticky
@@ -148,18 +149,12 @@ protected:
 	int m_numberGapPixel;
 
     /**
-     * Algo Gen
-     * Image utilisé par l'algo Gen
-     */
-    cinder::Surface m_currentImage;
-
-    /**
      * Setup de la caméra
      */
     void setupCamera();
 
-    float beforeResizeWidth;
-    float beforeResizeHeight;
+    float m_beforeResizeWidth;
+    float m_beforeResizeHeight;
 
     cinder::ColorA getAveragePixelColor(int startXIndex, int startYIndex, int groupRowNumber);
 
@@ -171,12 +166,27 @@ protected:
     /*
     Threading
     */
-    int m_numbreOfNewPop;
+    int m_numberOfPopulation;
     std::mutex m_mutex;
     double m_computeFPS;
     bool m_threadRunning;
     std::thread m_thread;
     void threadingCompute();
+
+
+    /**
+    * Algo Gen
+    * Image utilisé par l'algo Gen
+    */
+    cinder::Surface m_currentImage;
+    /* Image reduite pour l'algoGen */
+    cinder::Surface m_currentAlgoGenImage;
+    /*
+    Image retourné par l'algoGen
+    */
+    cinder::Surface m_algoGenImage;
+    /* Rescale de l'image en paramètre et set current image */
+    void setCurrentImage(const cinder::Surface&);
 };
 
 #endif //_GENETICALGORITHMAPP_H_

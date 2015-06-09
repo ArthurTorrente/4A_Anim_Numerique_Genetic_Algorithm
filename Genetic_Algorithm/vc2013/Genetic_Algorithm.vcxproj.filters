@@ -13,12 +13,6 @@
       <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
       <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav</Extensions>
     </Filter>
-    <Filter Include="Header Files\Algorithms">
-      <UniqueIdentifier>{db50989d-35a0-447b-ab27-4aa72737e63c}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Source Files\Algorithms">
-      <UniqueIdentifier>{8ff93572-ba3f-4877-8150-19bdc42e0720}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Header Files\AlgoGen">
       <UniqueIdentifier>{565d1d2b-bcb9-4b7e-b059-775149d67ead}</UniqueIdentifier>
     </Filter>
@@ -42,24 +36,18 @@
     <ClCompile Include="..\src\Pixel.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\src\WheelBiased.cpp">
-      <Filter>Source Files\Algorithms</Filter>
-    </ClCompile>
-    <ClCompile Include="..\src\WinnerIsBest.cpp">
-      <Filter>Source Files\Algorithms</Filter>
-    </ClCompile>
     <ClCompile Include="..\src\ColorAlgoGen.cpp">
       <Filter>Source Files\AlgoGen</Filter>
     </ClCompile>
     <ClCompile Include="..\src\Constants.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="..\src\IAlgoGen.cpp">
+      <Filter>Source Files\AlgoGen</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\include\Resources.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\include\tools.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\include\Genetic_AlgorithmApp.h">
@@ -77,18 +65,6 @@
     <ClInclude Include="..\include\Stixel.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\include\Algorithms\IWinnerChoice.h">
-      <Filter>Header Files\Algorithms</Filter>
-    </ClInclude>
-    <ClInclude Include="..\include\Algorithms\FitnessStickyContainer.h">
-      <Filter>Header Files\Algorithms</Filter>
-    </ClInclude>
-    <ClInclude Include="..\include\Algorithms\WheelBiased.h">
-      <Filter>Header Files\Algorithms</Filter>
-    </ClInclude>
-    <ClInclude Include="..\include\Algorithms\WinnerIsBest.h">
-      <Filter>Header Files\Algorithms</Filter>
-    </ClInclude>
     <ClInclude Include="..\include\IAlgoGen.h">
       <Filter>Header Files\AlgoGen</Filter>
     </ClInclude>
@@ -96,6 +72,12 @@
       <Filter>Header Files\AlgoGen</Filter>
     </ClInclude>
     <ClInclude Include="..\include\Constants.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\tools.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\StixImage.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

@@ -114,25 +114,21 @@
     <ClCompile Include="..\src\ColorAlgoGen.cpp" />
     <ClCompile Include="..\src\Constants.cpp" />
     <ClCompile Include="..\src\Genetic_AlgorithmApp.cpp" />
+    <ClCompile Include="..\src\IAlgoGen.cpp" />
     <ClCompile Include="..\src\Pixel.cpp" />
     <ClCompile Include="..\src\Sticky.cpp" />
-    <ClCompile Include="..\src\WheelBiased.cpp" />
-    <ClCompile Include="..\src\WinnerIsBest.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\include\ColorAlgoGen.h" />
     <ClInclude Include="..\include\Constants.h" />
     <ClInclude Include="..\include\IAlgoGen.h" />
-    <ClInclude Include="..\include\Algorithms\FitnessStickyContainer.h" />
-    <ClInclude Include="..\include\Algorithms\IWinnerChoice.h" />
-    <ClInclude Include="..\include\Algorithms\WheelBiased.h" />
-    <ClInclude Include="..\include\Algorithms\WinnerIsBest.h" />
     <ClInclude Include="..\include\Genetic_AlgorithmApp.h" />
     <ClInclude Include="..\include\Image.h" />
     <ClInclude Include="..\include\Pixel.h" />
     <ClInclude Include="..\include\Resources.h" />
     <ClInclude Include="..\include\Sticky.h" />
     <ClInclude Include="..\include\Stixel.h" />
+    <ClInclude Include="..\include\StixImage.h" />
     <ClInclude Include="..\include\tools.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

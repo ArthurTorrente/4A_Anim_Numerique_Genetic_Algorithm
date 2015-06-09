@@ -21,10 +21,12 @@ Genetic_AlgorithmApp::~Genetic_AlgorithmApp()
 
 void Genetic_AlgorithmApp::prepareSettings(Settings* settings)
 {
-    this->beforeResizeWidth = 800;
-    this->beforeResizeHeight = 600;
+    m_beforeResizeWidth = 800;
+    m_beforeResizeHeight = 600;
     settings->setWindowSize(cinder::Vec2i(800, 600));
     settings->setFrameRate(200.0f);
+
+    //settings->enableConsoleWindow();
 
     m_cameraMode = false;
 }
@@ -35,8 +37,8 @@ void Genetic_AlgorithmApp::setup()
     m_renderCurrentImage = true;
     /* === */
     /* Algo Gen */
-	this->m_pixelGroupNumber = 15;
-	this->m_numberGapPixel = 0;
+	m_pixelPerSticky = 15;
+	m_numberGapPixel = 0;
     m_isStarted = false;
     m_isPaused = false;
     /* === */
@@ -66,7 +68,7 @@ void Genetic_AlgorithmApp::setup()
     m_threadRunning = false;
     m_computeFPS = 0.0;
 
-    m_numbreOfNewPop = 5;
+    m_numberOfPopulation = 100;
 }
 
 void Genetic_AlgorithmApp::setupIHM()
@@ -116,14 +118,14 @@ void Genetic_AlgorithmApp::setupIHM()
     }
 
     m_ihmParam->addSeparator("Apps options");
-    m_ihmParam->addParam("Number of new Population", &m_numbreOfNewPop, "min=0 step=1", m_isStarted && !m_isPaused ? true : false);
-    m_ihmParam->addParam("Pixel par groupe", &m_pixelGroupNumber, "min=1 max=1920 step=1", m_isStarted && !m_isPaused ? true : false);
+    m_ihmParam->addParam("Number of new Population", &m_numberOfPopulation, "min=0 step=1", m_isStarted && !m_isPaused ? true : false);
+    m_ihmParam->addParam("Pixel par groupe", &m_pixelPerSticky, "min=1 max=1920 step=1", m_isStarted && !m_isPaused ? true : false);
     m_ihmParam->addParam("Espacement", &m_numberGapPixel, "min=0 max=10 step=1", m_isStarted && !m_isPaused ? true : false);
 
     m_ihmParam->addSeparator("Algo Gen Options");
     m_ihmParam->addParam("Save Best", &(m_algoGen.getInterval(ColorAlgoGen::COPY)), m_isStarted && !m_isPaused ? true : false).max(100.0f).min(0.0f).step(1.0f);
     m_ihmParam->addParam("Mutation Ratio", &(m_algoGen.getInterval(ColorAlgoGen::MUTATE)), m_isStarted && !m_isPaused ? true : false).max(100.0f).min(0.0f).step(1.0f);
-    m_ihmParam->addParam("Combinaison Ratio", &(m_algoGen.getInterval(ColorAlgoGen::COMBINAISON)), m_isStarted && !m_isPaused ? true : false).max(100.0f).min(0.0f).step(1.0f);
+    m_ihmParam->addParam("CrossOver Ratio", &(m_algoGen.getInterval(ColorAlgoGen::CROSSOVER)), m_isStarted && !m_isPaused ? true : false).max(100.0f).min(0.0f).step(1.0f);
     m_ihmParam->addParam("Random Ratio", &(m_algoGen.getInterval(ColorAlgoGen::RANDOM)), m_isStarted && !m_isPaused ? true : false).max(100.0f).min(0.0f).step(1.0f);
 
     m_ihmParam->addSeparator("Algo controle");
@@ -158,14 +160,22 @@ void Genetic_AlgorithmApp::draw()
 {
     gl::clear(cinder::Color::black());
 
+    /*
     m_mutex.lock();
-
     for (std::vector<Sticky>::size_type i = 0; i < this->m_StickyArmy.size(); i++)
 	{
 		this->m_StickyArmy[i].sticky.draw();
 	}
-    
     m_mutex.unlock();
+    */
+    if (m_algoGenImage)
+    {
+        m_mutex.lock();
+        {
+            gl::draw(gl::Texture(m_algoGenImage), ci::Rectf(0.0f, 0.0f, getWindowWidth(), getWindowHeight()));
+        }
+        m_mutex.unlock();
+    }    
 
     if (m_renderCurrentImage && m_currentImage)
         gl::draw(gl::Texture(m_currentImage), cinder::Rectf(0.0f, 0.0f, 0.1f * getWindowWidth(), 0.1f * getWindowHeight()));
@@ -207,18 +217,17 @@ void Genetic_AlgorithmApp::updateIHM()
 void Genetic_AlgorithmApp::resize()
 {
     ci::Rectf screen = getWindowBounds();
-    float wRatio = screen.getWidth() / this->beforeResizeWidth;
-    float hRatio = screen.getHeight() / this->beforeResizeHeight;
-
+ 
+    /*
     m_mutex.lock();
-    for (std::vector<Sticky>::size_type i = 0; i < this->m_StickyArmy.size(); i++)
+    for (std::vector<Sticky>::size_type i = 0; i < m_StickyArmy.size(); i++)
     {
-        this->m_StickyArmy[i].sticky.updateSize(wRatio, hRatio);
+        m_StickyArmy[i].sticky.updateSize(wRatio, hRatio);
     }
     m_mutex.unlock();
-
-    this->beforeResizeWidth = screen.getWidth();
-    this->beforeResizeHeight = screen.getHeight();
+    */
+    m_beforeResizeWidth = screen.getWidth();
+    m_beforeResizeHeight = screen.getHeight();
 
     m_ihmStats->setPosition(cinder::Vec2i(static_cast<int>(screen.getWidth()) - 200, 20));
     
@@ -241,20 +250,6 @@ void Genetic_AlgorithmApp::keyDown(KeyEvent event)
     else if (event.getCode() == KeyEvent::KEY_w)
     {
         m_renderCurrentImage = !m_renderCurrentImage;
-    }
-    else if (event.getCode() == KeyEvent::KEY_s)
-    {
-        this->start();
-    }
-    else if (event.getCode() == KeyEvent::KEY_d)
-    {
-        static int hash = 0;
-        cinder::Rand myRand(hash++);
-
-        for (auto& stixel : this->m_StickyArmy)
-        {
-            stixel.sticky.ChangeColor(cinder::ColorA(myRand.nextFloat(0.0f, 1.0f), myRand.nextFloat(0.0f, 1.0f), myRand.nextFloat(0.0f, 1.0f), 0.1f));
-        }
     }
     else
     {
@@ -392,6 +387,9 @@ void Genetic_AlgorithmApp::toggleDisplayStat()
 
 void Genetic_AlgorithmApp::changeMode()
 {
+    if (m_isStarted && !m_isPaused)
+        return;
+
     m_cameraMode = !m_cameraMode;
 
     if (m_cameraMode)
@@ -453,40 +451,69 @@ void Genetic_AlgorithmApp::loadImage()
 
 void Genetic_AlgorithmApp::start()
 {
-    if (m_isStarted || m_pixelGroupNumber <= m_numberGapPixel || !m_currentImage)
+    if (m_isStarted || m_pixelPerSticky <= m_numberGapPixel || !m_currentImage)
         return;
 
     ci::Rectf screen = getWindowBounds();
-    /*
-    int width = static_cast<int>(screen.getWidth());
-    int height = static_cast<int>(screen.getHeight());
-    */
+
+    int width = m_currentImage.getWidth();
+    int height = m_currentImage.getHeight();
+
+    /*float pixelGroupNumber = static_cast<float>(m_pixelPerSticky);
+    float numberGapPixel = static_cast<float>(m_numberGapPixel);*/
+
+    m_currentAlgoGenImage = ci::ip::resizeCopy(m_currentImage, m_currentImage.getBounds(), ci::Vec2i(width / m_pixelPerSticky, height / m_pixelPerSticky));
+
+    m_algoGen.setPopSize(m_numberOfPopulation);
+    m_algoGen.setup(m_currentAlgoGenImage.getWidth(), m_currentAlgoGenImage.getHeight());
+
+    m_isStarted = true;
+    m_isPaused = false;
+
+    if (m_thread.joinable())
+        m_thread.join();
+
+    m_threadRunning = true;
+
+    m_thread = std::thread(std::bind(&Genetic_AlgorithmApp::threadingCompute, this));
+
+    setupIHM();
+}
+
+#if 0
+void Genetic_AlgorithmApp::start()
+{
+    if (m_isStarted || m_pixelPerSticky <= m_numberGapPixel || !m_currentImage)
+        return;
+
+    ci::Rectf screen = getWindowBounds();
+    
     float widthRatio = screen.getWidth() / this->m_currentImage.getWidth();
     float heigthRatio = screen.getHeight() / this->m_currentImage.getHeight();
 
     int width = static_cast<int>(this->m_currentImage.getWidth());
     int height = static_cast<int>(this->m_currentImage.getHeight());
 
-    float pixelGroupNumber = static_cast<float>(m_pixelGroupNumber);
+    float pixelGroupNumber = static_cast<float>(m_pixelPerSticky);
     float numberGapPixel = static_cast<float>(m_numberGapPixel);
 
     this->m_StickyArmy.clear();
-    this->m_StickyArmy.resize((height / this->m_pixelGroupNumber) * (width / this->m_pixelGroupNumber));
+    this->m_StickyArmy.resize((height / this->m_pixelPerSticky) * (width / this->m_pixelPerSticky));
     
     Stixel currentStix;
 
     m_mutex.lock();
-	for (float i = 0; i < height / this->m_pixelGroupNumber; i++)
+	for (float i = 0; i < height / this->m_pixelPerSticky; i++)
 	{
-        for (float j = 0; j < width / this->m_pixelGroupNumber; j++)
+        for (float j = 0; j < width / this->m_pixelPerSticky; j++)
         {
             currentStix.sticky = Sticky(pixelGroupNumber * widthRatio - numberGapPixel* widthRatio, pixelGroupNumber* heigthRatio - numberGapPixel* heigthRatio,
                 (j + 1.f) * (pixelGroupNumber * widthRatio), (i + 1.f) * (pixelGroupNumber * heigthRatio),
-                //this->getAveragePixelColor(j  * this->m_pixelGroupNumber, i * this->m_pixelGroupNumber, this->m_pixelGroupNumber));
+                //this->getAveragePixelColor(j  * this->m_pixelPerSticky, i * this->m_pixelPerSticky, this->m_pixelPerSticky));
                 cinder::ColorA(RANDOMIZER.nextFloat(0.0f, 1.0f), RANDOMIZER.nextFloat(0.0f, 1.0f), RANDOMIZER.nextFloat(0.0f, 1.0f), 1.0f));
 
-            currentStix.pixel = Pixel((j + 1.f) * pixelGroupNumber, (i + 1.f) * pixelGroupNumber, this->getAveragePixelColor(j * this->m_pixelGroupNumber, i * this->m_pixelGroupNumber, this->m_pixelGroupNumber));
-            this->m_StickyArmy[j + i * (width / this->m_pixelGroupNumber)] = currentStix;
+            currentStix.pixel = Pixel((j + 1.f) * pixelGroupNumber, (i + 1.f) * pixelGroupNumber, this->getAveragePixelColor(j * this->m_pixelPerSticky, i * this->m_pixelPerSticky, this->m_pixelPerSticky));
+            this->m_StickyArmy[j + i * (width / this->m_pixelPerSticky)] = currentStix;
 		}
 	}
     m_mutex.unlock();
@@ -503,6 +530,7 @@ void Genetic_AlgorithmApp::start()
 
     setupIHM();
 }
+#endif //
 
 void Genetic_AlgorithmApp::pause()
 {
@@ -519,11 +547,14 @@ void Genetic_AlgorithmApp::stop()
     if (!m_isStarted)
         return;
 
+    /*
     m_mutex.lock();
     this->m_StickyArmy.clear();
     m_mutex.unlock();
-
+    */
     m_threadRunning = false;
+
+    m_algoGenImage = ci::Surface();
 
     m_isStarted = false;
     m_isPaused = false;
@@ -533,40 +564,13 @@ void Genetic_AlgorithmApp::stop()
 
 void Genetic_AlgorithmApp::nextStep()
 {
-    std::vector<IAlgoGen::StixelsWrapper> newPop;
-    newPop.reserve(m_numbreOfNewPop);
-
+    ci::Surface tmpImage = m_algoGen(m_currentAlgoGenImage);
+    
     m_mutex.lock();
-    auto sitckyArmyCopie(m_StickyArmy);
+    {
+        m_algoGenImage = tmpImage;
+    }
     m_mutex.unlock();
-
-    for (unsigned int i = 0; i < m_numbreOfNewPop; ++i)
-        newPop.push_back(m_algoGen(sitckyArmyCopie));
-
-    if (newPop.size() > 0)
-    {
-        std::sort(newPop.begin(), newPop.end());
-
-        m_mutex.lock();
-        if (m_isStarted && !m_isPaused)
-            m_StickyArmy = newPop.front().stixel;
-        m_mutex.unlock();
-    }
-}
-
-cinder::ColorA Genetic_AlgorithmApp::getAveragePixelColor(int startXIndex, int startYIndex, int groupRowNumber)
-{
-    cinder::ColorA averageColor;
-    for (int i = startYIndex; i < startYIndex + groupRowNumber; i++)
-    {
-        for (int j = startXIndex; j < startXIndex + groupRowNumber; j++)
-        {
-            averageColor += this->m_currentImage.getPixel(cinder::Vec2i(j, i));
-        }
-    }
-    float numberElement = cinder::math<float>::pow(static_cast<float>(groupRowNumber), 2);
-    averageColor /= numberElement;
-    return averageColor;
 }
 
 void Genetic_AlgorithmApp::threadingCompute()
@@ -579,10 +583,16 @@ void Genetic_AlgorithmApp::threadingCompute()
         {
             timer.start();
             nextStep();
-            timer.stop();
+            //timer.stop();
             m_computeFPS = 1.0 / timer.getSeconds();
         }
     }
 }
+
+#if 0
+void setCurrentImage(const cinder::Surface& i)
+{
+}
+#endif
 
 CINDER_APP_NATIVE(Genetic_AlgorithmApp, RendererGl)
