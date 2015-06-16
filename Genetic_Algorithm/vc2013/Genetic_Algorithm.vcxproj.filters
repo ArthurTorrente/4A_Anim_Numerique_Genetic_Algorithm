@@ -45,6 +45,9 @@
     <ClCompile Include="..\src\IAlgoGen.cpp">
       <Filter>Source Files\AlgoGen</Filter>
     </ClCompile>
+    <ClCompile Include="..\src\StickyCamera.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\include\Resources.h">
@@ -78,6 +81,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\include\StixImage.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\StickyCamera.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

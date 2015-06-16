@@ -26,9 +26,9 @@ void Genetic_AlgorithmApp::prepareSettings(Settings* settings)
     settings->setWindowSize(cinder::Vec2i(800, 600));
     settings->setFrameRate(200.0f);
 
-    //settings->enableConsoleWindow();
+    settings->enableConsoleWindow();
 
-    m_cameraMode = false;
+    m_captureMode = false;
 }
 
 void Genetic_AlgorithmApp::setup()
@@ -47,16 +47,20 @@ void Genetic_AlgorithmApp::setup()
     m_currentImageLoadedIndex = 0;
     /* === */
     
-    /* Camera */
-    setupCamera();
+    /* Camera capture */
+    setupCapture();
     m_hasCaptureCamera = false;
     m_realTime = false;
     /* === */
 
     /* IHM */
     m_ihmParam = cinder::params::InterfaceGl::create("Sticky", cinder::Vec2i(245, 340));
+    
+    m_camParam = cinder::params::InterfaceGl::create("Camera", cinder::Vec2i(250, 120));
+    m_camParam->setPosition(cinder::Vec2i(getWindowWidth() - 250, 20));
+
     m_ihmStats = cinder::params::InterfaceGl::create("Stats", cinder::Vec2i(150, 100));
-    m_ihmStats->setPosition(cinder::Vec2i(getWindowWidth() - 150, 20));
+    m_ihmStats->setPosition(cinder::Vec2i(getWindowWidth() - 150, 150));
     m_ihmStats->hide();
 
     setupIHM();
@@ -69,6 +73,9 @@ void Genetic_AlgorithmApp::setup()
     m_computeFPS = 0.0;
 
     m_numberOfPopulation = 100;
+
+    /* Camera */
+    m_camera.setup(60.0f, getWindowAspectRatio(), 5.0f, 300000.0f, 500.f);
 }
 
 void Genetic_AlgorithmApp::setupIHM()
@@ -81,9 +88,9 @@ void Genetic_AlgorithmApp::setupIHM()
 
     m_ihmParam->addSeparator("Input Options");
 
-    if (m_cameraMode)
+    if (m_captureMode)
     {
-        if (!m_camera)
+        if (!m_capture)
         {
             m_ihmParam->addText("No camera found");
         }
@@ -135,20 +142,28 @@ void Genetic_AlgorithmApp::setupIHM()
     
     if (m_isPaused)
         m_ihmParam->addButton("NextStep", std::bind(&Genetic_AlgorithmApp::nextStep, this));
+
+    /* Camera ihm */
+    m_camParam->clear();
+    m_camParam->addText("Camera Param");
+    m_camParam->addParam("Distance", &m_camera.getCameraDistance(), "min=10 max=300000 step=10");
+    m_camParam->addParam("Rotation", &m_camera.getRotation());
 }
 
 void Genetic_AlgorithmApp::update()
 {
-    if (m_cameraMode)
+    if (m_captureMode)
     {
-        if (m_camera && m_camera->checkNewFrame())
+        if (m_capture && m_capture->checkNewFrame())
         {
-            m_cameraImage = m_camera->getSurface();
+            m_captureImage = m_capture->getSurface();
 
             if (m_realTime)
-                m_currentImage = m_cameraImage;
+                m_currentImage = m_captureImage;
         }
     }
+
+    m_camera.update();
 
     /*if (m_isStarted && !m_isPaused)
     {
@@ -168,17 +183,30 @@ void Genetic_AlgorithmApp::draw()
 	}
     m_mutex.unlock();
     */
+    auto screen = getWindowBounds();
+
     if (m_algoGenImage)
     {
         m_mutex.lock();
         {
-            gl::draw(gl::Texture(m_algoGenImage), ci::Rectf(0.0f, 0.0f, getWindowWidth(), getWindowHeight()));
+            gl::draw(gl::Texture(m_algoGenImage), ci::Rectf(-(0.5f * m_currentImage.getWidth()), 0.5f * m_currentImage.getHeight(), 0.5f * m_currentImage.getWidth(), -(0.5f * m_currentImage.getHeight())));
         }
         m_mutex.unlock();
     }    
 
     if (m_renderCurrentImage && m_currentImage)
-        gl::draw(gl::Texture(m_currentImage), cinder::Rectf(0.0f, 0.0f, 0.1f * getWindowWidth(), 0.1f * getWindowHeight()));
+    {
+        int32_t x1 = static_cast<int32_t>(- (0.5f * m_currentImage.getWidth()));
+        int32_t y1 = static_cast<int32_t>(0.5f * m_currentImage.getHeight());
+
+        int32_t x2 = static_cast<int32_t>((0.5f * m_currentImage.getWidth()) * 0.1f);
+        int32_t y2 = static_cast<int32_t>(-((0.5f * m_currentImage.getHeight()) * 0.1f));
+
+        x2 = static_cast<int32_t>(x1 + (0.1f * (x2 - x1)));
+        y2 = static_cast<int32_t>(y1 + (0.1f * (y2 - y1)));
+        
+        gl::draw(gl::Texture(m_currentImage), ci::Rectf(x1, y1, x2, y2 ));
+    }
 
     updateIHM();
 }
@@ -198,7 +226,6 @@ void Genetic_AlgorithmApp::updateIHM()
             m_ihmStats->addText("Pop size : " + std::to_string(m_StickyArmy.size()));
             m_ihmStats->addText(std::string("Current image width" + m_currentImage.getWidth()));
             m_ihmStats->addText(std::string("Current image height" + m_currentImage.getHeight()));
-
         }
         else if (m_isPaused)
         {
@@ -229,7 +256,8 @@ void Genetic_AlgorithmApp::resize()
     m_beforeResizeWidth = screen.getWidth();
     m_beforeResizeHeight = screen.getHeight();
 
-    m_ihmStats->setPosition(cinder::Vec2i(static_cast<int>(screen.getWidth()) - 200, 20));
+    m_ihmStats->setPosition(cinder::Vec2i(static_cast<int>(screen.getWidth()) - 200, 150));
+    m_camParam->setPosition(cinder::Vec2i(static_cast<int>(screen.getWidth()) - 300, 20));
     
 }
 
@@ -253,13 +281,13 @@ void Genetic_AlgorithmApp::keyDown(KeyEvent event)
     }
     else
     {
-        if (m_cameraMode)
+        if (m_captureMode)
         {
             if (event.getCode() == KeyEvent::KEY_c)
             {
-                if (m_cameraMode)
+                if (m_captureMode)
                 {
-                    m_videoCapture.copyFrom(m_cameraImage, m_cameraImage.getBounds());
+                    m_videoCapture.copyFrom(m_captureImage, m_captureImage.getBounds());
 
                     m_hasCaptureCamera = true;
 
@@ -271,7 +299,7 @@ void Genetic_AlgorithmApp::keyDown(KeyEvent event)
         {
             if (event.getCode() == KeyEvent::KEY_n)
             {
-                if (!m_cameraMode && m_imageLoaded.size() > 0)
+                if (!m_captureMode && m_imageLoaded.size() > 0)
                 {
                     ++m_currentImageLoadedIndex;
 
@@ -321,7 +349,7 @@ void Genetic_AlgorithmApp::mouseDrag(MouseEvent event)
 
 void Genetic_AlgorithmApp::fileDrop(FileDropEvent event)
 {
-    if (m_cameraMode)
+    if (m_captureMode)
         return;
 
     m_imageLoaded.clear();
@@ -356,7 +384,7 @@ void Genetic_AlgorithmApp::fileDrop(FileDropEvent event)
     setupIHM();
 }
 
-void Genetic_AlgorithmApp::setupCamera()
+void Genetic_AlgorithmApp::setupCapture()
 {
     auto deviceList = cinder::Capture::getDevices();
 
@@ -366,13 +394,13 @@ void Genetic_AlgorithmApp::setupCamera()
         
         if (device->checkAvailable())
         {
-            m_camera = cinder::Capture::create(1920, 1080, device);
+            m_capture = cinder::Capture::create(1920, 1080, device);
 
-            m_videoCapture = Surface(m_camera->getSurface());
+            m_videoCapture = Surface(m_capture->getSurface());
 
-            m_camera->start();
+            m_capture->start();
 
-            m_cameraMode = true;
+            m_captureMode = true;
         }
     }
 }
@@ -390,12 +418,12 @@ void Genetic_AlgorithmApp::changeMode()
     if (m_isStarted && !m_isPaused)
         return;
 
-    m_cameraMode = !m_cameraMode;
+    m_captureMode = !m_captureMode;
 
-    if (m_cameraMode)
+    if (m_captureMode)
     {
         if (m_realTime)
-            m_currentImage = m_cameraImage;
+            m_currentImage = m_captureImage;
         else
         {
             if (m_hasCaptureCamera)
@@ -476,6 +504,11 @@ void Genetic_AlgorithmApp::start()
     m_threadRunning = true;
 
     m_thread = std::thread(std::bind(&Genetic_AlgorithmApp::threadingCompute, this));
+
+    int32_t distance = std::max(m_currentImage.getWidth(), m_currentImage.getHeight());
+
+    m_camera.getCameraDistance() = static_cast<float>(distance /*+ distance * 1.1f*/);
+    m_camera.update();
 
     setupIHM();
 }

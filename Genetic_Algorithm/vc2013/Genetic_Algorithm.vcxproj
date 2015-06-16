@@ -111,6 +111,7 @@
     <ResourceCompile Include="Resources.rc" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="..\src\StickyCamera.cpp" />
     <ClCompile Include="..\src\ColorAlgoGen.cpp" />
     <ClCompile Include="..\src\Constants.cpp" />
     <ClCompile Include="..\src\Genetic_AlgorithmApp.cpp" />
@@ -119,6 +120,7 @@
     <ClCompile Include="..\src\Sticky.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="..\include\StickyCamera.h" />
     <ClInclude Include="..\include\ColorAlgoGen.h" />
     <ClInclude Include="..\include\Constants.h" />
     <ClInclude Include="..\include\IAlgoGen.h" />

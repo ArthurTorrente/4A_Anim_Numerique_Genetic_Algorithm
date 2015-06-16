@@ -20,6 +20,8 @@
 #include "tools.h"
 #include "Image.h"
 
+#include "StickyCamera.h"
+
 using namespace ci;
 using namespace ci::app;
 using namespace std;
@@ -63,7 +65,7 @@ protected:
     /**
      * Mode Webcam ou utilisation d'image (FileDrop ou FileExplorer)
      */
-    bool m_cameraMode;
+    bool m_captureMode;
 
     /**
      * Mode temp reel
@@ -77,10 +79,10 @@ protected:
     std::vector<cinder::Surface> m_imageLoaded;
 
     /**
-     * Camera
+     * Camera capture
      */
-    cinder::CaptureRef m_camera;
-    Surface m_cameraImage;
+    cinder::CaptureRef m_capture;
+    Surface m_captureImage;
 
     /**
      * Render de string à l'écran
@@ -151,7 +153,7 @@ protected:
     /**
      * Setup de la caméra
      */
-    void setupCamera();
+    void setupCapture();
 
     float m_beforeResizeWidth;
     float m_beforeResizeHeight;
@@ -173,7 +175,6 @@ protected:
     std::thread m_thread;
     void threadingCompute();
 
-
     /**
     * Algo Gen
     * Image utilisé par l'algo Gen
@@ -187,6 +188,12 @@ protected:
     cinder::Surface m_algoGenImage;
     /* Rescale de l'image en paramètre et set current image */
     void setCurrentImage(const cinder::Surface&);
+
+    /* Camera */
+    StickyCamera m_camera;
+    cinder::params::InterfaceGlRef m_camParam;
+
+    void updateCamParam();
 };
 
 #endif //_GENETICALGORITHMAPP_H_
