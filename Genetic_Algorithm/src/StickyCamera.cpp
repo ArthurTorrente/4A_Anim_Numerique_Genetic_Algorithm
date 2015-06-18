@@ -4,10 +4,11 @@
 StickyCamera::StickyCamera()
     : m_eye(0.0f, 0.0f, 0.0f),
     m_center(0.f, 0.f, 0.f),
-    m_up(cinder::Vec3f::yAxis()),
-    m_cameraDistance(0.0f),
-    m_rotation(0.0f, 0.0f, 0.0f)
-{}
+    m_up(-cinder::Vec3f::yAxis()),
+    m_cameraDistance(0.0f)
+{
+    m_rotation.identity();
+}
 
 void StickyCamera::setup(float fov, float aspectRatio, float _near, float _far, float cameraDistance)
 {

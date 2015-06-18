@@ -19,6 +19,9 @@ Genetic_AlgorithmApp::~Genetic_AlgorithmApp()
 
     if (m_thread.joinable())
         m_thread.join();
+
+    if (m_threadHeight.joinable())
+        m_threadHeight.join();
 }
 
 void Genetic_AlgorithmApp::prepareSettings(Settings* settings)
@@ -36,7 +39,7 @@ void Genetic_AlgorithmApp::prepareSettings(Settings* settings)
 void Genetic_AlgorithmApp::setup()
 {
     /* App */
-    m_renderCurrentImage = true;
+    m_renderCurrentImage = false;
     /* === */
     /* Algo Gen */
 	m_pixelPerSticky = 15;
@@ -57,12 +60,16 @@ void Genetic_AlgorithmApp::setup()
 
     /* IHM */
     m_ihmParam = cinder::params::InterfaceGl::create("Sticky", cinder::Vec2i(245, 340));
+    m_ihmParam->setPosition(cinder::Vec2i(20, 20));
     
-    m_camParam = cinder::params::InterfaceGl::create("Camera", cinder::Vec2i(250, 120));
-    m_camParam->setPosition(cinder::Vec2i(getWindowWidth() - 250, 20));
+    m_camParam = cinder::params::InterfaceGl::create("Camera", cinder::Vec2i(250, 150));
+    m_camParam->setPosition(cinder::Vec2i(getWindowWidth() - 300, 20));
 
-    m_ihmStats = cinder::params::InterfaceGl::create("Stats", cinder::Vec2i(150, 100));
-    m_ihmStats->setPosition(cinder::Vec2i(getWindowWidth() - 150, 150));
+    m_ihmShader = cinder::params::InterfaceGl::create("Shader", cinder::Vec2i(150, 50));
+    m_ihmShader->setPosition(cinder::Vec2i(getWindowWidth() - 200, 190));
+
+    m_ihmStats = cinder::params::InterfaceGl::create("Stats", cinder::Vec2i(200, 100));
+    m_ihmStats->setPosition(cinder::Vec2i(getWindowWidth() - 200, 260));
     m_ihmStats->hide();
 
     setupIHM();
@@ -71,6 +78,7 @@ void Genetic_AlgorithmApp::setup()
     /* THREAD */
     m_threadRunning = false;
     m_computeFPS = 0.0;
+    m_computeHeightFPS = 0.0;
 
     m_numberOfPopulation = 100;
 
@@ -78,6 +86,7 @@ void Genetic_AlgorithmApp::setup()
     m_camera.setup(60.0f, getWindowAspectRatio(), 5.0f, 300000.0f, 500.f);
 
     /* shader */
+    m_neighbors = 1;
     try
     {
         m_shader = gl::GlslProg::create(loadResource(SHADER_VERT), loadResource(SHADER_FRAG));
@@ -94,7 +103,7 @@ void Genetic_AlgorithmApp::setup()
     }
 
     m_isBuilder = false;
-    console() << m_shader->getShaderLog(m_shader->getHandle()) << std::endl;
+    //console() << m_shader->getShaderLog(m_shader->getHandle()) << std::endl;
 }
 
 void Genetic_AlgorithmApp::setupIHM()
@@ -158,15 +167,16 @@ void Genetic_AlgorithmApp::setupIHM()
     m_ihmParam->addButton("Start", std::bind(&Genetic_AlgorithmApp::start, this));
     m_ihmParam->addButton("Pause", std::bind(&Genetic_AlgorithmApp::pause, this));
     m_ihmParam->addButton("Stop", std::bind(&Genetic_AlgorithmApp::stop, this));
-    
-    if (m_isPaused)
-        m_ihmParam->addButton("NextStep", std::bind(&Genetic_AlgorithmApp::nextStep, this));
 
     /* Camera ihm */
     m_camParam->clear();
     m_camParam->addText("Camera Param");
-    m_camParam->addParam("Distance", &m_camera.getCameraDistance(), "min=10 max=300000 step=10");
+    m_camParam->addParam("Distance", &m_camera.getCameraDistance(), "min=20 max=300000 step=10");
     m_camParam->addParam("Rotation", &m_camera.getRotation());
+
+    /* Shader ihm */
+    m_ihmShader->clear();
+    m_ihmShader->addParam("Shader Neighbors", &m_neighbors, "min=1 max=100 step=1");
 }
 
 void Genetic_AlgorithmApp::update()
@@ -232,7 +242,7 @@ void Genetic_AlgorithmApp::draw()
     gl::enableDepthRead();
     gl::enableDepthWrite();
 
-    if (m_isStarted && m_algoGenResult)
+    if (m_isStarted && m_algoGenResult && m_heightMap)
     {
         auto texture = gl::Texture(m_algoGenResult);
         auto heightMap = gl::Texture(m_heightMap);
@@ -241,6 +251,8 @@ void Genetic_AlgorithmApp::draw()
 
         m_shader->uniform("u_texture", 0);
         m_shader->uniform("u_heightMap", 1);
+        m_shader->uniform("u_time", static_cast<float>(0.00025 * m_timerShader.getSeconds()));
+        m_shader->uniform("u_neighbors", m_neighbors);
 
         texture.bind(0);
         heightMap.bind(1);
@@ -252,6 +264,20 @@ void Genetic_AlgorithmApp::draw()
         texture.unbind();
         heightMap.unbind();
         m_shader->unbind();
+    }
+
+    if (m_renderCurrentImage && m_currentImage)
+    {
+        auto screen = getWindowBounds();
+        auto demiW = 0.5f * screen.getWidth();
+        auto demiH = 0.5f * screen.getHeight();
+
+        float widthTenPercent = 0.1f * demiW;
+        float heightTenPercent = 0.1f * demiH;
+        
+        ci::Rectf rectDraw(demiW - widthTenPercent, demiH - heightTenPercent, demiW, demiH);
+
+        gl::draw(gl::Texture(m_currentImage), rectDraw);
     }
 
     updateIHM();
@@ -269,8 +295,7 @@ void Genetic_AlgorithmApp::updateIHM()
         {
             m_ihmStats->addText("Start");
             m_ihmStats->addText("Algo FPS : " + std::to_string(m_computeFPS));
-            /*m_ihmStats->addText(std::string("Current image width" + m_currentImage.getWidth()));
-            m_ihmStats->addText(std::string("Current image height" + m_currentImage.getHeight()));*/
+            m_ihmStats->addText("Compute Height FPS : " + std::to_string(m_computeHeightFPS));
         }
         else if (m_isPaused)
         {
@@ -292,9 +317,9 @@ void Genetic_AlgorithmApp::resize()
     m_beforeResizeWidth = screen.getWidth();
     m_beforeResizeHeight = screen.getHeight();
 
-    m_ihmStats->setPosition(cinder::Vec2i(static_cast<int>(screen.getWidth()) - 200, 150));
-    m_camParam->setPosition(cinder::Vec2i(static_cast<int>(screen.getWidth()) - 300, 20));
-    
+    m_camParam->setPosition(cinder::Vec2i(getWindowWidth() - 300, 20));
+    m_ihmShader->setPosition(cinder::Vec2i(getWindowWidth() - 200, 190));
+    m_ihmStats->setPosition(cinder::Vec2i(getWindowWidth() - 200, 260));
 }
 
 void Genetic_AlgorithmApp::keyDown(KeyEvent event)
@@ -314,23 +339,6 @@ void Genetic_AlgorithmApp::keyDown(KeyEvent event)
     else if (event.getCode() == KeyEvent::KEY_w)
     {
         m_renderCurrentImage = !m_renderCurrentImage;
-    }
-    else if (m_isStarted && !m_isPaused)
-    {
-        if (event.getCode() == KeyEvent::KEY_a)
-        {
-            auto heightIter = m_heightMap.getIter();
-
-            while (heightIter.line())
-            {
-                while (heightIter.pixel())
-                {
-                    heightIter.r() = 0.0f;
-                    heightIter.g() = 0.0f;
-                    heightIter.b() = 0.0f;
-                }
-            }
-        }
     }
     else
     {
@@ -406,6 +414,7 @@ void Genetic_AlgorithmApp::mouseMove(MouseEvent event)
 
 void Genetic_AlgorithmApp::mouseDrag(MouseEvent event)
 {
+#if 0
     if (m_isBuilder)
     {
         float u = static_cast<float>(event.getX()) / static_cast<float>(getWindowWidth());
@@ -425,21 +434,22 @@ void Genetic_AlgorithmApp::mouseDrag(MouseEvent event)
             if (intersect.x <= demiW && intersect.x >= -demiW &&
                 intersect.y <= demiH && intersect.y >= -demiH)
             {
-                console() << "i : " << intersect << std::endl;
-
                 auto heightPos = ci::Vec2i(static_cast<int>(intersect.x + demiW), static_cast<int>(-intersect.y + demiH));
                 auto pixel = m_heightMap.getPixel(heightPos);
 
-                console() << "h : " << heightPos << std::endl;
-
-                pixel.r = tools::clamp(0.0f, 255.0f, pixel.r + 2.0f);
+                /*pixel.r = tools::clamp(0.0f, 255.0f, pixel.r + 2.0f);
                 pixel.g = tools::clamp(0.0f, 255.0f, pixel.g + 1.0f);
-                pixel.b = tools::clamp(0.0f, 255.0f, pixel.b + 3.0f);
+                pixel.b = tools::clamp(0.0f, 255.0f, pixel.b + 3.0f);*/
+
+                pixel.r = tools::clamp(0.0f, std::numeric_limits<float>::max(), pixel.r + 2.0f);
+                pixel.g = tools::clamp(0.0f, std::numeric_limits<float>::max(), pixel.g + 1.0f);
+                pixel.b = tools::clamp(0.0f, std::numeric_limits<float>::max(), pixel.b + 3.0f);
 
                 m_heightMap.setPixel(heightPos, pixel);
             }
         }
     }
+#endif
 }
 
 void Genetic_AlgorithmApp::fileDrop(FileDropEvent event)
@@ -589,8 +599,6 @@ static void genPlaneResult(unsigned int width, unsigned int height, ci::TriMesh&
                 (i + demiW) / width,
                 (j + demiH) / height
                 ));
-
-            mesh.appendColorRgba(ci::ColorA8u(255, 0, 0, 255));
         }
     }
 
@@ -623,21 +631,17 @@ void Genetic_AlgorithmApp::start()
     m_algoGen.setPopSize(m_numberOfPopulation);
     m_algoGen.setup(m_currentAlgoGenImage.getWidth(), m_currentAlgoGenImage.getHeight());
 
+    m_algoGenHeight.setPopSize(m_numberOfPopulation);
+    m_algoGenHeight.getInterval(ColorAlgoGen::COPY) = m_algoGen.getInterval(ColorAlgoGen::COPY);
+    m_algoGenHeight.getInterval(ColorAlgoGen::MUTATE) = m_algoGen.getInterval(ColorAlgoGen::MUTATE);
+    m_algoGenHeight.getInterval(ColorAlgoGen::CROSSOVER) = m_algoGen.getInterval(ColorAlgoGen::CROSSOVER);
+    m_algoGenHeight.getInterval(ColorAlgoGen::RANDOM) = m_algoGen.getInterval(ColorAlgoGen::RANDOM);
+
+    m_algoGenHeight.setup(m_currentAlgoGenImage.getWidth(), m_currentAlgoGenImage.getHeight());
+
     genPlaneResult(m_currentAlgoGenImage.getWidth(), m_currentAlgoGenImage.getHeight(), m_planeResultAlgoGen);
 
-    m_heightMap = cinder::Surface32f(m_currentAlgoGenImage.getWidth(), m_currentAlgoGenImage.getHeight(), true);
-
-    auto heightIter = m_heightMap.getIter();
-
-    while (heightIter.line())
-    {
-        while (heightIter.pixel())
-        {
-            heightIter.r() = 0.0f;
-            heightIter.g() = 0.0f;
-            heightIter.b() = 0.0f;
-        }
-    }
+    m_timerShader.start();
 
     m_isStarted = true;
     m_isPaused = false;
@@ -646,9 +650,13 @@ void Genetic_AlgorithmApp::start()
     if (m_thread.joinable())
         m_thread.join();
 
+    if (m_threadHeight.joinable())
+        m_threadHeight.join();
+
     m_threadRunning = true;
 
     m_thread = std::thread(std::bind(&Genetic_AlgorithmApp::threadingCompute, this));
+    m_threadHeight = std::thread(std::bind(&Genetic_AlgorithmApp::threadingComputeHeight, this));
 
     int32_t distance = std::max(m_currentAlgoGenImage.getWidth(), m_currentAlgoGenImage.getHeight());
 
@@ -663,6 +671,11 @@ void Genetic_AlgorithmApp::pause()
 {
     if (!m_isStarted)
         return;
+
+    m_algoGenHeight.getInterval(ColorAlgoGen::COPY) = m_algoGen.getInterval(ColorAlgoGen::COPY);
+    m_algoGenHeight.getInterval(ColorAlgoGen::MUTATE) = m_algoGen.getInterval(ColorAlgoGen::MUTATE);
+    m_algoGenHeight.getInterval(ColorAlgoGen::CROSSOVER) = m_algoGen.getInterval(ColorAlgoGen::CROSSOVER);
+    m_algoGenHeight.getInterval(ColorAlgoGen::RANDOM) = m_algoGen.getInterval(ColorAlgoGen::RANDOM);
 
     m_isPaused = !m_isPaused;
 
@@ -707,6 +720,29 @@ void Genetic_AlgorithmApp::threadingCompute()
             nextStep();
             //timer.stop();
             m_computeFPS = 1.0 / timer.getSeconds();
+        }
+    }
+}
+
+void Genetic_AlgorithmApp::threadingComputeHeight()
+{
+    cinder::Timer timer;
+
+    while (m_threadRunning)
+    {
+        if (m_isStarted && !m_isPaused)
+        {
+            timer.start();
+            
+            ci::Surface tmpImage = m_algoGenHeight(m_currentAlgoGenImage);
+
+            m_mutex.lock();
+            {
+                m_heightMap = tmpImage;
+            }
+            m_mutex.unlock();
+
+            m_computeHeightFPS = 1.0 / timer.getSeconds();
         }
     }
 }

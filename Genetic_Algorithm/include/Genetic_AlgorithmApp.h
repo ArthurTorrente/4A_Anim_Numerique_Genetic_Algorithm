@@ -123,6 +123,7 @@ protected:
      */
     cinder::params::InterfaceGlRef m_ihmParam;
     cinder::params::InterfaceGlRef m_ihmStats;
+    cinder::params::InterfaceGlRef m_ihmShader;
     void toggleDisplayStat();
     void changeMode();
     void toggleDisplayCurrent();
@@ -150,6 +151,7 @@ protected:
      * Algo gen
      */
     ColorAlgoGen m_algoGen;
+    ColorAlgoGen m_algoGenHeight;
 
     /*
     Threading
@@ -157,9 +159,12 @@ protected:
     int m_numberOfPopulation;
     std::mutex m_mutex;
     double m_computeFPS;
+    double m_computeHeightFPS;
     bool m_threadRunning;
     std::thread m_thread;
+    std::thread m_threadHeight;
     void threadingCompute();
+    void threadingComputeHeight();
 
     /**
     * Algo Gen
@@ -184,9 +189,11 @@ protected:
     /* Render algoGenResult */
     cinder::TriMesh m_planeResultAlgoGen;
     cinder::gl::GlslProgRef m_shader;
-    cinder::Surface32f m_heightMap;
+    cinder::Surface m_heightMap;
 
     bool m_isBuilder;
+    int m_neighbors;
+    ci::Timer m_timerShader;
 };
 
 #endif //_GENETICALGORITHMAPP_H_
