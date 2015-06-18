@@ -12,6 +12,9 @@
 #include "cinder/Capture.h"
 #include "cinder/params/Params.h"
 #include "cinder/ip/Resize.h"
+#include "cinder/Ray.h"
+#include "cinder/Plane.h"
+#include "cinder/gl/GlslProg.h"
 
 #include "Sticky.h"
 #include "Stixel.h"
@@ -85,25 +88,10 @@ protected:
     Surface m_captureImage;
 
     /**
-     * Render de string à l'écran
-     */
-    cinder::gl::TextureFontRef m_renderString;
-
-    /**
      * Capture d'une image de la camera
      */
     bool m_hasCaptureCamera;
     cinder::Surface m_videoCapture;
-
-    /**
-	* Tableau des sticky
-	*/
-	std::vector<Stixel> m_StickyArmy;
-
-	/**
-	* Taille d'une ligne de sticky
-	*/
-	int m_RowStickyLength;
 
     bool m_isStarted;
     bool m_isPaused;
@@ -158,8 +146,6 @@ protected:
     float m_beforeResizeWidth;
     float m_beforeResizeHeight;
 
-    cinder::ColorA getAveragePixelColor(int startXIndex, int startYIndex, int groupRowNumber);
-
     /**
      * Algo gen
      */
@@ -185,7 +171,7 @@ protected:
     /*
     Image retourné par l'algoGen
     */
-    cinder::Surface m_algoGenImage;
+    cinder::Surface m_algoGenResult;
     /* Rescale de l'image en paramètre et set current image */
     void setCurrentImage(const cinder::Surface&);
 
@@ -194,6 +180,13 @@ protected:
     cinder::params::InterfaceGlRef m_camParam;
 
     void updateCamParam();
+
+    /* Render algoGenResult */
+    cinder::TriMesh m_planeResultAlgoGen;
+    cinder::gl::GlslProgRef m_shader;
+    cinder::Surface32f m_heightMap;
+
+    bool m_isBuilder;
 };
 
 #endif //_GENETICALGORITHMAPP_H_

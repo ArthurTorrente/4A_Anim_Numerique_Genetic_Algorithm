@@ -21,6 +21,7 @@ public:
     cinder::Vec3f& getCenter();
     cinder::Vec3f& getUp();
 
+    cinder::CameraPersp& getCamera();
 
 protected:
     cinder::CameraPersp m_camera;

@@ -133,6 +133,10 @@
     <ClInclude Include="..\include\StixImage.h" />
     <ClInclude Include="..\include\tools.h" />
   </ItemGroup>
+  <ItemGroup>
+    <None Include="..\resources\frag.glsl" />
+    <None Include="..\resources\vert.glsl" />
+  </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets" />
 </Project>

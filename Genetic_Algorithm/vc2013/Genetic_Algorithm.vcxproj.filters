@@ -19,6 +19,9 @@
     <Filter Include="Source Files\AlgoGen">
       <UniqueIdentifier>{4285d98c-a4cf-4135-9fb0-c6da7a19fc14}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Resource Files\Shaders">
+      <UniqueIdentifier>{11e89874-6277-4a11-b6ce-8201b68b7914}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\src\Genetic_AlgorithmApp.cpp">
@@ -91,5 +94,13 @@
     <ResourceCompile Include="Resources.rc">
       <Filter>Resource Files</Filter>
     </ResourceCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="..\resources\frag.glsl">
+      <Filter>Resource Files\Shaders</Filter>
+    </None>
+    <None Include="..\resources\vert.glsl">
+      <Filter>Resource Files\Shaders</Filter>
+    </None>
   </ItemGroup>
 </Project>
