@@ -237,7 +237,7 @@ GameManager& GameManager::getGameManager()
 		glfwWindowHint(GLFW_ALPHA_BITS, 8);
 		glfwWindowHint(GLFW_SAMPLES, 16);
 		glfwWindowHint(GLFW_RESIZABLE, GL_FALSE);
-		GLFWwindow* window = glfwCreateWindow(1600, 900, "Fps", glfwGetPrimaryMonitor(), NULL);
+		GLFWwindow* window = glfwCreateWindow(1920, 1080, "Fps", glfwGetPrimaryMonitor(), NULL);
 		glfwMakeContextCurrent(window);
 		
 		//glfwSetKeyCallback(window, key_callback);

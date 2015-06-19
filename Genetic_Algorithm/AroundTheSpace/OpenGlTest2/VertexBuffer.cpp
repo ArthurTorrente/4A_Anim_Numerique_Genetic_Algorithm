@@ -139,8 +139,8 @@ VertexBuffer::VertexBuffer(const GLvoid *data, GLsizei size, GLenum mode, GLsize
 		}
 	}*/
 
-	GLfloat radius = 20.0f;
-	GLfloat offset = 30.5f;
+	GLfloat radius = 50.0f;
+	GLfloat offset = 40.5f;
 	for (GLuint i = 0; i < amount; i++)
 	{
 		glm::mat4 model;

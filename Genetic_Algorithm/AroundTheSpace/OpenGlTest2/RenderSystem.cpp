@@ -52,7 +52,7 @@ void RenderSystem::render(std::vector<Entity*> *children, std::vector<light *>* 
 
 
 
-				glm::mat4 m_projectionMatrix = glm::perspective(45.0f, (1600.0f / 900.0f), 0.1f, 1000.0f);
+				glm::mat4 m_projectionMatrix = glm::perspective(45.0f, (1920.0f / 1080.0f), 0.1f, 1000.0f);
 				GLuint transformLoc = glGetUniformLocation(entity->get_vertexBuffer()->get_Shader()->getProgramHandle(), "projectionMatrix");
 				glUniformMatrix4fv(transformLoc, 1, GL_FALSE, glm::value_ptr(m_projectionMatrix));
 
@@ -119,7 +119,7 @@ void RenderSystem::render(std::vector<Entity*> *children, std::vector<light *>* 
 
 
 
-				GLuint texture;
+				/*GLuint texture;
 
 				glGenTextures(1, &texture);
 				glBindTexture(GL_TEXTURE_2D, texture); // All upcoming GL_TEXTURE_2D operations now have effect on this texture object
@@ -131,7 +131,7 @@ void RenderSystem::render(std::vector<Entity*> *children, std::vector<light *>* 
 				glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 				// Load image, create texture and generate mipmaps
 				//int 512, 512;
-				/*unsigned char* image = SOIL_load_image(s, &width, &height, 0, SOIL_LOAD_RGB);*/
+				//unsigned char* image = SOIL_load_image(s, &width, &height, 0, SOIL_LOAD_RGB);
 				uint8_t* buffer = algoGenImage.getData();
 				//cinder::ImageSourceRef ref = loadImage("manu2.png");
 				//cinder::Surface32f = ref;
@@ -149,13 +149,7 @@ void RenderSystem::render(std::vector<Entity*> *children, std::vector<light *>* 
 				glBindTexture(GL_TEXTURE_2D, texture);
 				//glBindTexture(GL_TEXTURE_2D, _materials->at(0)->get_textureID_2());
 
-				/*GLint matDiffuseLoc = glGetUniformLocation(_shader->getProgramHandle(), "material.diffuse");
-				GLint matSpecularLoc = glGetUniformLocation(_shader->getProgramHandle(), "material.specular");
-				GLint matShineLoc = glGetUniformLocation(_shader->getProgramHandle(), "material.shininess");
-
-				glUniform1i(matDiffuseLoc, _materials->at(0)->get_textureID());
-				glUniform1i(matSpecularLoc, _materials->at(0)->get_textureID_2());
-				glUniform1f(matShineLoc, _materials->at(0)->get_shineness());*/
+				
 
 				GLint matAmbientLoc = glGetUniformLocation(entity->get_vertexBuffer()->get_Shader()->getProgramHandle(), "material.ambient");
 				GLint matDiffuseLoc = glGetUniformLocation(entity->get_vertexBuffer()->get_Shader()->getProgramHandle(), "material.diffuse");
@@ -165,10 +159,10 @@ void RenderSystem::render(std::vector<Entity*> *children, std::vector<light *>* 
 				glUniform3f(matAmbientLoc, 1.0f, 1.0f, 1.00f);
 				glUniform3f(matDiffuseLoc, 1.0f, 1.0f, 1.0f);
 				glUniform3f(matSpecularLoc, 0.5f, 0.5f, 0.5f);
-				glUniform1f(matShineLoc, 32.0f);
+				glUniform1f(matShineLoc, 32.0f);*/
 				
 
-				//entity->get_vertexBuffer()->renderMaterials();
+				entity->get_vertexBuffer()->renderMaterials();
 				renderLights(entity, lights);
 
 				GLint viewPosLoc = glGetUniformLocation(entity->get_vertexBuffer()->get_Shader()->getProgramHandle(), "viewPos");
@@ -203,8 +197,8 @@ RenderSystem& RenderSystem::getRenderSystem()
 		glClearColor(0.0f,0.0f,0.0f,0.5f);
 
 		glMatrixMode(GL_PROJECTION);
-		gluPerspective(45.0f, 1600.0f / 900.0f, 0.1, 10000);
-		glViewport(0.0f, 0.0f, 1600.0f, 900.0f);
+		gluPerspective(45.0f, 1920.0f / 1080.0f, 0.1, 10000);
+		glViewport(0.0f, 0.0f, 1920.0f, 1080.0f);
 		glMatrixMode(GL_MODELVIEW);
 		glEnable(GL_DEPTH_TEST);
 		glDepthFunc(GL_LESS);

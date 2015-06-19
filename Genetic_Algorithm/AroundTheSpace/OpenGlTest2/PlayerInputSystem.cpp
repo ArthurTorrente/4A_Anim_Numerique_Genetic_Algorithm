@@ -112,7 +112,7 @@ void PlayerInputSystem::update()
 			_currentPlayer->set_position(subtractVector3(_currentPlayer->get_position(), scalerMultiplyVector3(_eyeVector, 0.07f)));
 		}
 
-		if (glfwGetKey(_window, GLFW_KEY_A)) {
+		/*if (glfwGetKey(_window, GLFW_KEY_A)) {
 			_currentPlayer->set_position(subtractVector3(_currentPlayer->get_position(), scalerMultiplyVector3(crossProductVector3(_eyeVector, makeVector3(0.0f, 1.0f, 0.0f)), 0.07f)));
 		}
 
@@ -137,7 +137,7 @@ void PlayerInputSystem::update()
 		glfwGetCursorPos(_window, &x2, &y2);
 		_lastMousePosition.x = x2;
 		_lastMousePosition.y = y2;
-		_currentPlayer->set_eyeVector(addVector3(_currentPlayer->get_position(), _eyeVector));
+		_currentPlayer->set_eyeVector(addVector3(_currentPlayer->get_position(), _eyeVector));*/
 
 
 

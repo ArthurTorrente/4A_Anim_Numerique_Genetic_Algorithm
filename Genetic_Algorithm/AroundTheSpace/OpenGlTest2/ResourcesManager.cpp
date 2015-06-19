@@ -36,7 +36,7 @@ ResourcesManager::ResourcesManager()
 	/*VertexBuffer* _planetVertexBuffer = new VertexBuffer(p.Vnu, p.Vnu.size() * sizeof(p.Vnu) * 2, GL_TRIANGLES, p.triangles.size(), sizeof(VertexDataPNT), _shaderArray->at(1), _shaderData, (GLvoid*)(offsetof(VertexDataPNT, positionCoordinates)), (GLvoid*)(offsetof(VertexDataPNT, normalCoordinates)), (GLvoid*)(offsetof(VertexDataPNT, textureCoordinates)), p.triangles, 300000);
 	_vertexBufferArray->push_back(_planetVertexBuffer);*/
 
-	VertexBuffer* _planetVertexBuffer = new VertexBuffer(verticesCubeWithTexture, sizeof(verticesCubeWithTexture), GL_TRIANGLES, 36, sizeof(VertexDataPNT), _shaderArray->at(1), _shaderData, (GLvoid*)(offsetof(VertexDataPNT, positionCoordinates)), (GLvoid*)(offsetof(VertexDataPNT, normalCoordinates)), (GLvoid*)(offsetof(VertexDataPNT, textureCoordinates)), p.triangles, 100000);
+	VertexBuffer* _planetVertexBuffer = new VertexBuffer(verticesCubeWithTexture, sizeof(verticesCubeWithTexture), GL_TRIANGLES, 36, sizeof(VertexDataPNT), _shaderArray->at(1), _shaderData, (GLvoid*)(offsetof(VertexDataPNT, positionCoordinates)), (GLvoid*)(offsetof(VertexDataPNT, normalCoordinates)), (GLvoid*)(offsetof(VertexDataPNT, textureCoordinates)), p.triangles, 2000000);
 	_vertexBufferArray->push_back(_planetVertexBuffer);
 
 	/*VertexBuffer* _vertexBufftext2 = new VertexBuffer(verticesCubeWithTexture, sizeof(verticesCubeWithTexture), GL_TRIANGLES, 36, sizeof(VertexDataPNT), _shaderArray->at(1), _shaderData, (GLvoid*)(offsetof(VertexDataPNT, positionCoordinates)), (GLvoid*)(offsetof(VertexDataPNT, normalCoordinates)), (GLvoid*)(offsetof(VertexDataPNT, textureCoordinates)), 62500);
