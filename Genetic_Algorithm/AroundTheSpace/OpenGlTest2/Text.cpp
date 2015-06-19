@@ -1,3 +1,4 @@
+#if 0
 #include "stdafx.h"
 #include "Text.h"
 
@@ -110,3 +111,4 @@ void Text::RenderText(std::string text, GLfloat x, GLfloat y, GLfloat scale, GLu
 	glBindVertexArray(0);
 	glBindTexture(GL_TEXTURE_2D, 0);
 }
+#endif

@@ -704,7 +704,7 @@ VertexBuffer::VertexBuffer(const GLvoid *data, GLsizei size, GLenum mode, GLsize
 		indices[i] = i;
 	}*/
 
-	_text = new Text();
+	//_text = new Text();
 
 	glGenVertexArrays(1, &_vexterArrayID);
 	glGenBuffers(1, &_vertexBufferID);
@@ -820,10 +820,7 @@ void VertexBuffer::renderVertexBuffer()
 	{
 		glDrawElementsInstanced(GL_TRIANGLES, _count, GL_UNSIGNED_INT, 0, _amount);
 	}
-	else if(_text != NULL)
-	{
-		
-	}
+	
 	else if (_elementBufferObjectID != -1){
 		glDrawElements(GL_TRIANGLES, _count, GL_UNSIGNED_INT, 0);
 		//glDrawArrays(GL_TRIANGLES, 0, _count);

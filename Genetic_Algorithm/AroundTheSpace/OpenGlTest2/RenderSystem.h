@@ -17,6 +17,7 @@
 #include "light.h"
 #include "CameraSystem.h"
 #include "cinder/ImageIo.h"
+
 using namespace ci;
 
 class RenderSystem

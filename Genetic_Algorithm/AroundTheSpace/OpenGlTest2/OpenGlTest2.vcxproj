@@ -46,7 +46,7 @@
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <LinkIncremental>false</LinkIncremental>
-    <IncludePath>..\Libs\libnoiseheaders-1.0.0\;..\Libs\LibsAssimp\include;..\Libs\glew-1.12.0\include;E:\2nd semestre\cinder_0.8.6_vc2013\cinder_0.8.6_vc2013;E:\2nd semestre\cinder_0.8.6_vc2013\cinder_0.8.6_vc2013\include;E:\2nd semestre\cinder_0.8.6_vc2013\cinder_0.8.6_vc2013\boost;$(IncludePath)</IncludePath>
+    <IncludePath>..\Libs\libnoiseheaders-1.0.0\;..\Libs\LibsAssimp\include;..\Libs\glew-1.12.0\include;$(Lib_Cinder);$(Lib_Cinder)\include;$(Lib_Cinder)\boost;$(IncludePath)</IncludePath>
     <LibraryPath>..\Libs\libnoisedll-1.0.0\bin;..\Libs\glew-1.12.0\lib\Release\Win32;..\Libs\glfw-3.1.1.bin.WIN32\lib-vc2013;..\Libs\LibsAssimp\bin;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
@@ -82,7 +82,7 @@
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <PreprocessorDefinitions>_CRT_SECURE_NO_WARNINGS;NDEBUG;_CONSOLE;_LIB;WIN32;_WINDOWS;NOMINMAX;_WIN32_WINNT=0x0502;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <SDLCheck>false</SDLCheck>
-      <AdditionalIncludeDirectories>..\Libs\glfw-3.1.1.bin.WIN32\include;..\Libs\freeglut\include;..\Libs\OculusSDK\LibOVR\Src;..\Libs\glm;..\Libs\SOIL\src;..\Libs\libnoiseheaders-1.0.0\include;E:\2nd semestre\OpenGlC++Projet\AroundTheSpace\Libs\boost_1_57_0\libs;E:\2nd semestre\freetype-2.5.5\include;E:\2nd semestre\cinder_0.8.6_vc2013\cinder_0.8.6_vc2013\include;E:\2nd semestre\cinder_0.8.6_vc2013\cinder_0.8.6_vc2013\boost;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\Libs\glfw-3.1.1.bin.WIN32\include;..\Libs\freeglut\include;..\Libs\glm;..\Libs\SOIL\src;..\Libs\libnoiseheaders-1.0.0\include;$(Lib_Cinder)\include;$(Lib_Cinder)\boost;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <MultiProcessorCompilation>false</MultiProcessorCompilation>
       <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
     </ClCompile>
@@ -91,8 +91,8 @@
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
-      <AdditionalLibraryDirectories>..\Libs\freeglut\lib;..\Libs\glew-1.12.0\bin\Release\Win32;..\Libs\OculusSDK\lib;..\Libs\libnoisedll-1.0.0\bin;..\Libs\SOIL\LIB;..\Libs\LibsAssimp\bin;E:\2nd semestre\OpenGlC++Projet\AroundTheSpace\Libs\boost_1_57_0\boost;E:\2nd semestre\cinder_0.8.6_vc2013\cinder_0.8.6_vc2013\lib\msw\$(PlatformTarget);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-      <AdditionalDependencies>glfw3.lib;glew32s.lib;OculusVRd.lib;SOIL.lib;libnoise.lib;assimpd.lib;freetype.lib;cinder-v120.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>..\Libs\freeglut\lib;..\Libs\glew-1.12.0\bin\Release\Win32;..\Libs\libnoisedll-1.0.0\bin;..\Libs\SOIL\LIB;..\Libs\LibsAssimp\bin;$(Lib_Cinder)\lib\msw\$(PlatformTarget);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>glfw3.lib;glew32s.lib;SOIL.lib;libnoise.lib;assimpd.lib;cinder-v120.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <IgnoreSpecificDefaultLibraries>libcmt.lib;%(IgnoreSpecificDefaultLibraries)</IgnoreSpecificDefaultLibraries>
       <DataExecutionPrevention>false</DataExecutionPrevention>
     </Link>

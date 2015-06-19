@@ -1,5 +1,6 @@
 #pragma once
 
+#if 0
 #ifndef _SimpleFps_Text
 #define _SimpleFps_Text
 
@@ -47,3 +48,4 @@ public:
 
 #endif
 
+#endif

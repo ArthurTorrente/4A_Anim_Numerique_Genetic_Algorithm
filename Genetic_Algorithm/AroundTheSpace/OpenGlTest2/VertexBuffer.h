@@ -74,6 +74,6 @@ public:
 
 	GLuint loadCubemap(vector<const GLchar*> faces);
 
-	Text* _text;
+	//Text* _text;
 };
 
