@@ -1,0 +1,96 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <ClCompile Include="CameraSystem.cpp" />
+    <ClCompile Include="Entity.cpp" />
+    <ClCompile Include="GameManager.cpp" />
+    <ClCompile Include="Matrix3.cpp" />
+    <ClCompile Include="light.cpp" />
+    <ClCompile Include="materials.cpp" />
+    <ClCompile Include="MouvementSystem.cpp" />
+    <ClCompile Include="PlayerInputSystem.cpp" />
+    <ClCompile Include="ResourcesManager.cpp" />
+    <ClCompile Include="Scene.cpp" />
+    <ClCompile Include="ShaderData.cpp" />
+    <ClCompile Include="main.cpp" />
+    <ClCompile Include="RenderSystem.cpp" />
+    <ClCompile Include="ShaderInterface.cpp" />
+    <ClCompile Include="ShaderLoader.cpp" />
+    <ClCompile Include="stdafx.cpp" />
+    <ClCompile Include="Vector2.cpp" />
+    <ClCompile Include="Vector3.cpp" />
+    <ClCompile Include="Vector4.cpp" />
+    <ClCompile Include="VertexBuffer.cpp" />
+    <ClCompile Include="Battle.cpp" />
+    <ClCompile Include="Text.cpp" />
+    <ClCompile Include="Planet.cpp" />
+    <ClCompile Include="Source.cpp" />
+    <ClCompile Include="Constants.cpp" />
+    <ClCompile Include="Pixel.cpp" />
+    <ClCompile Include="ColorAlgoGen.cpp">
+      <Filter>AlgoGen</Filter>
+    </ClCompile>
+    <ClCompile Include="IAlgoGen.cpp">
+      <Filter>AlgoGen</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="CameraSystem.h" />
+    <ClInclude Include="CubeQuadTex.h" />
+    <ClInclude Include="CubeVertices.h" />
+    <ClInclude Include="Entity.h" />
+    <ClInclude Include="GameManager.h" />
+    <ClInclude Include="indices.h" />
+    <ClInclude Include="Matrix3.h" />
+    <ClInclude Include="light.h" />
+    <ClInclude Include="materials.h" />
+    <ClInclude Include="model.h" />
+    <ClInclude Include="MouvementSystem.h" />
+    <ClInclude Include="PlayerInputSystem.h" />
+    <ClInclude Include="ResourcesManager.h" />
+    <ClInclude Include="Scene.h" />
+    <ClInclude Include="ShaderData.h" />
+    <ClInclude Include="TriangleVertices.h" />
+    <ClInclude Include="Vector2.h" />
+    <ClInclude Include="Vector3.h" />
+    <ClInclude Include="RenderSystem.h" />
+    <ClInclude Include="ShaderInterface.h" />
+    <ClInclude Include="ShaderLoader.h" />
+    <ClInclude Include="stdafx.h" />
+    <ClInclude Include="targetver.h" />
+    <ClInclude Include="Vector4.h" />
+    <ClInclude Include="VertexBuffer.h" />
+    <ClInclude Include="VertexDataP.h" />
+    <ClInclude Include="verticesTiangle.h" />
+    <ClInclude Include="Battle.h" />
+    <ClInclude Include="Text.h" />
+    <ClInclude Include="Planet.h" />
+    <ClInclude Include="tools.h" />
+    <ClInclude Include="Pixel.h" />
+    <ClInclude Include="ColorAlgoGen.h" />
+    <ClInclude Include="Image.h">
+      <Filter>AlgoGen</Filter>
+    </ClInclude>
+    <ClInclude Include="IAlgoGen.h">
+      <Filter>AlgoGen</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <Image Include="OrnamentsHeads0036_S.jpg" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="ColorShader.fs" />
+    <None Include="FragmentShaderTexture.fs" />
+    <None Include="SimpleLightShader.fsh" />
+    <None Include="SimpleLightShader.vsh" />
+    <None Include="VertexShaderTexture.vs" />
+  </ItemGroup>
+  <ItemGroup>
+    <Text Include="ReadMe.txt" />
+  </ItemGroup>
+  <ItemGroup>
+    <Filter Include="AlgoGen">
+      <UniqueIdentifier>{311486f4-a48a-4d92-b3f2-b49b914b7664}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+</Project>
