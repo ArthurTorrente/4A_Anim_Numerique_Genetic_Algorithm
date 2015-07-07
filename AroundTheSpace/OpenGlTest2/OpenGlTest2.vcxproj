@@ -66,7 +66,7 @@
       <AdditionalLibraryDirectories>..\Libs\freeglut\lib;..\Libs\glew-1.12.0\bin\Release\Win32;..\Libs\OculusSDK\lib;..\Libs\libnoisedll-1.0.0\bin;..\Libs\SOIL\LIB;..\Libs\LibsAssimp\bin;E:\2nd semestre\OpenGlC++Projet\AroundTheSpace\Libs\boost_1_57_0\boost;E:\2nd semestre\cinder_0.8.6_vc2013\cinder_0.8.6_vc2013\lib\msw\$(PlatformTarget);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <AdditionalDependencies>OculusVRd.lib;glew32s.lib;glfw3.lib;SOIL.lib;libnoise.lib;assimpd.lib;freetype.lib;cinder-v120_d.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <DataExecutionPrevention>false</DataExecutionPrevention>
-      <IgnoreSpecificDefaultLibraries>LIBCMT.LIB, MSVCRT.LIB</IgnoreSpecificDefaultLibraries>
+      <IgnoreSpecificDefaultLibraries>libcmt.lib;libcmtd.lib;%(IgnoreSpecificDefaultLibraries)</IgnoreSpecificDefaultLibraries>
     </Link>
     <ProjectReference>
       <UseLibraryDependencyInputs>true</UseLibraryDependencyInputs>

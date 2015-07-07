@@ -41,14 +41,27 @@ public:
 
 	GLuint loadCubemap(vector<const GLchar*> faces);
 
-	void render(std::vector<Entity*> *children, std::vector<light *>* lights, cinder::Surface algoGenImage);
+	void render(std::vector<Entity*> *children, std::vector<light *>* lights);
+	void renderDepth(std::vector<Entity*> *children, std::vector<light *>* lights);
 	void renderLights(Entity* entity,std::vector<light *>* lights);
+	void screenshot(char filename[160], int x, int y);
+	void setMatrices(Entity* entity, ShaderInterface* shader);
 
 	static RenderSystem& getRenderSystem();
 	static void destroyRenderSystem();
 
 	bool up_down = false;
 	float next_Step = 180.0f;
+
+	GLuint depthMapFBO;
+	GLuint depthMap;
+	void RenderQuad();
+
+	cinder::Surface _m_algoGenImage;
+
+	bool cinderImage = false;
+	bool shadowDepth = false;
 };
 
 #endif
+

@@ -8,6 +8,9 @@
 #include<GL\glew.h>
 #include <GLFW\glfw3.h>
 
+#ifndef _SimpleFps_GameManager_
+#define _SimpleFps_GameManager_
+
 #include "RenderSystem.h"	
 #include "ResourcesManager.h"
 #include "MouvementSystem.h"
@@ -15,7 +18,7 @@
 #include "PlayerInputSystem.h"
 #include "Scene.h"
 #include "Battle.h"
-#include "cinder/Timer.h"
+
 //#define FREEGLUT_LIB_PRAGMAS 0
 //#pragma comment(lib, "freeglut.lib")
 //#pragma comment(lib, "opengl32.lib")
@@ -28,7 +31,7 @@
 
 
 #include "cinder/ip/Resize.h"
-
+#include "cinder/Timer.h"
 #include "ColorAlgoGen.h"
 
 #include "tools.h"
@@ -38,13 +41,15 @@
 //#include "cinder/app/App.h"
 #include "Resources.h"
 #include "cinder/CinderResources.h"
+#include "cinder\Camera.h"
+#include "cinder/Capture.h"
 
 using namespace ci;
 using namespace std;
 
 class GameManager
 {
-private :
+private:
 	bool _running;
 	RenderSystem* _render;
 	ResourcesManager* _resourcesManager;
@@ -54,7 +59,7 @@ private :
 	PlayerInputSystem *_playerInputSystem;
 	Scene* _scene;
 
-	vector<Battle*> *battles;
+	//vector<Battle*> *battles;
 
 	int turn;
 
@@ -73,29 +78,17 @@ public:
 	void return_chessLocation(int chessPos, GLfloat* x, GLfloat* y, GLfloat* z, GLfloat* it, GLfloat* it2);
 
 
-
-
-	/**
-	* Liste d'image chargé
-	*/
 	unsigned int m_currentImageLoadedIndex;
 	std::vector<cinder::Surface> m_imageLoaded;
 
-	/**
-	* Next step de l'algo Gen
-	*/
+
 	void nextStep();
 
-	/**
-	* Algo gen
-	*/
 	ColorAlgoGen m_algoGen;
 
 	cinder::ColorA getAveragePixelColor(int startXIndex, int startYIndex, int groupRowNumber);
+	cinder::CaptureRef capture;
 
-	/*
-	Threading
-	*/
 	int m_numberOfPopulation;
 	std::mutex m_mutex;
 	double m_computeFPS;
@@ -103,18 +96,13 @@ public:
 	std::thread m_thread;
 	void threadingCompute();
 
-	/**
-	* Algo Gen
-	* Image utilisé par l'algo Gen
-	*/
+
 	cinder::Surface m_currentImage;
-	/* Image reduite pour l'algoGen */
+
 	cinder::Surface m_currentAlgoGenImage;
-	/*
-	Image retourné par l'algoGen
-	*/
+
 	cinder::Surface m_algoGenImage;
-	/* Rescale de l'image en paramètre et set current image */
+
 	void setCurrentImage(const cinder::Surface&);
 
 	bool m_isStarted;
@@ -129,6 +117,7 @@ public:
 	void GameManager::edgeDetectArea(Surface *surface, Area area);
 
 	Surface GameManager::processImage(const Surface input);
-	
+
 };
 
+#endif

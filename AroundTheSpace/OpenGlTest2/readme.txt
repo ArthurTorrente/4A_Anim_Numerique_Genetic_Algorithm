@@ -1,4 +1,4 @@
-http://freegamearts.tuxfamily.org
+shttp://freegamearts.tuxfamily.org
 Email: wm_jkm@yahoo.com
 
 Description: A muzzleflash model(20tris) and skin(512x512) for a machine gun or similar.

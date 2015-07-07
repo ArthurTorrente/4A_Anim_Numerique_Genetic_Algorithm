@@ -22,9 +22,21 @@ ResourcesManager::ResourcesManager()
 
 	ShaderInterface *textShader = new ShaderInterface("TextRender.vs", "TextRender.frag");
 	_shaderArray->push_back(textShader);
-	
+
 	ShaderInterface* skyboxShader = new ShaderInterface("skybox.vs", "skybox.frag");
 	_shaderArray->push_back(skyboxShader);
+
+	ShaderInterface* depthShader = new ShaderInterface("shadow_mapping_depth.vs", "shadow_mapping_depth.frag");
+	_shaderArray->push_back(depthShader);
+
+	ShaderInterface* depthDebugShader = new ShaderInterface("depthMap.vs", "depthMap.frag");
+	_shaderArray->push_back(depthDebugShader);
+
+	ShaderInterface* depthShaderinstancing = new ShaderInterface("shadow_mapping_depth_instancing.vs", "shadow_mapping_depth_instancing.frag");
+	_shaderArray->push_back(depthShaderinstancing);
+
+	ShaderInterface* depthDebugShaderinstancing = new ShaderInterface("depthMap_instancing.vs", "depthMap_instancing.frag");
+	_shaderArray->push_back(depthDebugShaderinstancing);
 
 	_shaderData = new ShaderData(makeVector4(1.0f, 0.0f, 1.0f, 1.0f), makeVector3(1.0f, 0.0f, 1.0f));
 
@@ -36,24 +48,26 @@ ResourcesManager::ResourcesManager()
 	/*VertexBuffer* _planetVertexBuffer = new VertexBuffer(p.Vnu, p.Vnu.size() * sizeof(p.Vnu) * 2, GL_TRIANGLES, p.triangles.size(), sizeof(VertexDataPNT), _shaderArray->at(1), _shaderData, (GLvoid*)(offsetof(VertexDataPNT, positionCoordinates)), (GLvoid*)(offsetof(VertexDataPNT, normalCoordinates)), (GLvoid*)(offsetof(VertexDataPNT, textureCoordinates)), p.triangles, 300000);
 	_vertexBufferArray->push_back(_planetVertexBuffer);*/
 
-	VertexBuffer* _planetVertexBuffer = new VertexBuffer(verticesCubeWithTexture, sizeof(verticesCubeWithTexture), GL_TRIANGLES, 36, sizeof(VertexDataPNT), _shaderArray->at(1), _shaderData, (GLvoid*)(offsetof(VertexDataPNT, positionCoordinates)), (GLvoid*)(offsetof(VertexDataPNT, normalCoordinates)), (GLvoid*)(offsetof(VertexDataPNT, textureCoordinates)), p.triangles, 2000000);
+	VertexBuffer* _planetVertexBuffer = new VertexBuffer(verticesCubeWithTexture, sizeof(verticesCubeWithTexture), GL_TRIANGLES, 36, sizeof(VertexDataPNT), _shaderArray->at(1), _shaderData, (GLvoid*)(offsetof(VertexDataPNT, positionCoordinates)), (GLvoid*)(offsetof(VertexDataPNT, normalCoordinates)), (GLvoid*)(offsetof(VertexDataPNT, textureCoordinates)), p.triangles, 1000000, _shaderArray->at(8));
 	_vertexBufferArray->push_back(_planetVertexBuffer);
 
-	/*VertexBuffer* _vertexBufftext2 = new VertexBuffer(verticesCubeWithTexture, sizeof(verticesCubeWithTexture), GL_TRIANGLES, 36, sizeof(VertexDataPNT), _shaderArray->at(1), _shaderData, (GLvoid*)(offsetof(VertexDataPNT, positionCoordinates)), (GLvoid*)(offsetof(VertexDataPNT, normalCoordinates)), (GLvoid*)(offsetof(VertexDataPNT, textureCoordinates)), 62500);
+	/*VertexBuffer* _vertexBufftext2 = new VertexBuffer(verticesCubeWithTexture, sizeof(verticesCubeWithTexture), GL_TRIANGLES, 36, sizeof(VertexDataPNT), _shaderArray->at(6), _shaderData, (GLvoid*)(offsetof(VertexDataPNT, positionCoordinates)), (GLvoid*)(offsetof(VertexDataPNT, normalCoordinates)), (GLvoid*)(offsetof(VertexDataPNT, textureCoordinates)));
 	_vertexBufferArray->push_back(_vertexBufftext2);*/
 
 	VertexBuffer* _vertexBufftext3 = new VertexBuffer(skyboxVertices, sizeof(skyboxVertices), GL_TRIANGLES, 36, sizeof(VertexDataP), _shaderArray->at(4), _shaderData, (GLvoid*)(offsetof(VertexDataP, positionCoordinates)));
 	_vertexBufferArray->push_back(_vertexBufftext3);
-
+	/*_vertexBufftext3->_shaderDepth = depthShader;*/
+	_planetVertexBuffer->_shaderDepth = depthShaderinstancing;
+	//_vertexBufftext2->_shaderDepth = depthShader;
+	_planetVertexBuffer->_shaderDepthFramed = _shaderArray->at(8);
+	//_vertexBufftext2->_shaderDepthFramed = _shaderArray->at(8);
 	std::vector<materials*> *_materials = new std::vector<materials*>();
-	_materials->push_back(new materials("manu2.png", 32.0f));
+	_materials->push_back(new materials("manu5.png", 32.0f));
+
 	//_vertexBufftext3->set_materials(_materials);
 
 	_planetVertexBuffer->set_materials(_materials);
-
-
-
-	
+	//_vertexBufftext2->set_materials(_materials);
 }
 
 

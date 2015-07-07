@@ -7,13 +7,13 @@
 class ColorAlgoGen : public IAlgoGen
 {
 public:
-    ColorAlgoGen();
+	ColorAlgoGen();
 
-    virtual cinder::Surface operator()(const cinder::Surface&);
+	virtual cinder::Surface operator()(const cinder::Surface&);
 
 protected:
-    cinder::Surface mutate(const cinder::Surface&) const;
-    cinder::Surface crossOver(const cinder::Surface& s1, const cinder::Surface& s2) const;
+	cinder::Surface mutate(const cinder::Surface&) const;
+	cinder::Surface crossOver(const cinder::Surface& s1, const cinder::Surface& s2) const;
 };
 
 #endif //_COLORALGOGEN_H_

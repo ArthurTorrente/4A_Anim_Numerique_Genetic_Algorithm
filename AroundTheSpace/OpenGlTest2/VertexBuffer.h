@@ -27,6 +27,8 @@ private :
 	GLuint _elementBufferObjectID;
 
 	ShaderInterface* _shader;
+	
+
 	ShaderData *_shaderData;
 
 	GLenum _mode;
@@ -36,7 +38,6 @@ private :
 	GLvoid *_normalOffset;
 	GLvoid *_textureCoordOffset;
 
-	std::vector<materials*>*_materials;
 	
 	GLuint _amount;
 	
@@ -48,12 +49,15 @@ public:
 	ShaderInterface* get_Shader();
 	ShaderData* get_shaderData();
 
+	std::vector<materials*>*_materials;
+
 	GLuint _cubemaptexture = -1;
 	bool _cube;
 
 	VertexBuffer(const GLvoid *data, GLsizeiptr size, GLenum mode, GLsizei count, GLsizei stride, ShaderInterface* shader, ShaderData* shaderData, GLvoid*positionOffset, GLvoid *normalOffset, GLvoid* textureCoordOffset, boolean indicesWith);
 	VertexBuffer(const GLvoid *data, GLsizeiptr size, GLenum mode, GLsizei count, GLsizei stride, ShaderInterface* shader, ShaderData* shaderData, GLvoid*positionOffset, GLvoid *normalOffset, GLvoid* textureCoordOffset, boolean indicesWith, const char* s);
-	VertexBuffer(const GLvoid *data, GLsizei size, GLenum mode, GLsizei count, GLsizei stride, ShaderInterface* shader, ShaderData* shaderData, GLvoid* positionOffset, GLvoid* normalOffset, GLvoid* textureCoordOffset, std::vector<GLuint> indices, GLuint amount);
+	VertexBuffer(const GLvoid *data, GLsizei size, GLenum mode, GLsizei count, GLsizei stride, ShaderInterface* shader, ShaderData* shaderData, GLvoid* positionOffset, GLvoid* normalOffset, GLvoid* textureCoordOffset, std::vector<GLuint> indices, GLuint amount, ShaderInterface* _shaderdepth);
+	
 	VertexBuffer(std::vector<VertexDataPNT> data, GLsizei size, GLenum mode, GLsizei count, GLsizei stride, ShaderInterface* shader, ShaderData* shaderData, GLvoid* positionOffset, GLvoid* normalOffset, GLvoid* textureCoordOffset, std::vector<GLuint> indices, GLuint amount);
 	VertexBuffer(std::vector<VertexDataPNT> data, GLsizei size, GLenum mode, GLsizei count, GLsizei stride, ShaderInterface* shader, ShaderData* shaderData, GLvoid* positionOffset, GLvoid* normalOffset, GLvoid* textureCoordOffset, std::vector<GLuint> indices, boolean instancing, GLuint amount);
 	VertexBuffer(const GLvoid *data, GLsizei size, GLenum mode, GLsizei count, GLsizei stride, ShaderInterface* shader, ShaderData* shaderData, GLvoid* positionOffset, GLvoid* normalOffset, GLvoid* textureCoordOffset);
@@ -74,6 +78,8 @@ public:
 
 	GLuint loadCubemap(vector<const GLchar*> faces);
 
+	ShaderInterface* _shaderDepthFramed;
+	ShaderInterface* _shaderDepth;
 	//Text* _text;
 };
 
