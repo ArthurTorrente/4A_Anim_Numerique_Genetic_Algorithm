@@ -151,6 +151,8 @@ void Genetic_AlgorithmApp::setupIHM()
             m_ihmParam->addText(message.data());
         }
     }
+    
+    m_ihmParam->addButton("Screenshoot", std::bind(&Genetic_AlgorithmApp::screenshoot, this));
 
     m_ihmParam->addSeparator("Apps options");
     m_ihmParam->addParam("Number of new Population", &m_numberOfPopulation, "min=0 step=1", m_isStarted && !m_isPaused ? true : false);
@@ -744,6 +746,44 @@ void Genetic_AlgorithmApp::threadingComputeHeight()
 
             m_computeHeightFPS = 1.0 / timer.getSeconds();
         }
+    }
+}
+
+void Genetic_AlgorithmApp::screenshoot()
+{
+    if (m_isStarted && m_algoGenResult)
+    {
+
+        m_mutex.lock();
+        {
+            time_t t = time(nullptr);
+
+            struct tm now;
+            localtime_s(&now, &t);
+
+            std::stringstream is;
+
+            is << "./ScreenShoots/screenshoot-" << now.tm_mday << "-" << now.tm_mon << '-' << (now.tm_year + 1900 )<< '-' << now.tm_hour << '-' << now.tm_min << '-' << now.tm_sec << ".png";
+
+            namespace fs = boost::filesystem;
+
+            fs::path screenshootPath(is.str());
+            fs::path screenshootDirectory("./ScreenShoots");
+
+            screenshootPath.make_preferred();
+            screenshootDirectory.make_preferred();
+
+            if (!fs::exists(screenshootDirectory))
+            {
+                if (!fs::create_directory(screenshootDirectory))
+                {
+                    console() << "Can't create directory" << std::endl;
+                }
+            }
+
+            ci::writeImage(screenshootPath, m_algoGenResult);
+        }
+        m_mutex.unlock();
     }
 }
 

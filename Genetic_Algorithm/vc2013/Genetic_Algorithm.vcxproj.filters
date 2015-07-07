@@ -102,5 +102,8 @@
     <None Include="..\resources\vert.glsl">
       <Filter>Resource Files\Shaders</Filter>
     </None>
+    <None Include="..\resources\glsl1.bin">
+      <Filter>Resource Files</Filter>
+    </None>
   </ItemGroup>
 </Project>

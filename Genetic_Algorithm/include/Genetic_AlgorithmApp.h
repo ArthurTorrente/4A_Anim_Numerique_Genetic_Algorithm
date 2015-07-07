@@ -194,6 +194,8 @@ protected:
     bool m_isBuilder;
     int m_neighbors;
     ci::Timer m_timerShader;
+
+    void screenshoot();
 };
 
 #endif //_GENETICALGORITHMAPP_H_
