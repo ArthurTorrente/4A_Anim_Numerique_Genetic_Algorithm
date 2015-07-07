@@ -52,21 +52,20 @@ public:
 
     void setPopSize(unsigned int popSize);
 
-    /* Setup population and anymore*/
+
     virtual bool setup(unsigned int width, unsigned int height);
 
     uint64_t getFitness(const cinder::Surface& realImage, const cinder::Surface& popImage) const;
 
-    /* Prend l'image de base en paramètre et retourne une image qui se rapproche de celle de base */
+    
     virtual cinder::Surface operator()(const cinder::Surface&) = 0;
 
 protected:
     std::vector<Interval> m_interval;
-    
-    /* Nombre de surface qui seront utilisé dans l'algoGen*/
+
     unsigned int m_popSize;
     
-    /* La population de surface de l'algoGen */
+
     std::vector<SurfaceWrapper> m_population;
 
     cinder::Surface getRandomSurface(unsigned int width, unsigned int height) const;

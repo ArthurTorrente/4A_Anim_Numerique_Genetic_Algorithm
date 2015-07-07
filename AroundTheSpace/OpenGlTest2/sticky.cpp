@@ -1,4 +1,4 @@
-#include "Sticky.h"
+/*#include "Sticky.h"
 
 #include <bitset>
 
@@ -104,9 +104,7 @@ void Sticky::CreateMesh()
     cinder::Vec3f v6(this->m_x + this->m_width / 2, this->m_y - this->m_height / 2, -1);
     cinder::Vec3f v7(this->m_x - this->m_width / 2, this->m_y - this->m_height / 2, -1);
 
-	/*cinder::Vec3f faces[6][4] = { /* Vertices for the 6 faces of a cube. 
-		{ v0, v1, v2, v3 }, { v3, v2, v6, v7 }, { v7, v6, v5, v4 },
-		{ v4, v5, v1, v0 }, { v5, v6, v2, v1 }, { v7, v4, v0, v3 } };*/
+	
 
 	cinder::Vec3f faces[6][4] = {
 			{ v0, v1, v2, v3 }, { v7, v6, v5, v4 }, //front and back faces
@@ -317,4 +315,4 @@ void Sticky::updateSize(float wRatio, float hRatio)
     this->m_y *= hRatio;
     this->CreateMesh();
 }
-#endif
+#endif*/

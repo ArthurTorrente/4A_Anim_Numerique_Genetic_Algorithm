@@ -14,7 +14,7 @@ cinder::Surface ColorAlgoGen::operator()(const cinder::Surface& realImage)
     std::vector<SurfaceWrapper> nextGenPopulation;
     nextGenPopulation.reserve(m_popSize);
 
-    /* Calcul du fitness */
+
     std::for_each(m_population.begin(), m_population.end(), [this, &realImage](SurfaceWrapper& s)
     {
         s.fitness = getFitness(realImage, s.image);
@@ -24,9 +24,7 @@ cinder::Surface ColorAlgoGen::operator()(const cinder::Surface& realImage)
     {
         return s1.fitness < s2.fitness;
     });
-    /* ============================ */
 
-    /* Copy algo */
     unsigned int copyRatio = tools::clamp<int>(
         static_cast<int>(getPercent(COPY) * m_popSize),
         0,
@@ -41,9 +39,8 @@ cinder::Surface ColorAlgoGen::operator()(const cinder::Surface& realImage)
         });
     }
 
-    /* ============================ */
 
-    /* Mutate algo */
+
     unsigned int mutateRatio = tools::clamp<int>(
         static_cast<int>(getPercent(MUTATE) * m_popSize),
         0,
@@ -59,9 +56,7 @@ cinder::Surface ColorAlgoGen::operator()(const cinder::Surface& realImage)
             return SurfaceWrapper(s, getFitness(realImage, s));
         });
     }
-    /* ============================ */
 
-    /* CrossOver algo */
     unsigned int crossOverRatio = tools::clamp<int>(
         static_cast<int>(getPercent(CROSSOVER) * m_popSize),
         0,
@@ -79,9 +74,8 @@ cinder::Surface ColorAlgoGen::operator()(const cinder::Surface& realImage)
             return SurfaceWrapper(s, getFitness(realImage, s));
         });
     }
-    /* ============================ */
 
-    /* Random Algo */
+
     unsigned int randomRatio = tools::clamp<int>(
         static_cast<int>(getPercent(RANDOM) * m_popSize),
         0,
@@ -102,14 +96,14 @@ cinder::Surface ColorAlgoGen::operator()(const cinder::Surface& realImage)
             return SurfaceWrapper(s, getFitness(realImage, s));
         });
     }
-    /* ============================ */
 
-    /* Sort new pop */
+
+
     std::sort(nextGenPopulation.begin(), nextGenPopulation.end(), [](const SurfaceWrapper& s1, const SurfaceWrapper& s2)
     {
         return s1.fitness < s2.fitness;
     });
-    /* ============================ */
+
 
     m_population = nextGenPopulation;
 

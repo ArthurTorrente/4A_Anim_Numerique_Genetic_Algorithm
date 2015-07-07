@@ -14,7 +14,6 @@
     <ClCompile Include="ShaderData.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="RenderSystem.cpp" />
-    <ClCompile Include="ShaderInterface.cpp" />
     <ClCompile Include="ShaderLoader.cpp" />
     <ClCompile Include="stdafx.cpp" />
     <ClCompile Include="Vector2.cpp" />
@@ -33,6 +32,7 @@
     <ClCompile Include="IAlgoGen.cpp">
       <Filter>AlgoGen</Filter>
     </ClCompile>
+    <ClCompile Include="ShaderInterface.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="CameraSystem.h" />
@@ -67,11 +67,13 @@
     <ClInclude Include="Planet.h" />
     <ClInclude Include="tools.h" />
     <ClInclude Include="Pixel.h" />
-    <ClInclude Include="ColorAlgoGen.h" />
     <ClInclude Include="Image.h">
       <Filter>AlgoGen</Filter>
     </ClInclude>
     <ClInclude Include="IAlgoGen.h">
+      <Filter>AlgoGen</Filter>
+    </ClInclude>
+    <ClInclude Include="ColorAlgoGen.h">
       <Filter>AlgoGen</Filter>
     </ClInclude>
   </ItemGroup>

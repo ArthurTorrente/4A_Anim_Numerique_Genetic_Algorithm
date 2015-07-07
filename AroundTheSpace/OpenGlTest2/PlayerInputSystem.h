@@ -14,6 +14,7 @@
 #include <GLFW/glfw3.h>
 #include "Entity.h"
 #include "Vector2.h"
+#include "RenderSystem.h"
 
 class PlayerInputSystem
 {
@@ -31,6 +32,8 @@ private:
 	~PlayerInputSystem();
 
 	void keyCallback(GLFWwindow *window, int key, int scancode, int action, int mods);
+
+	RenderSystem* _render;
 
 public:
 

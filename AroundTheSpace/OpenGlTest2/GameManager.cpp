@@ -13,34 +13,48 @@
 using namespace std;
 using namespace boost;
 
-GameManager::GameManager(bool running) : 
-_running(running), 
+GameManager::GameManager(bool running) :
+_running(running),
 _window(glfwGetCurrentContext()),
-_render(&RenderSystem::getRenderSystem()), 
-_resourcesManager(&ResourcesManager::getResourcesManager()), 
+_render(&RenderSystem::getRenderSystem()),
+_resourcesManager(&ResourcesManager::getResourcesManager()),
 _movementSystem(&MouvementSystem::getMouvementSystem()),
-_cameraSystem(&CameraSystem::getCameraSystem()), 
+_cameraSystem(&CameraSystem::getCameraSystem()),
 _scene(new Scene()),
 _playerInputSystem(&PlayerInputSystem::getPlayerInputSystem())
 {
-	/*if (m_isStarted || m_pixelPerSticky <= m_numberGapPixel || !m_currentImage)
-		return;
+	//capture = Capture(640, 480);
+	//capture.start();
 
-	ci::Rectf screen = getWindowBounds();*/
+	auto deviceList = cinder::Capture::getDevices();
 
-	//fs::path p;
-	
-	//m_imageLoaded.push_back(cinder::loadImage(p));
-	m_currentImage = processImage(loadImage("manu2.png"));
+	if (deviceList.size() > 0)
+	{
+		auto device = deviceList.front();
+
+		if (device->checkAvailable())
+		{
+			capture = cinder::Capture::create(1280, 720, device);
+
+			//m_videoCapture = Surface(m_capture->getSurface());
+
+			capture->start();
+
+			//m_captureMode = true;
+		}
+	}
+
+
+	//m_currentImage = processImage(loadImage("manu5.png"));
+	m_currentImage =  capture->getSurface();
 	m_currentImageLoadedIndex = 0;
 
 	int width = 512;
 	int height = 512;
 
-	/*float pixelGroupNumber = static_cast<float>(m_pixelPerSticky);
-	float numberGapPixel = static_cast<float>(m_numberGapPixel);*/
 
-	m_currentAlgoGenImage = ci::ip::resizeCopy(m_currentImage, m_currentImage.getBounds(), ci::Vec2i(width/10, height/10));
+
+	m_currentAlgoGenImage = ci::ip::resizeCopy(m_currentImage, m_currentImage.getBounds(), ci::Vec2i(width / 5, height / 5));
 
 	m_algoGen.setPopSize(100);
 	m_algoGen.setup(m_currentAlgoGenImage.getWidth(), m_currentAlgoGenImage.getHeight());
@@ -196,27 +210,31 @@ void GameManager::runGameLoop()
 
 		/*while (deltaTurnTime >= 3.0f)
 		{
-			NextTurn();
-			deltaTurnTime -= 3.0f;
+		NextTurn();
+		deltaTurnTime -= 3.0f;
 		}*/
-		if (m_algoGenImage != NULL)
-		{
-			_render->render(_scene->getChildren(), _scene->getLights(), m_algoGenImage);
-		}
-		
-		
+
+		//if (m_algoGenImage != NULL)
+		//{
+		//m_algoGenImage = capture->getSurface();
+		_render->_m_algoGenImage = m_algoGenImage;
+
+		_render->render(_scene->getChildren(), _scene->getLights());
+		//}
+
+
 	}
 }
 
 /*
 void key_callback(GLFWwindow* window, int key, int scancode, int action, int mode){
-	if (key == GLFW_KEY_ESCAPE && action == GLFW_PRESS){
-		glfwSetWindowShouldClose(window, GL_TRUE);
-	}
-	if (key == GLFW_KEY_C && action == GLFW_PRESS){
-		// Do turn camera
-		// GameManager::moveCamera();
-	}
+if (key == GLFW_KEY_ESCAPE && action == GLFW_PRESS){
+glfwSetWindowShouldClose(window, GL_TRUE);
+}
+if (key == GLFW_KEY_C && action == GLFW_PRESS){
+// Do turn camera
+// GameManager::moveCamera();
+}
 } */
 
 void GameManager::moveCamera(){
@@ -237,9 +255,10 @@ GameManager& GameManager::getGameManager()
 		glfwWindowHint(GLFW_ALPHA_BITS, 8);
 		glfwWindowHint(GLFW_SAMPLES, 16);
 		glfwWindowHint(GLFW_RESIZABLE, GL_FALSE);
-		GLFWwindow* window = glfwCreateWindow(1920, 1080, "Fps", glfwGetPrimaryMonitor(), NULL);
+		//GLFWwindow* window = glfwCreateWindow(1920, 1080, "Fps", glfwGetPrimaryMonitor(), NULL);
+		GLFWwindow* window = glfwCreateWindow(1920, 1080, "Fps", NULL, NULL);
 		glfwMakeContextCurrent(window);
-		
+
 		//glfwSetKeyCallback(window, key_callback);
 		glewExperimental = GL_TRUE;
 		GLenum error = glewInit();
@@ -269,41 +288,41 @@ void GameManager::NextTurn()
 
 	for (int i = 0; i < _scene->getChildren()->size(); ++i)
 	{
-		for (int j = 0; j < battles->size(); ++j)
-		{
-			if (_scene->getChildren()->at(i)->chess == battles->at(j)->_chess)
-			{
-				if (battles->at(j)->s3.size() > turn + 1)
-				{
-					if (_scene->getChildren()->at(i)->id == battles->at(j)->s3.at(turn))
-					{
-						if (battles->at(j)->s4.at(turn) == -1)
-						{
-							fire(_scene->getChildren()->at(i)->chess, &x, &y, &z, &battles->at(j)->s5.at(turn), _scene->getChildren()->at(i));
-						}
-							else {
-								return_chessLocation(_scene->getChildren()->at(i)->chess, &x, &y, &z, &battles->at(j)->s4.at(turn), &battles->at(j)->s5.at(turn));
-								_scene->getChildren()->at(i)->set_goal(makeVector3(x, y, z));
-							}
-					}
-
-								if (_scene->getChildren()->at(i)->id == battles->at(j)->s3.at(turn + 1))
-								{
-									if (battles->at(j)->s4.at(turn+1) == -1){
-										fire(_scene->getChildren()->at(i)->chess, &x, &y, &z, &battles->at(j)->s5.at(turn+1), _scene->getChildren()->at(i));
-									}
-									else {
-										return_chessLocation(_scene->getChildren()->at(i)->chess, &x, &y, &z, &battles->at(j)->s4.at(turn + 1), &battles->at(j)->s5.at(turn + 1));
-										_scene->getChildren()->at(i)->set_goal(makeVector3(x, y, z));
-									}
-								}
-								
-				}
-							
-			}
-		}
+	for (int j = 0; j < battles->size(); ++j)
+	{
+	if (_scene->getChildren()->at(i)->chess == battles->at(j)->_chess)
+	{
+	if (battles->at(j)->s3.size() > turn + 1)
+	{
+	if (_scene->getChildren()->at(i)->id == battles->at(j)->s3.at(turn))
+	{
+	if (battles->at(j)->s4.at(turn) == -1)
+	{
+	fire(_scene->getChildren()->at(i)->chess, &x, &y, &z, &battles->at(j)->s5.at(turn), _scene->getChildren()->at(i));
 	}
-	
+	else {
+	return_chessLocation(_scene->getChildren()->at(i)->chess, &x, &y, &z, &battles->at(j)->s4.at(turn), &battles->at(j)->s5.at(turn));
+	_scene->getChildren()->at(i)->set_goal(makeVector3(x, y, z));
+	}
+	}
+
+	if (_scene->getChildren()->at(i)->id == battles->at(j)->s3.at(turn + 1))
+	{
+	if (battles->at(j)->s4.at(turn+1) == -1){
+	fire(_scene->getChildren()->at(i)->chess, &x, &y, &z, &battles->at(j)->s5.at(turn+1), _scene->getChildren()->at(i));
+	}
+	else {
+	return_chessLocation(_scene->getChildren()->at(i)->chess, &x, &y, &z, &battles->at(j)->s4.at(turn + 1), &battles->at(j)->s5.at(turn + 1));
+	_scene->getChildren()->at(i)->set_goal(makeVector3(x, y, z));
+	}
+	}
+
+	}
+
+	}
+	}
+	}
+
 	turn+=2;*/
 }
 
@@ -316,10 +335,10 @@ void GameManager::fire(int chessPos, GLfloat* x, GLfloat* y, GLfloat* z, GLfloat
 
 	for (int i = 0; i < _scene->getChildren()->size(); ++i)
 	{
-		if (_scene->getChildren()->at(i)->id == (int)*it && chessPos == _scene->getChildren()->at(i)->chess)
-		{
-			v = normalizeVector3(subtractVector3(_scene->getChildren()->at(i)->get_position(), entity->get_position()));
-		}
+	if (_scene->getChildren()->at(i)->id == (int)*it && chessPos == _scene->getChildren()->at(i)->chess)
+	{
+	v = normalizeVector3(subtractVector3(_scene->getChildren()->at(i)->get_position(), entity->get_position()));
+	}
 	}
 
 	v2.x = -v.x * 2.0f + entity->get_position().x;
@@ -331,7 +350,7 @@ void GameManager::fire(int chessPos, GLfloat* x, GLfloat* y, GLfloat* z, GLfloat
 	v3.z = v.z * 1.5f + entity->get_position().z;
 
 	_scene->createParticle(v3, 0.10f);
-		
+
 	entity->set_goal(entity->get_position());
 	entity->set_position(v2);*/
 }
@@ -342,72 +361,72 @@ void GameManager::return_chessLocation(int chessPos, GLfloat* x, GLfloat* y, GLf
 {
 	/*switch (chessPos)
 	{
-		case 0:
-				*x = *it + 0.0f;
-				*y = 0.6f;
-				*z = *it2 + 0.0f;
-			break;
-		case 1:
-			*x = *it + 20.0f;
-			*y = 0.6f;
-			*z = *it2 + 0.0f;
-			break;
-		case 2:
-			*x = *it + 0.0f;
-			*y = 0.6f;
-			*z = *it2 + (-20.0f);
-			break;
-		case 3:
-			*x = *it + 20.0f;
-			*y = 0.6f;
-			*z = *it2 + (-20.0f);
-			break;
+	case 0:
+	*x = *it + 0.0f;
+	*y = 0.6f;
+	*z = *it2 + 0.0f;
+	break;
+	case 1:
+	*x = *it + 20.0f;
+	*y = 0.6f;
+	*z = *it2 + 0.0f;
+	break;
+	case 2:
+	*x = *it + 0.0f;
+	*y = 0.6f;
+	*z = *it2 + (-20.0f);
+	break;
+	case 3:
+	*x = *it + 20.0f;
+	*y = 0.6f;
+	*z = *it2 + (-20.0f);
+	break;
 
-			/////////////
+	/////////////
 
-		case 4:
-			*x =  -9.4f;
-			*y = *it + 0.0f;
-			*z = *it2 + 0.0f;
-			break;
-		case 5:
-			*x = -9.4f;
-			*y = *it + 0.0f;
-			*z = *it2 + (-20.0f);
-			break;
-		case 6:
-			*x = -9.4f;
-			*y = *it + 15.0f;
-			*z = *it2 + 0.0f;
-			break;
-		case 7:
-			*x = -9.4f;
-			*y = *it + 15.0f;
-			*z = *it2 + (-20.0f);
-			break;
+	case 4:
+	*x =  -9.4f;
+	*y = *it + 0.0f;
+	*z = *it2 + 0.0f;
+	break;
+	case 5:
+	*x = -9.4f;
+	*y = *it + 0.0f;
+	*z = *it2 + (-20.0f);
+	break;
+	case 6:
+	*x = -9.4f;
+	*y = *it + 15.0f;
+	*z = *it2 + 0.0f;
+	break;
+	case 7:
+	*x = -9.4f;
+	*y = *it + 15.0f;
+	*z = *it2 + (-20.0f);
+	break;
 
-			//////////////
+	//////////////
 
-		case 8:
-			*x = *it + 0.0f;
-			*y = *it2 + 0.0f;
-			*z = -29.4f;
-			break;
-		case 9:
-			*x = *it + 20.0;
-			*y = *it2 + 0.0f;
-			*z = -29.4f;
-			break;
-		case 10:
-			*x = *it + 0.0f;
-			*y = *it2 + 15.0f;
-			*z = (-29.4f);
-			break;
-		case 11:
-			*x = *it + 20.0f;
-			*y = *it2 + 15.0f;
-			*z = (-29.4f);
-			break;
+	case 8:
+	*x = *it + 0.0f;
+	*y = *it2 + 0.0f;
+	*z = -29.4f;
+	break;
+	case 9:
+	*x = *it + 20.0;
+	*y = *it2 + 0.0f;
+	*z = -29.4f;
+	break;
+	case 10:
+	*x = *it + 0.0f;
+	*y = *it2 + 15.0f;
+	*z = (-29.4f);
+	break;
+	case 11:
+	*x = *it + 20.0f;
+	*y = *it2 + 15.0f;
+	*z = (-29.4f);
+	break;
 	}*/
 }
 

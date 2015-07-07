@@ -22,29 +22,41 @@ string line;
 Scene::Scene()
 {
 	children = new std::vector<Entity*>();
-	
+
 	ResourcesManager* resources = &ResourcesManager::getResourcesManager();
 
-    
+
 
 	//_entity2->set_scale(makeVector3(100.0f, 100.0f, 100.0f));
 
-	Entity* _entity = new Entity((resources->getVertexBufferArray()->at(0)), makeVector3((0.0f), 0.0f, (0.0f)));
-	_entity->army = 10;
-	_entity->id = 50;
-	_entity->set_rotationVelocity(makeVector3((0.0f), 0.05f, (0.0f)));
-	_entity->set_scale(makeVector3((1.0f), 1.0f, (1.0f)));
+	//Entity* _entity = new Entity((resources->getVertexBufferArray()->at(1)), makeVector3((0.0f), 0.0f, (0.0f)));
+	//_entity->army = 10;
+	//_entity->id = 50;
+	//_entity->set_rotationVelocity(makeVector3((0.0f), 0.00f, (0.0f)));
+	//_entity->set_scale(makeVector3((1.0f), 1.0f, (1.0f)));
 	//_entity->set_scaleVelocity(makeVector3((0.0f), 0.05f, (0.0f)));
-	children->push_back(_entity);
+	//children->push_back(_entity);
 
-	/*Entity* _entity2 = new Entity((resources->getVertexBufferArray()->at(1)), makeVector3(0.0f, 0.0f, 0.0f));
-	_entity2->army = -1;
-	_entity2->id = -1;
-	children->push_back(_entity2);*/
+	Entity* _entity2 = new Entity((resources->getVertexBufferArray()->at(1)), makeVector3((0.0f), 0.0f, (0.0f)));
+	_entity2->army = 10;
+	_entity2->id = 50;
+	_entity2->set_rotationVelocity(makeVector3((0.0f), 0.00f, (0.0f)));
+	_entity2->set_scale(makeVector3((0.0f), 0.00f, (0.0f)));
+	//_entity->set_scaleVelocity(makeVector3((0.0f), 0.05f, (0.0f)));
+	children->push_back(_entity2);
+
+	Entity* _entity3 = new Entity((resources->getVertexBufferArray()->at(0)), makeVector3(0.0f, 0.0f, 0.0f));
+	_entity3->army = -1;
+	_entity3->id = -1;
+	_entity3->set_velocity(makeVector3(0.0f, 0.0f, 0.0f));
+	_entity3->set_rotationVelocity(makeVector3((0.0f), 0.05f, (0.0f)));
+	_entity3->set_scale(makeVector3((1.0f), 1.0f, (1.0f)));
+	children->push_back(_entity3);
 
 	////////////////
 
-	Entity* camera = new Entity(NULL, makeVector3(-2.0f, -2.0f, -2.0f));
+	Entity* camera = new Entity(NULL, makeVector3(
+		00.0f, -50.0f, -50.0f));
 	camera->army = 10;
 	camera->id = 50;
 	camera->set_eyeVector(normalizeVector3(makeVector3(1.0f, 1.0f, 1.0f)));
@@ -59,7 +71,7 @@ Scene::Scene()
 	CameraSystem* cameraSystem = &CameraSystem::getCameraSystem();
 	cameraSystem->setCurrentCamera(camera);
 
-	
+
 
 	_lights = new std::vector<light*>();
 	/*light* li = new light((resources->getVertexBufferArray()->at(1)), makeVector3(0.0f, 0.0f, 10.0f), makeVector3(0.3f, 0.3f, 0.3f), makeVector3(1.0f, 1.0f, 1.0f), makeVector3(1.0f, 1.0f, 1.0f), 1.0f, 0.09f, 0.032f);

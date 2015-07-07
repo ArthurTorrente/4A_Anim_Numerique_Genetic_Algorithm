@@ -1,4 +1,4 @@
-#ifndef _STIXIMAGE_H_
+/*#ifndef _STIXIMAGE_H_
 #define _STIXIMAGE_H_
 
 #include <vector>
@@ -18,4 +18,4 @@ private:
   
 };
 
-#endif //_STIXIMAGE_H_
+#endif //_STIXIMAGE_H_*/

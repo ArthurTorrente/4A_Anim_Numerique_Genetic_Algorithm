@@ -1,5 +1,5 @@
 #include "stdafx.h"
-#include "Battle.h"
+/*#include "Battle.h"
 
 #include <iostream>     // cout, endl
 #include <fstream>      // fstream
@@ -55,4 +55,4 @@ Battle::Battle(string _str, int chess) : _chess(chess)
 
 Battle::~Battle()
 {
-}
+}*/
