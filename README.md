@@ -5,8 +5,8 @@ Deux projet sont présent dans le dossier de Rendu
 1) Projet d'algorithme genetic pour le cours d'Animation numérique
 
 Installation:
-1) Ouvire le fichier install.bat et renseigner le chemin d'accès à la bilbiothèque cinder, le chemin doit pointer sur le dossier racine de cinder (dossier include, boost, libr, src, ...)
-2) ouvrir le projet visual 2012 ou 2013
+1) Ouvire le fichier install.bat et renseigner le chemin d'accès à la bibliothèque cinder, le chemin doit pointer sur le dossier racine de cinder (dossier include, boost, libr, src, ...)
+2) ouvrir le projet visual 2013
 3) Compiler le projet
 4) Lancer l'application en Release avec l'utilisation de la carte graphique haute performance pour de meilleur performance
 
@@ -51,6 +51,6 @@ Le pannaux Shader permet de paramétrer le shader:
     
 2) Projet de Valentin
 
-Ne fonctionne que dans le projet Visual, recompiler le projet en Release et l'executer directement dans la solution
+Ne fonctionne que dans Visual, recompiler le projet en Release et l'executer directement dans la solution
 
 Il est possiblde de translater la camera sur son axe local Z avec les touches S et W
