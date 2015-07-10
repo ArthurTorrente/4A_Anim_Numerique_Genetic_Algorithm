@@ -196,6 +196,8 @@ protected:
     ci::Timer m_timerShader;
 
     void screenshoot();
+
+    boost::filesystem::path m_appPath;
 };
 
 #endif //_GENETICALGORITHMAPP_H_

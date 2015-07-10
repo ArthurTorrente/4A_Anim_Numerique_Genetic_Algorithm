@@ -38,6 +38,9 @@ void Genetic_AlgorithmApp::prepareSettings(Settings* settings)
 
 void Genetic_AlgorithmApp::setup()
 {
+    m_appPath = getArgs()[0];
+    m_appPath = m_appPath.parent_path();
+
     /* App */
     m_renderCurrentImage = false;
     /* === */
@@ -763,12 +766,15 @@ void Genetic_AlgorithmApp::screenshoot()
 
             std::stringstream is;
 
-            is << "./ScreenShoots/screenshoot-" << now.tm_mday << "-" << now.tm_mon << '-' << (now.tm_year + 1900 )<< '-' << now.tm_hour << '-' << now.tm_min << '-' << now.tm_sec << ".png";
+            is << "/ScreenShoots/screenshoot-" << now.tm_mday << "-" << now.tm_mon << '-' << (now.tm_year + 1900 )<< '-' << now.tm_hour << '-' << now.tm_min << '-' << now.tm_sec << ".png";
 
             namespace fs = boost::filesystem;
 
-            fs::path screenshootPath(is.str());
-            fs::path screenshootDirectory("./ScreenShoots");
+            fs::path screenshootPath(m_appPath);
+            fs::path screenshootDirectory(m_appPath);
+            
+            screenshootPath += is.str();
+            screenshootDirectory += "/ScreenShoots";
 
             screenshootPath.make_preferred();
             screenshootDirectory.make_preferred();
